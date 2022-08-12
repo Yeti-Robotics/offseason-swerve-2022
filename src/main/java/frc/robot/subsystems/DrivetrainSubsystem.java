@@ -5,7 +5,7 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.swervedrivespecialties.swervelib.Mk3SwerveModuleHelper;
+import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
@@ -41,8 +41,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 * pi
 	 */
 	public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
-			SdsModuleConfigurations.MK3_STANDARD.getDriveReduction() *
-			SdsModuleConfigurations.MK3_STANDARD.getWheelDiameter() * Math.PI;
+			SdsModuleConfigurations.MK4_L2.getDriveReduction() *
+			SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
 	/**
 	 * The maximum angular velocity of the robot in radians per second.
 	 * <p>
@@ -79,14 +79,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public DrivetrainSubsystem() {
 		ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
-		frontLeftModule = Mk3SwerveModuleHelper.createFalcon500(
+		frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
 				// This parameter is optional, but will allow you to see the current state of
 				// the module on the dashboard.
 				tab.getLayout("Front Left Module", BuiltInLayouts.kList)
 						.withSize(2, 4)
 						.withPosition(0, 0),
 				// This can either be STANDARD or FAST depending on your gear configuration
-				Mk3SwerveModuleHelper.GearRatio.STANDARD,
+				Mk4SwerveModuleHelper.GearRatio.L2,
 				DriveConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
 				DriveConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
 				DriveConstants.FRONT_LEFT_MODULE_STEER_ENCODER,
@@ -95,31 +95,31 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				DriveConstants.FRONT_LEFT_MODULE_STEER_OFFSET);
 
 		// We will do the same for the other modules
-		frontRightModule = Mk3SwerveModuleHelper.createFalcon500(
+		frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
 				tab.getLayout("Front Right Module", BuiltInLayouts.kList)
 						.withSize(2, 4)
 						.withPosition(2, 0),
-				Mk3SwerveModuleHelper.GearRatio.STANDARD,
+				Mk4SwerveModuleHelper.GearRatio.L2,
 				DriveConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
 				DriveConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
 				DriveConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,
 				DriveConstants.FRONT_RIGHT_MODULE_STEER_OFFSET);
 
-		backLeftModule = Mk3SwerveModuleHelper.createFalcon500(
+		backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
 				tab.getLayout("Back Left Module", BuiltInLayouts.kList)
 						.withSize(2, 4)
 						.withPosition(4, 0),
-				Mk3SwerveModuleHelper.GearRatio.STANDARD,
+				Mk4SwerveModuleHelper.GearRatio.L2,
 				DriveConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
 				DriveConstants.BACK_LEFT_MODULE_STEER_MOTOR,
 				DriveConstants.BACK_LEFT_MODULE_STEER_ENCODER,
 				DriveConstants.BACK_LEFT_MODULE_STEER_OFFSET);
 
-		backRightModule = Mk3SwerveModuleHelper.createFalcon500(
+		backRightModule = Mk4SwerveModuleHelper.createFalcon500(
 				tab.getLayout("Back Right Module", BuiltInLayouts.kList)
 						.withSize(2, 4)
 						.withPosition(6, 0),
-				Mk3SwerveModuleHelper.GearRatio.STANDARD,
+				Mk4SwerveModuleHelper.GearRatio.L2,
 				DriveConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
 				DriveConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
 				DriveConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
