@@ -61,6 +61,7 @@ public final class Constants {
         public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0.0); // FIXME Measure and set back
                                                                                           // right steer offset
 
-        public static final double FALCON_FREE_RPM = 6380.0; // free speed RPM, found here https://motors.vex.com/vexpro-motors/falcon
+        public static final double FALCON_FREE_RPM = 6380.0; // free speed RPM @12V, found here https://motors.vex.com/vexpro-motors/falcon
+                                                             // if max voltage changes this value should be modified
     }
 }
