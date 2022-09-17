@@ -71,4 +71,17 @@ public final class Constants {
         public static final double INTAKE_SPEED = 0.3;
         public static final double INTAKE_OUT_SPEED = 0.3;
     }
+
+    public static final class NeckConstants {
+        public static final int FRONT_INDEXER = 0;
+        public static final int BACK_INDEXER = 0;
+        public static final int LOW_BEAM_BREAK = 0;
+        public static final int HIGH_BEAM_BREAK = 0;
+        public static final double NECK_FRONT_SPEED = 0;
+        public static final double NECK_BACK_SPEED = 0;
+        public static final double NECK_FRONT_OUT_SPEED = 0;
+        public static final double NECK_BACK_OUT_SPEED = 0;
+
+
+    }
 }
