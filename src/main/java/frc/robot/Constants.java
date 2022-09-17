@@ -64,4 +64,11 @@ public final class Constants {
         public static final double FALCON_FREE_RPM = 6380.0; // free speed RPM @12V, found here https://motors.vex.com/vexpro-motors/falcon
                                                              // if max voltage changes this value should be modified
     }
+
+    public static final class IntakeConstants {
+        public static final int INTAKE_SPARK = 0;
+        public static final int[] INTAKE_PISTONS_SOLENOID = {0,1};
+        public static final double INTAKE_SPEED = 0.3;
+        public static final double INTAKE_OUT_SPEED = 0.3;
+    }
 }
