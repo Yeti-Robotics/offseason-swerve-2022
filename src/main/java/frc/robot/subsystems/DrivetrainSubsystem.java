@@ -6,13 +6,16 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -31,27 +34,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 */
 	public static final double MAX_VOLTAGE = 12.0;
 
-	/**
-	 * The maximum velocity of the robot in meters per second.
-	 * <p>
-	 * This is a measure of how fast the robot should be able to drive in a straight
-	 * line.
-	 * The formula for calculating the theoretical maximum velocity is:
-	 * [Motor free speed RPM] / 60 * [Drive reduction] * [Wheel diameter meters] *
-	 * pi
-	 */
-	public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
-			SdsModuleConfigurations.MK4_L2.getDriveReduction() *
-			SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
-	/**
-	 * The maximum angular velocity of the robot in radians per second.
-	 * <p>
-	 * This is a measure of how fast the robot can rotate in place.
-	 */
-	public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
-			Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-					DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
-
 	private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
 			// Front left
 			new Translation2d(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
@@ -66,15 +48,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			new Translation2d(-DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
 					-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
+	private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(kinematics, new Rotation2d(0));
+
+	// PID controllers for tracking trajectory
+    private PIDController xController = new PIDController(AutoConstants.X_CONTROLLER_P, 0, 0);
+    private PIDController yController = new PIDController(AutoConstants.Y_CONTROLLER_P, 0, 0);
+    private ProfiledPIDController thetaController = new ProfiledPIDController(
+                AutoConstants.THETA_CONTROLLER_P, 0, 0, AutoConstants.THETA_CONTROLLER_CONSTRAINTS);
+
 	private final AHRS gyro = new AHRS(Port.kUSB); // NavX
 
-	// These are our modules. We initialize them in the constructor.
 	private final SwerveModule frontLeftModule;
 	private final SwerveModule frontRightModule;
 	private final SwerveModule backLeftModule;
 	private final SwerveModule backRightModule;
 
-	private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+	private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
 	public DrivetrainSubsystem() {
 		ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
@@ -94,7 +83,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				// zero is facing straight forward)
 				DriveConstants.FRONT_LEFT_MODULE_STEER_OFFSET);
 
-		// We will do the same for the other modules
 		frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
 				tab.getLayout("Front Right Module", BuiltInLayouts.kList)
 						.withSize(2, 4)
@@ -124,6 +112,39 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				DriveConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
 				DriveConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
 				DriveConstants.BACK_RIGHT_MODULE_STEER_OFFSET);
+
+		// PI and -PI to be the same point and automatically calculates the shortest route to the setpoint
+		// i.e. more efficient rotation
+		thetaController.enableContinuousInput(-Math.PI, Math.PI);
+	}
+
+	public void drive(ChassisSpeeds chassisSpeeds) {
+		this.chassisSpeeds = chassisSpeeds;
+	}
+
+	public void stop() {
+		this.chassisSpeeds = new ChassisSpeeds();
+	}
+
+	public Pose2d getPose() {
+		return odometer.getPoseMeters();
+	}
+
+
+	public SwerveDriveKinematics getKinematics() {
+		return kinematics;
+	}
+
+	public PIDController getXController() {
+		return xController;
+	}
+
+	public PIDController getYController() {
+		return yController;
+	}
+
+	public ProfiledPIDController getThetaController() {
+		return thetaController; 
 	}
 
 	/**
@@ -152,22 +173,25 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		// return Rotation2d.fromDegrees(gyro.getFusedHeading());
 	}
 
-	public void drive(ChassisSpeeds chassisSpeeds) {
-		this.chassisSpeeds = chassisSpeeds;
+	public void resetOdometry(Pose2d pose) {
+		odometer.resetPosition(pose, getGyroscopeRotation());
+	}
+	
+	public void setModuleStates(SwerveModuleState[] states) {
+		frontLeftModule.set(states[0].speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+				states[0].angle.getRadians());
+		frontRightModule.set(states[1].speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+				states[1].angle.getRadians());
+		backLeftModule.set(states[2].speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+				states[2].angle.getRadians());
+		backRightModule.set(states[3].speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+				states[3].angle.getRadians());
 	}
 
 	@Override
 	public void periodic() {
 		SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
-		SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
-
-		frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-				states[0].angle.getRadians());
-		frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-				states[1].angle.getRadians());
-		backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-				states[2].angle.getRadians());
-		backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-				states[3].angle.getRadians());
+		SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+		setModuleStates(states);
 	}
 }
