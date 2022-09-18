@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.utils.AutoBuilder;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -30,8 +31,10 @@ public class Robot extends TimedRobot {
         THREE_BALL,
         FOUR_BALL,
     }
-
     private static SendableChooser<AutoModes> autoChooser;
+    private AutoModes previousSelectedAuto;
+    private AutoBuilder autoBuilder;
+    private Command autoCommand;
     /**
      * This function is run when the robot is first started up and should be used
      * for any
@@ -48,6 +51,12 @@ public class Robot extends TimedRobot {
         autoChooser.addOption("THREE_BALL", AutoModes.THREE_BALL);
         autoChooser.addOption("FOUR_BALL", AutoModes.FOUR_BALL);
         SmartDashboard.putData("Auto Chooser", autoChooser);
+        previousSelectedAuto = autoChooser.getSelected();
+
+        autoBuilder = new AutoBuilder();
+        autoBuilder.setRobotContainer(m_robotContainer);
+        autoBuilder.setAutoMode(autoChooser.getSelected());
+        autoCommand = autoBuilder.build();
     }
 
     /**
@@ -79,6 +88,13 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
+        AutoModes selectedAuto = autoChooser.getSelected();
+
+        if (previousSelectedAuto != selectedAuto) {
+            autoBuilder.setAutoMode(selectedAuto);
+            autoCommand = autoBuilder.build();
+            previousSelectedAuto = selectedAuto;
+        }
     }
 
     /**

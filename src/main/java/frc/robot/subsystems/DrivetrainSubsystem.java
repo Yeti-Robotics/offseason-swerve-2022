@@ -9,6 +9,8 @@ import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,10 +22,12 @@ import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 import static frc.robot.Constants.*;
+import static frc.robot.Constants.DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 	/**
@@ -33,27 +37,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 * useful during initial testing of the robot.
 	 */
 	public static final double MAX_VOLTAGE = 12.0;
-
-	/**
-	 * The maximum velocity of the robot in meters per second.
-	 * <p>
-	 * This is a measure of how fast the robot should be able to drive in a straight
-	 * line.
-	 * The formula for calculating the theoretical maximum velocity is:
-	 * [Motor free speed RPM] / 60 * [Drive reduction] * [Wheel diameter meters] *
-	 * pi
-	 */
-	public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
-			SdsModuleConfigurations.MK4_L2.getDriveReduction() *
-			SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
-	/**
-	 * The maximum angular velocity of the robot in radians per second.
-	 * <p>
-	 * This is a measure of how fast the robot can rotate in place.
-	 */
-	public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
-			Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-					DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
 	private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
 			// Front left
@@ -70,7 +53,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 					-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
 	private final AHRS gyro = new AHRS(Port.kUSB); // NavX
-	private double yawOffset = 0.0;
+	private Rotation2d yawOffset = new Rotation2d();
 
 	// These are our modules. We initialize them in the constructor.
 	private final SwerveModule frontLeftModule;
@@ -81,6 +64,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	private SwerveModuleState backLeftModuleState;
 	private final SwerveModule backRightModule;
 	private SwerveModuleState backRightModuleState;
+
+	private final PIDController yController = new PIDController(AutoConstants.Y_CONTROLLER_P, 0.0, 0.0);
+	private final PIDController xController = new PIDController(AutoConstants.X_CONTROLLER_P, 0.0, 0.0);
+	private final ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.THETA_CONTROLLER_P, 0.0, 0.0, AutoConstants.THETA_CONTROLLER_CONTRAINTS);
 
 	private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 	public final SwerveDriveOdometry odometer = new SwerveDriveOdometry(kinematics, new Rotation2d(0));
@@ -137,6 +124,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				DriveConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
 				DriveConstants.BACK_RIGHT_MODULE_STEER_OFFSET);
 		backRightModuleState = new SwerveModuleState();
+
+		thetaController.enableContinuousInput(-Math.PI, Math.PI);
 	}
 
 	/**
@@ -146,35 +135,31 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 */
 	public void zeroGyroscope() {
 		gyro.zeroYaw();
-
+		yawOffset = new Rotation2d();
 		// uncomment if switch to pigeon
 		// gyro.setFusedHeading(0.0);
-	}
-
-	public void setGyroOffset() {
-
 	}
 
 	public Rotation2d getGyroscopeRotation() {
 		if (gyro.isMagnetometerCalibrated()) {
 			// We will only get valid fused headings if the magnetometer is calibrated
-			return Rotation2d.fromDegrees(gyro.getFusedHeading());
+			return Rotation2d.fromDegrees(gyro.getFusedHeading()).plus(yawOffset);
 		}
 
 		// We have to invert the angle of the NavX so that rotating the robot
 		// counter-clockwise makes the angle increase.
-		return Rotation2d.fromDegrees(360.0 - gyro.getYaw());
+		return Rotation2d.fromDegrees(360.0 - gyro.getYaw()).plus(yawOffset);
 
 		// uncomment if switch to pigeon
 		// return Rotation2d.fromDegrees(gyro.getFusedHeading());
 	}
 
-	public void setInitPosition(Pose2d pose, double angleOffset) {
+	public void setInitPosition(Pose2d pose, Rotation2d angleOffset) {
 		yawOffset = angleOffset;
 		resetOdometer(pose);
 	}
 
-	public void setGyroOffset(double angleOffset) {
+	public void setGyroOffset(Rotation2d angleOffset) {
 		yawOffset = angleOffset;
 	}
 
@@ -184,6 +169,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	public void resetOdometer(Pose2d pose) {
 		odometer.resetPosition(pose, getGyroscopeRotation());
+	}
+
+	public SwerveDriveKinematics getKinematics() {
+		return kinematics;
+	}
+
+	public PIDController getxController() {
+		return xController;
+	}
+
+	public PIDController getyController() {
+		return yController;
+	}
+
+	public ProfiledPIDController getThetaController() {
+		return thetaController;
 	}
 
 	private void updateSwerveModuleStates() {
@@ -200,6 +201,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		backRightModuleState.angle = Rotation2d.fromDegrees(backRightModule.getSteerAngle());
 	}
 
+	public void setDesiredStates(SwerveModuleState[] desiredStates) {
+		frontLeftModule.set(desiredStates[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+				desiredStates[0].angle.getRadians());
+		frontRightModule.set(desiredStates[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+				desiredStates[1].angle.getRadians());
+		backLeftModule.set(desiredStates[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+				desiredStates[2].angle.getRadians());
+		backRightModule.set(desiredStates[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+				desiredStates[3].angle.getRadians());
+	}
+
 	public void drive(ChassisSpeeds chassisSpeeds) {
 		this.chassisSpeeds = chassisSpeeds;
 	}
@@ -209,16 +221,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		updateSwerveModuleStates();
 		odometer.update(getGyroscopeRotation(), frontLeftModuleState, frontRightModuleState, backLeftModuleState, backRightModuleState);
 
-		SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
-		SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
-
-		frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-				states[0].angle.getRadians());
-		frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-				states[1].angle.getRadians());
-		backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-				states[2].angle.getRadians());
-		backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-				states[3].angle.getRadians());
+		SwerveModuleState[] desiredStates = kinematics.toSwerveModuleStates(chassisSpeeds);
+		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, MAX_VELOCITY_METERS_PER_SECOND);
+		setDesiredStates(desiredStates);
 	}
 }

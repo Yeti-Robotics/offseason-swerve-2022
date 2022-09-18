@@ -51,5 +51,10 @@
       <option name="name" value="WPI9619F7EA-7F96-4236-9D94-02338DFED592_0Release" />
       <option name="url" value="https://jitpack.io" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="WPILocal" />
+      <option name="name" value="WPILocal" />
+      <option name="url" value="file:/C:/Users/Public/wpilib/2022/maven/" />
+    </remote-repository>
   </component>
 </project>

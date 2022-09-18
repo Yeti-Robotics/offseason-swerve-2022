@@ -23,9 +23,5 @@ public class AutoBuilder {
         this.autoMode = autoMode;
     }
 
-    private void oneBallAuto() {
-
-    }
-
-    private 
+    private void oneBallAuto() {}
 }

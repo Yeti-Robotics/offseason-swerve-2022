@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -35,6 +38,28 @@ public final class Constants {
          */
         public static final double DRIVETRAIN_WHEELBASE_METERS = 1.0; // FIXME Measure and set wheelbase
 
+        /**
+         * The maximum velocity of the robot in meters per second.
+         * <p>
+         * This is a measure of how fast the robot should be able to drive in a straight
+         * line.
+         * The formula for calculating the theoretical maximum velocity is:
+         * [Motor free speed RPM] / 60 * [Drive reduction] * [Wheel diameter meters] *
+         * pi
+         */
+        public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
+                SdsModuleConfigurations.MK4_L2.getDriveReduction() *
+                SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
+
+        /**
+         * The maximum angular velocity of the robot in radians per second.
+         * <p>
+         * This is a measure of how fast the robot can rotate in place.
+         */
+        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
+                Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+                        DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
+
         public static final int DRIVETRAIN_PIGEON_ID = 0; // FIXME Set Pigeon ID
 
         public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 0; // FIXME Set front left module drive motor ID
@@ -63,5 +88,24 @@ public final class Constants {
 
         public static final double FALCON_FREE_RPM = 6380.0; // free speed RPM @12V, found here https://motors.vex.com/vexpro-motors/falcon
                                                              // if max voltage changes this value should be modified
+    }
+
+    public static final class AutoConstants {
+        /**
+         * Max velocity in meters per second
+         */
+        public static final double kMaxVelocity = 8.0;
+        /**
+         * Max acceleration in meters per second squared
+         */
+        public static final double kMaxAccel = 3.0;
+
+        public static final double X_CONTROLLER_P = 0.0;
+        public static final double Y_CONTROLLER_P = 0.0;
+        public static final double THETA_CONTROLLER_P = 0.0;
+        public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = //
+                new TrapezoidProfile.Constraints(
+                        DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
     }
 }
