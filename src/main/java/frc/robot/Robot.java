@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -22,6 +24,14 @@ public class Robot extends TimedRobot {
 
     private RobotContainer m_robotContainer;
 
+    public enum AutoModes {
+        ONE_BALL,
+        TWO_BALL,
+        THREE_BALL,
+        FOUR_BALL,
+    }
+
+    private static SendableChooser<AutoModes> autoChooser;
     /**
      * This function is run when the robot is first started up and should be used
      * for any
@@ -30,6 +40,14 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         m_robotContainer = new RobotContainer();
+
+        autoChooser = new SendableChooser<>();
+        autoChooser.setDefaultOption("ONE_BALL", AutoModes.ONE_BALL);
+        autoChooser.addOption("ONE_BALL", AutoModes.ONE_BALL);
+        autoChooser.addOption("TWO_BALL", AutoModes.TWO_BALL);
+        autoChooser.addOption("THREE_BALL", AutoModes.THREE_BALL);
+        autoChooser.addOption("FOUR_BALL", AutoModes.FOUR_BALL);
+        SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     /**

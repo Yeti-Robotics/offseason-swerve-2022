@@ -9,16 +9,19 @@ import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 import static frc.robot.Constants.*;
 
@@ -67,14 +70,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
 					-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
 	private final AHRS gyro = new AHRS(Port.kUSB); // NavX
+	private double yawOffset = 0.0;
 
 	// These are our modules. We initialize them in the constructor.
 	private final SwerveModule frontLeftModule;
+	private SwerveModuleState frontLeftModuleState;
 	private final SwerveModule frontRightModule;
+	private SwerveModuleState frontRightModuleState;
 	private final SwerveModule backLeftModule;
+	private SwerveModuleState backLeftModuleState;
 	private final SwerveModule backRightModule;
+	private SwerveModuleState backRightModuleState;
 
 	private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+	public final SwerveDriveOdometry odometer = new SwerveDriveOdometry(kinematics, new Rotation2d(0));
 
 	public DrivetrainSubsystem() {
 		ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
@@ -93,6 +102,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				// This is how much the steer encoder is offset from true zero (In our case,
 				// zero is facing straight forward)
 				DriveConstants.FRONT_LEFT_MODULE_STEER_OFFSET);
+		frontLeftModuleState = new SwerveModuleState();
 
 		// We will do the same for the other modules
 		frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
@@ -104,6 +114,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				DriveConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
 				DriveConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,
 				DriveConstants.FRONT_RIGHT_MODULE_STEER_OFFSET);
+		frontRightModuleState = new SwerveModuleState();
 
 		backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
 				tab.getLayout("Back Left Module", BuiltInLayouts.kList)
@@ -114,6 +125,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				DriveConstants.BACK_LEFT_MODULE_STEER_MOTOR,
 				DriveConstants.BACK_LEFT_MODULE_STEER_ENCODER,
 				DriveConstants.BACK_LEFT_MODULE_STEER_OFFSET);
+		backLeftModuleState = new SwerveModuleState();
 
 		backRightModule = Mk4SwerveModuleHelper.createFalcon500(
 				tab.getLayout("Back Right Module", BuiltInLayouts.kList)
@@ -124,6 +136,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				DriveConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
 				DriveConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
 				DriveConstants.BACK_RIGHT_MODULE_STEER_OFFSET);
+		backRightModuleState = new SwerveModuleState();
 	}
 
 	/**
@@ -136,6 +149,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 		// uncomment if switch to pigeon
 		// gyro.setFusedHeading(0.0);
+	}
+
+	public void setGyroOffset() {
+
 	}
 
 	public Rotation2d getGyroscopeRotation() {
@@ -152,12 +169,46 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		// return Rotation2d.fromDegrees(gyro.getFusedHeading());
 	}
 
+	public void setInitPosition(Pose2d pose, double angleOffset) {
+		yawOffset = angleOffset;
+		resetOdometer(pose);
+	}
+
+	public void setGyroOffset(double angleOffset) {
+		yawOffset = angleOffset;
+	}
+
+	public Pose2d getPose() {
+		return odometer.getPoseMeters();
+	}
+
+	public void resetOdometer(Pose2d pose) {
+		odometer.resetPosition(pose, getGyroscopeRotation());
+	}
+
+	private void updateSwerveModuleStates() {
+		frontLeftModuleState.speedMetersPerSecond = frontLeftModule.getDriveVelocity();
+		frontLeftModuleState.angle = Rotation2d.fromDegrees(frontLeftModule.getSteerAngle());
+
+		frontRightModuleState.speedMetersPerSecond = frontRightModule.getDriveVelocity();
+		frontRightModuleState.angle = Rotation2d.fromDegrees(frontRightModule.getSteerAngle());
+
+		backLeftModuleState.speedMetersPerSecond = backLeftModule.getDriveVelocity();
+		backLeftModuleState.angle = Rotation2d.fromDegrees(backLeftModule.getSteerAngle());
+
+		backRightModuleState.speedMetersPerSecond = backRightModule.getDriveVelocity();
+		backRightModuleState.angle = Rotation2d.fromDegrees(backRightModule.getSteerAngle());
+	}
+
 	public void drive(ChassisSpeeds chassisSpeeds) {
 		this.chassisSpeeds = chassisSpeeds;
 	}
 
 	@Override
 	public void periodic() {
+		updateSwerveModuleStates();
+		odometer.update(getGyroscopeRotation(), frontLeftModuleState, frontRightModuleState, backLeftModuleState, backRightModuleState);
+
 		SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
 		SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
 
