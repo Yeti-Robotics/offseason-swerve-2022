@@ -5,7 +5,11 @@
 package frc.robot;
 
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -25,18 +29,27 @@ public final class Constants {
     }
 
     public static final class DriveConstants {
+        public static final Transform2d X_ROBOT_CENTER = new Transform2d(
+                new Translation2d(Units.inchesToMeters(33.5215/2.0), 0.0),
+                Rotation2d.fromDegrees(0.0));
+        public static final Transform2d Y_ROBOT_CENTER = new Transform2d(
+                new Translation2d(0.0, Units.inchesToMeters(33.5215/2.0)),
+                Rotation2d.fromDegrees(0.0));
+        public static final Transform2d ROBOT_CENTER = new Transform2d(
+                new Translation2d(Units.inchesToMeters(33.5215/2.0), Units.inchesToMeters(33.5215/2.0)),
+                Rotation2d.fromDegrees(0.0));
         /**
          * The left-to-right distance between the drivetrain wheels
          *
          * Should be measured from center to center.
          */
-        public static final double DRIVETRAIN_TRACKWIDTH_METERS = 1.0; // FIXME Measure and set trackwidth
+        public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(21.75); // FIXME Measure and set trackwidth
         /**
          * The front-to-back distance between the drivetrain wheels.
          *
          * Should be measured from center to center.
          */
-        public static final double DRIVETRAIN_WHEELBASE_METERS = 1.0; // FIXME Measure and set wheelbase
+        public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(21.75); // FIXME Measure and set wheelbase
 
         /**
          * The maximum velocity of the robot in meters per second.
@@ -94,11 +107,11 @@ public final class Constants {
         /**
          * Max velocity in meters per second
          */
-        public static final double kMaxVelocity = 8.0;
+        public static final double MAX_VELOCITY = DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.75;
         /**
          * Max acceleration in meters per second squared
          */
-        public static final double kMaxAccel = 3.0;
+        public static final double MAX_ACCEL = DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.75;
 
         public static final double X_CONTROLLER_P = 0.0;
         public static final double Y_CONTROLLER_P = 0.0;
