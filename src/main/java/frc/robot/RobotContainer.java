@@ -24,7 +24,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-	private final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
+	public final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
 
 	public final Joystick driverStationJoystick;
 

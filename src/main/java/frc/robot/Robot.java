@@ -34,7 +34,6 @@ public class Robot extends TimedRobot {
     private static SendableChooser<AutoModes> autoChooser;
     private AutoModes previousSelectedAuto;
     private AutoBuilder autoBuilder;
-    private Command autoCommand;
     /**
      * This function is run when the robot is first started up and should be used
      * for any
@@ -56,7 +55,7 @@ public class Robot extends TimedRobot {
         autoBuilder = new AutoBuilder();
         autoBuilder.setRobotContainer(m_robotContainer);
         autoBuilder.setAutoMode(autoChooser.getSelected());
-        autoCommand = autoBuilder.build();
+        m_autonomousCommand = autoBuilder.build();
     }
 
     /**
@@ -92,7 +91,7 @@ public class Robot extends TimedRobot {
 
         if (previousSelectedAuto != selectedAuto) {
             autoBuilder.setAutoMode(selectedAuto);
-            autoCommand = autoBuilder.build();
+            m_autonomousCommand = autoBuilder.build();
             previousSelectedAuto = selectedAuto;
         }
     }
@@ -103,8 +102,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
         // schedule the autonomous command (example)
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();

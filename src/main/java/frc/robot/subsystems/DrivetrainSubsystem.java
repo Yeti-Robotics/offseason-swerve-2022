@@ -53,7 +53,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 					-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
 	private final AHRS gyro = new AHRS(Port.kUSB); // NavX
-	private Rotation2d yawOffset = new Rotation2d();
 
 	// These are our modules. We initialize them in the constructor.
 	private final SwerveModule frontLeftModule;
@@ -70,7 +69,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	private final ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.THETA_CONTROLLER_P, 0.0, 0.0, AutoConstants.THETA_CONTROLLER_CONTRAINTS);
 
 	private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-	public final SwerveDriveOdometry odometer = new SwerveDriveOdometry(kinematics, new Rotation2d(0));
+	private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(kinematics, new Rotation2d(0));
 
 	public DrivetrainSubsystem() {
 		ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
@@ -126,6 +125,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		backRightModuleState = new SwerveModuleState();
 
 		thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+		new Thread(() -> {
+			try {
+				Thread.sleep(1000);
+				zeroGyroscope();
+			} catch (Exception e) {
+				System.out.println("FAILED TO ZERO GYROSCOPE");
+			}
+		}).start();
 	}
 
 	/**
@@ -135,7 +143,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 */
 	public void zeroGyroscope() {
 		gyro.zeroYaw();
-		yawOffset = new Rotation2d();
 		// uncomment if switch to pigeon
 		// gyro.setFusedHeading(0.0);
 	}
@@ -143,24 +150,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public Rotation2d getGyroscopeRotation() {
 		if (gyro.isMagnetometerCalibrated()) {
 			// We will only get valid fused headings if the magnetometer is calibrated
-			return Rotation2d.fromDegrees(gyro.getFusedHeading()).plus(yawOffset);
+			return Rotation2d.fromDegrees(gyro.getFusedHeading());
 		}
 
 		// We have to invert the angle of the NavX so that rotating the robot
 		// counter-clockwise makes the angle increase.
-		return Rotation2d.fromDegrees(360.0 - gyro.getYaw()).plus(yawOffset);
+		return Rotation2d.fromDegrees(360.0 - gyro.getYaw());
 
 		// uncomment if switch to pigeon
 		// return Rotation2d.fromDegrees(gyro.getFusedHeading());
-	}
-
-	public void setInitPosition(Pose2d pose, Rotation2d angleOffset) {
-		yawOffset = angleOffset;
-		resetOdometer(pose);
-	}
-
-	public void setGyroOffset(Rotation2d angleOffset) {
-		yawOffset = angleOffset;
 	}
 
 	public Pose2d getPose() {
