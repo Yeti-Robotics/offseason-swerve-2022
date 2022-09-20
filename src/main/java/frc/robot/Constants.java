@@ -23,6 +23,51 @@ public final class Constants {
         public static final int DRIVER_STATION_JOY = 0;
     }
 
+    public static final class DriveConstants {
+        /**
+         * The left-to-right distance between the drivetrain wheels
+         * <p>
+         * Should be measured from center to center.
+         */
+        public static final double DRIVETRAIN_TRACKWIDTH_METERS = 1.0; // FIXME Measure and set trackwidth
+        /**
+         * The front-to-back distance between the drivetrain wheels.
+         * <p>
+         * Should be measured from center to center.
+         */
+        public static final double DRIVETRAIN_WHEELBASE_METERS = 1.0; // FIXME Measure and set wheelbase
+
+        public static final int DRIVETRAIN_PIGEON_ID = 0; // FIXME Set Pigeon ID
+
+        public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 0; // FIXME Set front left module drive motor ID
+        public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 0; // FIXME Set front left module steer motor ID
+        public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 0; // FIXME Set front left steer encoder ID
+        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0.0); // FIXME Measure and set front
+        // left steer offset
+
+        public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 0; // FIXME Set front right drive motor ID
+        public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 0; // FIXME Set front right steer motor ID
+        public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 0; // FIXME Set front right steer encoder ID
+        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0.0); // FIXME Measure and set
+        // front right steer offset
+
+        public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 0; // FIXME Set back left drive motor ID
+        public static final int BACK_LEFT_MODULE_STEER_MOTOR = 0; // FIXME Set back left steer motor ID
+        public static final int BACK_LEFT_MODULE_STEER_ENCODER = 0; // FIXME Set back left steer encoder ID
+        public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0.0); // FIXME Measure and set back
+        // left steer offset
+
+        public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 0; // FIXME Set back right drive motor ID
+        public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 0; // FIXME Set back right steer motor ID
+        public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 0; // FIXME Set back right steer encoder ID
+        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0.0); // FIXME Measure and set back
+        // right steer offset
+
+        public static final double FALCON_FREE_RPM = 6380.0; // free speed RPM @12V, found here
+        // https://motors.vex.com/vexpro-motors/falcon
+        // if max voltage changes this value should be modified
+    }
+
     public static final class ShooterConstants {
         // shooter motor ports
         public static final int SHOOTER_LEFT_FALCON = 8; // left
@@ -33,22 +78,22 @@ public final class Constants {
         public static final double SHOOTER_D = 0.00001;
         public static final double SHOOTER_F = 0.4;
 
-        public static final double SHOOTER_MAX_VEL = 12242.5; // in native encoder units per 100 ms
+        public static final double MAX_VELOCITY = 32.0; // in meters/second
 
         // feed forward values; characterized using meters
         public static final double SHOOTER_KS = 0.65977;
-        public static final double SHOOTER_KV = 0.44887;
-        public static final double SHOOTER_KA = 0.055666;
+        public static final double SHOOTER_KV = 0.13; // Volts * second/meter
+        public static final double SHOOTER_KA = 0.23; // Volts * second^2/meter
 
         // shooter motor speeds
         public static final double SHOOTER_LOW_SPEED = 0.2; // for low goal shots
 
         // shooter rpm calc constants
-        public static final double PULLEY_RATIO = 48.0 / 36.0; // not completely known
+        public static final double PULLEY_RATIO = 48.0 / 36.0;
         public static final double ENCODER_TIME_CONVERSION = 600.0; // 100 ms per minute
         public static final double ENCODER_RESOLUTION = 2048.0;
         public static final double QUAD_FACTOR = 4.0; // quadrature encoder factor
-        public static final double RPM_TOLERANCE = 10.0;
+        public static final double VELOCITY_TOLERANCE = 0.5;
 
         public static final double FLYWHEEL_DIAMETER_IN = 4.0; // inches
         public static final double FLYWHEEL_DIAMETER_M = 0.1016; // meters
@@ -68,50 +113,5 @@ public final class Constants {
         public static final double GOAL_HEIGHT = 108.0; // inches
         public static final double GRAVITY = 386.09; // inches/ sec ^2
         public static final double MOUNTING_ANGLE = 33.47; // deg
-    }
-
-    public static final class DriveConstants {
-        /**
-         * The left-to-right distance between the drivetrain wheels
-         *
-         * Should be measured from center to center.
-         */
-        public static final double DRIVETRAIN_TRACKWIDTH_METERS = 1.0; // FIXME Measure and set trackwidth
-        /**
-         * The front-to-back distance between the drivetrain wheels.
-         *
-         * Should be measured from center to center.
-         */
-        public static final double DRIVETRAIN_WHEELBASE_METERS = 1.0; // FIXME Measure and set wheelbase
-
-        public static final int DRIVETRAIN_PIGEON_ID = 0; // FIXME Set Pigeon ID
-
-        public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 0; // FIXME Set front left module drive motor ID
-        public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 0; // FIXME Set front left module steer motor ID
-        public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 0; // FIXME Set front left steer encoder ID
-        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0.0); // FIXME Measure and set front
-                                                                                          // left steer offset
-
-        public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 0; // FIXME Set front right drive motor ID
-        public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 0; // FIXME Set front right steer motor ID
-        public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 0; // FIXME Set front right steer encoder ID
-        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0.0); // FIXME Measure and set
-                                                                                           // front right steer offset
-
-        public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 0; // FIXME Set back left drive motor ID
-        public static final int BACK_LEFT_MODULE_STEER_MOTOR = 0; // FIXME Set back left steer motor ID
-        public static final int BACK_LEFT_MODULE_STEER_ENCODER = 0; // FIXME Set back left steer encoder ID
-        public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0.0); // FIXME Measure and set back
-                                                                                         // left steer offset
-
-        public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 0; // FIXME Set back right drive motor ID
-        public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 0; // FIXME Set back right steer motor ID
-        public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 0; // FIXME Set back right steer encoder ID
-        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0.0); // FIXME Measure and set back
-                                                                                          // right steer offset
-
-        public static final double FALCON_FREE_RPM = 6380.0; // free speed RPM @12V, found here
-                                                             // https://motors.vex.com/vexpro-motors/falcon
-                                                             // if max voltage changes this value should be modified
     }
 }
