@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -15,33 +14,25 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.VisionSubsystem.VisionSubsystem;
 
 public class ShooterSubsystem extends SubsystemBase {
-    private WPI_TalonFX shooterLeftFalcon;
-    private WPI_TalonFX shooterRightFalcon;
+    private final WPI_TalonFX shooterLeftFalcon;
+    private final WPI_TalonFX shooterRightFalcon;
 
-    private MotorControllerGroup shooterFalcons;
-
-    public enum ShooterStatus {
-        FORWARD,
-        BACKWARDS,
-        OFF
-    }
-
-    public static ShooterStatus shooterStatus;
+    private final MotorControllerGroup shooterFalcons;
 
     public enum ShooterMode {
         LIMELIGHT,
-        LAUNCHPAD,
-        LOWGOAL
+        MANUAL,
+        LOWGOAL,
+        OFF
     }
 
-    public static ShooterMode shooterMode;
+    private ShooterMode shooterMode;
 
-    public static double setPoint = 0.0;
+    private double setPoint = 0.0;
     public static boolean atSetPoint = false;
-    public static boolean isShooting = false;
 
-    private PIDController shooterPID;
-    private SimpleMotorFeedforward feedForward;
+    private final PIDController shooterPID;
+    private final SimpleMotorFeedforward feedForward;
 
     public ShooterSubsystem() {
         shooterLeftFalcon = new WPI_TalonFX(ShooterConstants.SHOOTER_LEFT_FALCON);
@@ -55,8 +46,7 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterLeftFalcon.follow(shooterRightFalcon);
         shooterLeftFalcon.setInverted(InvertType.OpposeMaster);
 
-        shooterStatus = ShooterStatus.OFF;
-        shooterMode = ShooterMode.LIMELIGHT;
+        shooterMode = ShooterMode.OFF;
 
         shooterLeftFalcon.setNeutralMode(NeutralMode.Coast);
         shooterRightFalcon.setNeutralMode(NeutralMode.Coast);
@@ -75,61 +65,65 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        ShooterSubsystem.atSetPoint = shooterStatus == ShooterStatus.FORWARD;
-        SmartDashboard.putNumber("Flywheel Set Point: ", ShooterSubsystem.setPoint);
+        SmartDashboard.putNumber("Flywheel Set Point: ", setPoint);
         SmartDashboard.putNumber("Flywheel Voltage", shooterRightFalcon.getMotorOutputVoltage());
+        atSetPoint = setPoint >= getMetersPerSecond() - ShooterConstants.VELOCITY_TOLERANCE
+                && shooterMode != ShooterMode.OFF;
 
-        // System.out.println("RPM: " + getFlywheelRPM());
-
-        if (ShooterSubsystem.isShooting) {
             switch (shooterMode) {
                 case LIMELIGHT:
-                    if (VisionSubsystem.getDistance() > 0.0) {
-                        ShooterSubsystem.setPoint = ((25 / 3) * VisionSubsystem.getDistance()) + 2991.66667;
+                    if (VisionSubsystem.getDistance() == 0.0) {
+                        setPoint = 12;
+                        shootFlywheel(setPoint);
+                        break;
                     }
+                    setPoint = 25.0/3.0 * VisionSubsystem.getDistance() + 2991.66667;
                     shootFlywheel(
-                            ShooterConstants.SHOOTER_F
-                                    + shooterPID.calculate(getFlywheelRPM(), ShooterSubsystem.setPoint));
-
+                            feedForward.calculate(setPoint, 10.0)
+                                    + shooterPID.calculate(getMetersPerSecond(), setPoint));
                     break;
-                case LAUNCHPAD:
+                case MANUAL:
                     shootFlywheel(
-                            ShooterConstants.SHOOTER_F
-                                    + shooterPID.calculate(getFlywheelRPM(), ShooterSubsystem.setPoint));
+                            feedForward.calculate(setPoint, 10.0)
+                                    + shooterPID.calculate(getMetersPerSecond(), setPoint));
                     break;
                 case LOWGOAL:
                     shootFlywheel(ShooterConstants.SHOOTER_LOW_SPEED);
                     break;
+                default:
+                    stopFlywheel();
+                    break;
             }
-        } else {
-            stopFlywheel();
+    }
+
+    /**
+     *
+     * @param setPoint in meters/second
+     */
+    public void setSetPoint(double setPoint) {
+        if (setPoint > ShooterConstants.MAX_VELOCITY) {
+            this.setPoint = 32.0;
+            return;
         }
+        this.setPoint = setPoint;
     }
 
-    public void shootFlywheel(double speed) {
-        shooterRightFalcon.set(ControlMode.PercentOutput, speed);
-        shooterStatus = ShooterStatus.FORWARD;
+    public void setShooterMode(ShooterMode shooterMode) {
+        this.shooterMode = shooterMode;
     }
 
-    public void setFlywheelVelocity(double vel) {
-        shooterRightFalcon.set(ControlMode.Velocity, vel);
-        shooterStatus = ShooterStatus.FORWARD;
+    private void shootFlywheel(double speed) {
+        shooterFalcons.set(speed);
     }
 
-    public void setFlywheelVoltage(double volts) {
+    private void setFlywheelVolts(double volts) {
         shooterFalcons.setVoltage(volts);
-        shooterStatus = ShooterStatus.FORWARD;
-    }
-
-    public void reverseFlywheel(double speed) {
-        shooterRightFalcon.set(ControlMode.PercentOutput, speed);
-        shooterStatus = ShooterStatus.BACKWARDS;
     }
 
     public void stopFlywheel() {
-        shooterRightFalcon.set(ControlMode.PercentOutput, 0.0);
-        // shooterFalcons.set(0.0);
-        shooterStatus = ShooterStatus.OFF;
+        shooterFalcons.stopMotor();
+        setPoint = 0.0;
+        shooterMode = ShooterMode.OFF;
     }
 
     public double getLeftEncoder() {
@@ -145,31 +139,23 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double getFlywheelRPM() {
-        return getAverageEncoder()
-                * ShooterConstants.PULLEY_RATIO
-                * (ShooterConstants.ENCODER_TIME_CONVERSION / ShooterConstants.ENCODER_RESOLUTION);
+        return getAverageEncoder() * ShooterConstants.ENCODER_TIME_CONVERSION
+                / ShooterConstants.ENCODER_RESOLUTION
+                * ShooterConstants.PULLEY_RATIO;
     }
 
-    public double getMetersPerSecondFromRPM(double RPM) {
-        return (ShooterConstants.FLYWHEEL_DIAMETER_M * Math.PI) * (RPM / 60.0);
+    public double getMetersPerSecond() {
+        return (ShooterConstants.FLYWHEEL_DIAMETER_M * Math.PI) * (getFlywheelRPM() / 60.0);
     }
 
-    public static ShooterStatus getShooterStatus() {
-        return shooterStatus;
-    }
-
-    public double getVelocityUnitsFromRPM(double RPM) {
-        return RPM
-                / (ShooterConstants.PULLEY_RATIO
-                        * (ShooterConstants.ENCODER_TIME_CONVERSION / ShooterConstants.ENCODER_RESOLUTION));
-    }
-
-    public void setSetPoint(double setPoint) {
-        ShooterSubsystem.setPoint = setPoint;
+    public double getVelocityUnitsFromRPM() {
+        return getFlywheelRPM() / ShooterConstants.PULLEY_RATIO
+                * ShooterConstants.ENCODER_TIME_CONVERSION
+                / ShooterConstants.ENCODER_RESOLUTION;
     }
 
     // returns in volts
     public double getFeedForward() {
-        return (Constants.MOTOR_VOLTAGE_COMP / 8750.0) * ShooterSubsystem.setPoint;
+        return (Constants.MOTOR_VOLTAGE_COMP / 8750.0) * setPoint;
     }
 }
