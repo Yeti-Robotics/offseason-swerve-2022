@@ -17,6 +17,7 @@ import frc.robot.utils.GeomUtil;
      * (0, 0) is the center of the hub.
      * Assume all angles reference 0 degrees facing the opposing alliance.
      */
+@SuppressWarnings("unused")
 public final class FieldConstants {
 
         // Field dimensions
@@ -70,38 +71,51 @@ public final class FieldConstants {
         *   the next vertex to the right is tarmacVertexB, so on and so forth.
         */
         public static final class TarmacPositions {
-                // X, Y coordinates of the vertexes of the tarmacs.
-                public static final Translation2d tarmacVertexA = octagonVertexNoRotation.plus(new Translation2d(
-                                Math.tan(Math.toRadians(135.0 / 2.0)) / (gapBetweenTarmacsLength / 2), -gapBetweenTarmacsLength / 2))
-                        .rotateBy(centerLineAngleCW);
-                public static final Translation2d tarmacVertexB =
-                        octagonVertexNoRotation.rotateBy(octagonVertexOffset.unaryMinus());
-                public static final Translation2d tarmacVertexC = octagonVertexNoRotation.plus(new Translation2d(
-                                Math.tan(Math.toRadians(135.0 / 2.0)) / (gapBetweenTarmacsLength / 2), gapBetweenTarmacsLength / 2))
-                        .rotateBy(octagonVertexOffset);
-                public static final Translation2d tarmacVertexD = tarmacVertexA.rotateBy(Rotation2d.fromDegrees(90));
-                public static final Translation2d tarmacVertexE = tarmacVertexB.rotateBy(Rotation2d.fromDegrees(90));
-                public static final Translation2d tarmacVertexF = tarmacVertexC.rotateBy(Rotation2d.fromDegrees(90));
+            // X, Y coordinates of the vertexes of the tarmacs.
+            public static final Translation2d tarmacVertexA = octagonVertexNoRotation.plus(new Translation2d(
+                            Math.tan(Math.toRadians(135.0 / 2.0)) / (gapBetweenTarmacsLength / 2), -gapBetweenTarmacsLength / 2))
+                    .rotateBy(centerLineAngleCW);
+            public static final Translation2d oppositeTarmacVertexA = tarmacVertexA.unaryMinus();
+            public static final Translation2d tarmacVertexB =
+                    octagonVertexNoRotation.rotateBy(octagonVertexOffset.unaryMinus());
+            public static final Translation2d oppositeTarmacVertexB = tarmacVertexB.unaryMinus();
+            public static final Translation2d tarmacVertexC = octagonVertexNoRotation.plus(new Translation2d(
+                            Math.tan(Math.toRadians(135.0 / 2.0)) / (gapBetweenTarmacsLength / 2), gapBetweenTarmacsLength / 2))
+                    .rotateBy(octagonVertexOffset);
+            public static final Translation2d oppositeTarmacVertexC = tarmacVertexC.unaryMinus();
+            public static final Translation2d tarmacVertexD = tarmacVertexA.rotateBy(Rotation2d.fromDegrees(90));
+            public static final Translation2d oppositeTarmacVertexD = tarmacVertexD.unaryMinus();
+            public static final Translation2d tarmacVertexE = tarmacVertexB.rotateBy(Rotation2d.fromDegrees(90));
+            public static final Translation2d oppositeTarmacVertexE = tarmacVertexE.unaryMinus();
+            public static final Translation2d tarmacVertexF = tarmacVertexC.rotateBy(Rotation2d.fromDegrees(90));
+            public static final Translation2d oppositeTarmacVertexF = tarmacVertexF.unaryMinus();
 
-                public static final Rotation2d tarmacAngleA = Rotation2d.fromDegrees(135.0);
-                public static final Rotation2d tarmacAngleB = Rotation2d.fromDegrees(180.0);
-                public static final Rotation2d tarmacAngleC = Rotation2d.fromDegrees(225.0);
-                public static final Rotation2d tarmacAngleD = Rotation2d.fromDegrees(270.0);
+            public static final Rotation2d tarmacAngleA = Rotation2d.fromDegrees(135.0);
+            public static final Rotation2d tarmacAngleB = Rotation2d.fromDegrees(180.0);
+            public static final Rotation2d tarmacAngleC = Rotation2d.fromDegrees(225.0);
+            public static final Rotation2d tarmacAngleD = Rotation2d.fromDegrees(270.0);
         }
 
         public static final class CargoPositions {
-                // X, Y coordinates of the cargo
-                public static final double cargoCircleRadius = Units.inchesToMeters(153.0);
-                public static final Rotation2d cargoAngle = Rotation2d.fromDegrees(360.0 / 16.0);
-                public static final Translation2d cargoA = hubCenter.plus(
-                                new Translation2d(cargoCircleRadius, 0)).
-                        rotateBy(centerLineAngleCCW.plus(Rotation2d.fromDegrees(360.0 / 32.0)));
-                public static final Translation2d cargoB = cargoA.rotateBy(cargoAngle);
-                public static final Translation2d cargoC = cargoB.rotateBy(cargoAngle.plus(cargoAngle));
-                public static final Translation2d cargoD = cargoC.rotateBy(cargoAngle);
-                public static final Translation2d cargoE = cargoD.rotateBy(cargoAngle.plus(cargoAngle));
-                public static final Translation2d cargoF = cargoE.rotateBy(cargoAngle);
-                public static final Translation2d terminalCargo = new Translation2d(Units.inchesToMeters(282.083), Units.inchesToMeters(117.82));
+            // X, Y coordinates of the cargo
+            public static final double cargoCircleRadius = Units.inchesToMeters(153.0);
+            public static final Rotation2d cargoAngle = Rotation2d.fromDegrees(360.0 / 16.0);
+            public static final Translation2d cargoA = hubCenter.plus(
+                            new Translation2d(cargoCircleRadius, 0)).
+                    rotateBy(centerLineAngleCCW.plus(Rotation2d.fromDegrees(360.0 / 32.0)));
+            public static final Translation2d oppositeCargoA = cargoA.unaryMinus();
+            public static final Translation2d cargoB = cargoA.rotateBy(cargoAngle);
+            public static final Translation2d oppositeCargoB = cargoB.unaryMinus();
+            public static final Translation2d cargoC = cargoB.rotateBy(cargoAngle.plus(cargoAngle));
+            public static final Translation2d oppositeCargoC = cargoC.unaryMinus();
+            public static final Translation2d cargoD = cargoC.rotateBy(cargoAngle);
+            public static final Translation2d oppositeCargoD = cargoD.unaryMinus();
+            public static final Translation2d cargoE = cargoD.rotateBy(cargoAngle.plus(cargoAngle));
+            public static final Translation2d oppositeCargoE = cargoE.unaryMinus();
+            public static final Translation2d cargoF = cargoE.rotateBy(cargoAngle);
+            public static final Translation2d oppositeCargoF = cargoF.unaryMinus();
+            public static final Translation2d terminalCargo = new Translation2d(Units.inchesToMeters(282.083), Units.inchesToMeters(117.82));
+            public static final Translation2d oppositeTerminalCargo = terminalCargo.unaryMinus();
         }
 
         // Terminal cargo point
@@ -118,22 +132,5 @@ public final class FieldConstants {
         public static final double terminalCargoOffset = Units.inchesToMeters(10.43);
         public static final Pose2d cargoG = terminalCenter
                 .transformBy(GeomUtil.transformFromTranslation(terminalCargoOffset, 0.0));
-
-        // Opposite reference points
-        public static final Translation2d opposieTarmacVertexA = TarmacPositions.tarmacVertexA.unaryMinus();
-        public static final Translation2d opposieTarmacVertexB = TarmacPositions.tarmacVertexB.unaryMinus();
-        public static final Translation2d opposieTarmacVertexC = TarmacPositions.tarmacVertexC.unaryMinus();
-        public static final Translation2d opposieTarmacVertexD = TarmacPositions.tarmacVertexD.unaryMinus();
-        public static final Translation2d opposieTarmacVertexE = TarmacPositions.tarmacVertexE.unaryMinus();
-        public static final Translation2d opposieTarmacVertexF = TarmacPositions.tarmacVertexF.unaryMinus();
-
-        // Opposite cargo points
-        public static final Translation2d oppositeCargoA = CargoPositions.cargoA.unaryMinus();
-        public static final Translation2d oppositeCargoB = CargoPositions.cargoB.unaryMinus();
-        public static final Translation2d oppositeCargoC = CargoPositions.cargoC.unaryMinus();
-        public static final Translation2d oppositeCargoD = CargoPositions.cargoD.unaryMinus();
-        public static final Translation2d oppositeCargoE = CargoPositions.cargoE.unaryMinus();
-        public static final Translation2d oppositeCargoF = CargoPositions.cargoF.unaryMinus();
-        public static final Translation2d oppositeTerminalCargo = CargoPositions.terminalCargo.unaryMinus();
     }
 

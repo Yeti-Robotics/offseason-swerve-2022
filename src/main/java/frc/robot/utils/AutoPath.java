@@ -4,14 +4,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class AutoPath {
     private final DrivetrainSubsystem drivetrainSubsystem;
@@ -19,26 +20,19 @@ public class AutoPath {
 
     private SwerveControllerCommand swerveControllerCommand;
 
-    private List<Pose2d> waypoints;
+    private final List<Pose2d> waypoints;
     private double startVel = 0.0;
     private double endVel = 0.0;
     private double maxVel = AutoConstants.MAX_VELOCITY;
     private double maxAccel = AutoConstants.MAX_ACCEL;
-    private boolean isReversed = false;
+    private final boolean isReversed;
 
     public AutoPath(DrivetrainSubsystem drivetrainSubsystem,
                     double startVel, double endVel,
                     double maxVel, double maxAccel,
                     boolean isReversed, Pose2d... waypoints) {
         this.drivetrainSubsystem = drivetrainSubsystem;
-        try {
-            this.waypoints = Objects.requireNonNull(Arrays.asList(waypoints));
-        } catch (NullPointerException e) {
-            System.out.println("NO WAYPOINTS IN AUTOPATH CONSTRUCTOR");
-            this.waypoints = new ArrayList<>();
-            generateAutoPathCommand();
-            return;
-        }
+        this.waypoints = Arrays.asList(waypoints);
         this.startVel = startVel;
         this.endVel = endVel;
         this.maxVel = maxVel;
@@ -50,14 +44,7 @@ public class AutoPath {
 
     public AutoPath(DrivetrainSubsystem drivetrainSubsystem, boolean isReversed, Pose2d... waypoints) {
         this.drivetrainSubsystem = drivetrainSubsystem;
-        try {
-            this.waypoints = Objects.requireNonNull(Arrays.asList(waypoints));
-        } catch (NullPointerException e) {
-            System.out.println("NO WAYPOINTS IN AUTOPATH CONSTRUCTOR");
-            this.waypoints = new ArrayList<>();
-            generateAutoPathCommand();
-            return;
-        }
+        this.waypoints = Arrays.asList(waypoints);
         this.isReversed = isReversed;
 
         generateAutoPathCommand();
@@ -74,7 +61,8 @@ public class AutoPath {
 
         trajectory = TrajectoryGenerator.generateTrajectory(waypoints, trajectoryConfig);
 
-        swerveControllerCommand = new SwerveControllerCommand(trajectory,
+        swerveControllerCommand = new SwerveControllerCommand(
+                trajectory,
                 drivetrainSubsystem::getPose,
                 drivetrainSubsystem.getKinematics(),
                 drivetrainSubsystem.getxController(),

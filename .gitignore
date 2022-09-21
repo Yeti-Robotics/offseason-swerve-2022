@@ -164,3 +164,7 @@ bin/
 # IDEs
 .idea
 .vscode
+.run
+
+# Sim GUI JSONS
+*simgui*.json
