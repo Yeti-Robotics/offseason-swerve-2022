@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.drivetrain.FieldOrientedDrive;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
@@ -23,7 +24,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-	private final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
+	public final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
 
 	public final XboxController driverStationJoystick;
 
@@ -36,9 +37,9 @@ public class RobotContainer {
 		// Right stick X axis -> rotation
 		drivetrainSubsystem.setDefaultCommand(
 				new FieldOrientedDrive(drivetrainSubsystem,
-						() -> -modifyAxis(getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-						() -> -modifyAxis(getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-						() -> -modifyAxis(getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
+						() -> -modifyAxis(getLeftY()) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+						() -> -modifyAxis(getLeftX()) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+						() -> -modifyAxis(getRightX()) * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
 
 		configureButtonBindings();
 	}

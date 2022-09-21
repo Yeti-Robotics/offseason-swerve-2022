@@ -34,7 +34,8 @@ public class FieldOrientedDrive extends CommandBase {
 						m_translationXSupplier.getAsDouble(),
 						m_translationYSupplier.getAsDouble(),
 						m_rotationSupplier.getAsDouble(),
-						m_drivetrainSubsystem.getGyroscopeRotation()));
+						m_drivetrainSubsystem.getPose().getRotation())
+		);
 	}
 
 	@Override

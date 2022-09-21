@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -24,6 +29,15 @@ public final class Constants {
     }
 
     public static final class DriveConstants {
+        public static final Transform2d X_ROBOT_CENTER = new Transform2d(
+                new Translation2d(Units.inchesToMeters(33.5215/2.0), 0.0),
+                Rotation2d.fromDegrees(0.0));
+        public static final Transform2d Y_ROBOT_CENTER = new Transform2d(
+                new Translation2d(0.0, Units.inchesToMeters(33.5215/2.0)),
+                Rotation2d.fromDegrees(0.0));
+        public static final Transform2d ROBOT_CENTER = new Transform2d(
+                new Translation2d(Units.inchesToMeters(33.5215/2.0), Units.inchesToMeters(33.5215/2.0)),
+                Rotation2d.fromDegrees(0.0));
         /**
          * The left-to-right distance between the drivetrain wheels
          *
@@ -36,6 +50,28 @@ public final class Constants {
          * Should be measured from center to center.
          */
         public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(21.75);
+
+        /**
+         * The maximum velocity of the robot in meters per second.
+         * <p>
+         * This is a measure of how fast the robot should be able to drive in a straight
+         * line.
+         * The formula for calculating the theoretical maximum velocity is:
+         * [Motor free speed RPM] / 60 * [Drive reduction] * [Wheel diameter meters] *
+         * pi
+         */
+        public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
+                SdsModuleConfigurations.MK4_L2.getDriveReduction() *
+                SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
+
+        /**
+         * The maximum angular velocity of the robot in radians per second.
+         * <p>
+         * This is a measure of how fast the robot can rotate in place.
+         */
+        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
+                Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+                        DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
         public static final int DRIVETRAIN_PIGEON_ID = 0; // FIXME Set Pigeon ID
 
@@ -65,5 +101,24 @@ public final class Constants {
 
         public static final double FALCON_FREE_RPM = 6380.0; // free speed RPM @12V, found here https://motors.vex.com/vexpro-motors/falcon
                                                              // if max voltage changes this value should be modified
+    }
+
+    public static final class AutoConstants {
+        /**
+         * Max velocity in meters per second
+         */
+        public static final double MAX_VELOCITY = DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.75;
+        /**
+         * Max acceleration in meters per second squared
+         */
+        public static final double MAX_ACCEL = DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.75;
+
+        public static final double X_CONTROLLER_P = 0.0;
+        public static final double Y_CONTROLLER_P = 0.0;
+        public static final double THETA_CONTROLLER_P = 0.0;
+        public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = //
+                new TrapezoidProfile.Constraints(
+                        DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
     }
 }
