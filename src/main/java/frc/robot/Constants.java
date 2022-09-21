@@ -170,4 +170,22 @@ public final class Constants {
         public static final double GRAVITY = 386.09; // inches/ sec ^2
         public static final double MOUNTING_ANGLE = 31.5; // deg
     }
+
+    public static final class IntakeConstants {
+        public static final int INTAKE_SPARK = 0;
+        public static final int[] INTAKE_PISTONS_SOLENOID = {0,1};
+        public static final double INTAKE_SPEED = 0.3;
+        public static final double INTAKE_OUT_SPEED = 0.3;
+    }
+
+    public static final class NeckConstants {
+        public static final int FRONT_INDEXER = 0;
+        public static final int BACK_INDEXER = 0;
+        public static final int LOW_BEAM_BREAK = 0;
+        public static final int HIGH_BEAM_BREAK = 0;
+        public static final double NECK_FRONT_SPEED = 0;
+        public static final double NECK_BACK_SPEED = 0;
+        public static final double NECK_FRONT_OUT_SPEED = 0;
+        public static final double NECK_BACK_OUT_SPEED = 0;
+    }
 }

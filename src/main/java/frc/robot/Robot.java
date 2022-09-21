@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.CompressorConfigType;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,7 +25,7 @@ import frc.robot.utils.AutoBuilder;
  */
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
-
+    private Compressor compressor;
     private RobotContainer m_robotContainer;
 
     public enum AutoModes {
@@ -42,6 +45,8 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         m_robotContainer = new RobotContainer();
+        compressor = new Compressor(PneumaticsModuleType.REVPH);
+        compressor.enableAnalog(110, 220);
 
         autoChooser = new SendableChooser<>();
         autoChooser.setDefaultOption("ONE_BALL", AutoModes.ONE_BALL);
