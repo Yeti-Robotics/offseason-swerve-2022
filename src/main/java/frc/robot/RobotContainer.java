@@ -13,7 +13,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.drivetrain.FieldOrientedDrive;
 import frc.robot.commands.shooter.ToggleShooterCommand;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
 import frc.robot.utils.JoyButton;
@@ -43,9 +43,9 @@ public class RobotContainer {
 		// Right stick X axis -> rotation
 		drivetrainSubsystem.setDefaultCommand(
 				new FieldOrientedDrive(drivetrainSubsystem,
-						() -> -modifyAxis(getLeftY()) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-						() -> -modifyAxis(getLeftX()) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-						() -> -modifyAxis(getRightX()) * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
+						this::getLeftY,
+						this::getLeftX,
+						this::getRightX));
 
 		configureButtonBindings();
 	}

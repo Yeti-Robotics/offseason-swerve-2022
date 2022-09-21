@@ -28,6 +28,8 @@ public final class Constants {
 
     public static final class OIConstants {
         public static final int DRIVER_STATION_JOY = 0;
+
+        public static final double DEADBAND = 0.05;
     }
 
     public static final class DriveConstants {
@@ -75,6 +77,9 @@ public final class Constants {
                 Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
                         DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
+        public static final double MAX_ACCELERATION = MAX_VELOCITY_METERS_PER_SECOND * 0.75;
+        public static final double MAX_ANGULAR_ACCELERATION = MAX_VELOCITY_METERS_PER_SECOND * 0.75;
+
         public static final int DRIVETRAIN_PIGEON_ID = 0; // FIXME Set Pigeon ID
 
         public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 7; // FIXME Set front left module drive motor ID
@@ -99,10 +104,13 @@ public final class Constants {
         public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 10; // FIXME Set back right steer motor ID
         public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 4; // FIXME Set back right steer encoder ID
         public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(125.859); // FIXME Measure and set back
-                                                                                          // right steer offset
-
+        // right steer offset
+        public static final double MAX_VOLTAGE = 12.0;
         public static final double FALCON_FREE_RPM = 6380.0; // free speed RPM @12V, found here https://motors.vex.com/vexpro-motors/falcon
-                                                             // if max voltage changes this value should be modified
+        // if max voltage changes this value should be modified
+
+        public static final double STEER_MOTOR_P = 0.2;
+        public static final double STEER_MOTOR_D = 0.1;
     }
 
     public static final class AutoConstants {

@@ -2,12 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.Drivetrain;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -60,30 +59,26 @@ public class DrivetrainSubsystem extends SubsystemBase {
 					DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
 	private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-			// Front left
-			new Translation2d(-DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-					DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
 			// Front right
+			new Translation2d(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+					-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+			// Front left
 			new Translation2d(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
 					DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
 			// Back left
 			new Translation2d(-DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-					-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+					DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
 			// Back right
-			new Translation2d(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+			new Translation2d(-DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
 					-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
 	private final AHRS gyro = new AHRS(Port.kUSB); // NavX
 
 	// These are our modules. We initialize them in the constructor.
-	private final SwerveModule frontLeftModule;
-	private SwerveModuleState frontLeftModuleState;
 	private final SwerveModule frontRightModule;
-	private SwerveModuleState frontRightModuleState;
-	private final SwerveModule backLeftModule;
-	private SwerveModuleState backLeftModuleState;
+	private final SwerveModule frontLeftModule;
 	private final SwerveModule backRightModule;
-	private SwerveModuleState backRightModuleState;
+	private final SwerveModule backLeftModule;
 
 	private final PIDController yController = new PIDController(AutoConstants.Y_CONTROLLER_P, 0.0, 0.0);
 	private final PIDController xController = new PIDController(AutoConstants.X_CONTROLLER_P, 0.0, 0.0);
@@ -95,55 +90,33 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public DrivetrainSubsystem() {
 		ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
-		frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-				// This parameter is optional, but will allow you to see the current state of
-				// the module on the dashboard.
-				tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-						.withSize(2, 4)
-						.withPosition(0, 0),
-				// This can either be STANDARD or FAST depending on your gear configuration
-				Mk4SwerveModuleHelper.GearRatio.L2,
-				DriveConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
-				DriveConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
-				DriveConstants.FRONT_LEFT_MODULE_STEER_ENCODER,
-				// This is how much the steer encoder is offset from true zero (In our case,
-				// zero is facing straight forward)
-				DriveConstants.FRONT_LEFT_MODULE_STEER_OFFSET);
-		frontLeftModuleState = new SwerveModuleState();
-
-		// We will do the same for the other modules
-		frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
-				tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-						.withSize(2, 4)
-						.withPosition(2, 0),
-				Mk4SwerveModuleHelper.GearRatio.L2,
+		frontRightModule = new SwerveModule(
 				DriveConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
 				DriveConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
 				DriveConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,
+				false,
 				DriveConstants.FRONT_RIGHT_MODULE_STEER_OFFSET);
-		frontRightModuleState = new SwerveModuleState();
 
-		backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-				tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-						.withSize(2, 4)
-						.withPosition(4, 0),
-				Mk4SwerveModuleHelper.GearRatio.L2,
+		frontLeftModule = new SwerveModule(
+				DriveConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
+				DriveConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
+				DriveConstants.FRONT_LEFT_MODULE_STEER_ENCODER,
+				false,
+				DriveConstants.FRONT_LEFT_MODULE_STEER_OFFSET);
+
+		backLeftModule = new SwerveModule(
 				DriveConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
 				DriveConstants.BACK_LEFT_MODULE_STEER_MOTOR,
 				DriveConstants.BACK_LEFT_MODULE_STEER_ENCODER,
+				false,
 				DriveConstants.BACK_LEFT_MODULE_STEER_OFFSET);
-		backLeftModuleState = new SwerveModuleState();
 
-		backRightModule = Mk4SwerveModuleHelper.createFalcon500(
-				tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-						.withSize(2, 4)
-						.withPosition(6, 0),
-				Mk4SwerveModuleHelper.GearRatio.L2,
+		backRightModule = new SwerveModule(
 				DriveConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
 				DriveConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
 				DriveConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
-				DriveConstants.BACK_RIGHT_MODULE_STEER_OFFSET);
-		backRightModuleState = new SwerveModuleState();
+				false,
+				DriveConstants.FRONT_RIGHT_MODULE_STEER_OFFSET);
 
 		thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -163,24 +136,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 * 'forwards' direction.
 	 */
 	public void zeroGyroscope() {
-		gyro.zeroYaw();
+		gyro.reset();
 
 		// uncomment if switch to pigeon
 		// gyro.setFusedHeading(0.0);
 	}
 
 	public Rotation2d getGyroscopeRotation() {
-		if (gyro.isMagnetometerCalibrated()) {
-			// We will only get valid fused headings if the magnetometer is calibrated
-			return Rotation2d.fromDegrees(gyro.getFusedHeading());
-		}
-
-		// We have to invert the angle of the NavX so that rotating the robot
-		// counter-clockwise makes the angle increase.
-		return Rotation2d.fromDegrees(360.0 - gyro.getYaw());
-
-		// uncomment if switch to pigeon
-		// return Rotation2d.fromDegrees(gyro.getFusedHeading());
+		return Rotation2d.fromDegrees(Math.abs(gyro.getYaw() - 180));
 	}
 
 	public Pose2d getPose() {
@@ -207,29 +170,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return thetaController;
 	}
 
-	private void updateSwerveModuleStates() {
-		frontLeftModuleState.speedMetersPerSecond = frontLeftModule.getDriveVelocity();
-		frontLeftModuleState.angle = Rotation2d.fromDegrees(frontLeftModule.getSteerAngle());
-
-		frontRightModuleState.speedMetersPerSecond = frontRightModule.getDriveVelocity();
-		frontRightModuleState.angle = Rotation2d.fromDegrees(frontRightModule.getSteerAngle());
-
-		backLeftModuleState.speedMetersPerSecond = backLeftModule.getDriveVelocity();
-		backLeftModuleState.angle = Rotation2d.fromDegrees(backLeftModule.getSteerAngle());
-
-		backRightModuleState.speedMetersPerSecond = backRightModule.getDriveVelocity();
-		backRightModuleState.angle = Rotation2d.fromDegrees(backRightModule.getSteerAngle());
-	}
-
 	public void setDesiredStates(SwerveModuleState[] desiredStates) {
-		frontLeftModule.set(desiredStates[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-				desiredStates[0].angle.getRadians());
-		frontRightModule.set(desiredStates[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-				desiredStates[1].angle.getRadians());
-		backLeftModule.set(desiredStates[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-				desiredStates[2].angle.getRadians());
-		backRightModule.set(desiredStates[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-				desiredStates[3].angle.getRadians());
+		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, MAX_VELOCITY_METERS_PER_SECOND);
+		frontRightModule.setDesiredState(desiredStates[0]);
+		frontLeftModule.setDesiredState(desiredStates[1]);
+		backLeftModule.setDesiredState(desiredStates[2]);
+		backRightModule.setDesiredState(desiredStates[3]);
 	}
 
 	public void drive(ChassisSpeeds chassisSpeeds) {
@@ -238,11 +184,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		updateSwerveModuleStates();
-		odometer.update(getGyroscopeRotation(), frontLeftModuleState, frontRightModuleState, backLeftModuleState, backRightModuleState);
+		odometer.update(getGyroscopeRotation(),
+				frontRightModule.getState(), frontLeftModule.getState(),
+				backLeftModule.getState(), backRightModule.getState());
 
-		SwerveModuleState[] desiredStates = kinematics.toSwerveModuleStates(chassisSpeeds);
-		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, MAX_VELOCITY_METERS_PER_SECOND);
-		setDesiredStates(desiredStates);
+		setDesiredStates(kinematics.toSwerveModuleStates(chassisSpeeds));
 	}
 }
