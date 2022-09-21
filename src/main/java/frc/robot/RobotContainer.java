@@ -12,7 +12,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.drivetrain.FieldOrientedDrive;
+import frc.robot.commands.shooter.ToggleShooterCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
+import frc.robot.utils.JoyButton;
+import frc.robot.utils.JoyButton.ActiveState;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -25,11 +30,12 @@ import frc.robot.subsystems.DrivetrainSubsystem;
  */
 public class RobotContainer {
 	public final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
+	private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
-	public final XboxController driverStationJoystick;
+	public final Joystick driverStationJoystick;
 
 	public RobotContainer() {
-		driverStationJoystick = new XboxController(OIConstants.DRIVER_STATION_JOY);
+		driverStationJoystick = new Joystick(OIConstants.DRIVER_STATION_JOY);
 
 		// The controls are for field-oriented driving:
 		// Left stick Y axis -> forward and backwards movement
@@ -53,22 +59,25 @@ public class RobotContainer {
 	 * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
 	 */
 	private void configureButtonBindings() {
+		setConditionalButton(2, new ToggleShooterCommand(ShooterMode.LIMELIGHT, shooterSubsystem),
+		// false currently cannot ocurr, check setConditionalButton
+				ActiveState.WHEN_PRESSED, new InstantCommand(), ActiveState.WHEN_PRESSED);
 	}
 
 	private double getLeftY() {
-		return driverStationJoystick.getLeftY();
+		return -driverStationJoystick.getRawAxis(0);
 	}
 
 	private double getLeftX() {
-		return -driverStationJoystick.getLeftX();
+		return driverStationJoystick.getRawAxis(1);
 	}
 
 	private double getRightY() {
-		return driverStationJoystick.getRightY();
+		return -driverStationJoystick.getRawAxis(2);
 	}
 
 	private double getRightX() {
-		return -driverStationJoystick.getRightX();
+		return driverStationJoystick.getRawAxis(3);
 	}
 
 	/**
@@ -78,6 +87,18 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		return new InstantCommand();
+	}
+
+	private void setConditionalButton(
+			int button,
+			Command trueCommand,
+			ActiveState trueActiveState,
+			Command falseCommand,
+			ActiveState falseActiveState) {
+		new JoyButton(driverStationJoystick, button)
+				.conditionalPressed(
+						// currently only runs the true command
+						trueCommand, trueActiveState, falseCommand, falseActiveState, () -> true);
 	}
 
 	private static double deadband(double value, double deadband) {
@@ -94,7 +115,7 @@ public class RobotContainer {
 
 	private static double modifyAxis(double value) {
 		// Deadband
-		value = deadband(value, 0.08);
+		value = deadband(value, 0.05);
 
 		// Square the axis
 		value = Math.copySign(value * value, value);

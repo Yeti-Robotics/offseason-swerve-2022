@@ -24,6 +24,8 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static final double MOTOR_VOLTAGE_COMP = 11.0;
+
     public static final class OIConstants {
         public static final int DRIVER_STATION_JOY = 0;
     }
@@ -40,13 +42,13 @@ public final class Constants {
                 Rotation2d.fromDegrees(0.0));
         /**
          * The left-to-right distance between the drivetrain wheels
-         *
+         * <p>
          * Should be measured from center to center.
          */
         public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(21.75);
         /**
          * The front-to-back distance between the drivetrain wheels.
-         *
+         * <p>
          * Should be measured from center to center.
          */
         public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(21.75);
@@ -120,5 +122,52 @@ public final class Constants {
                 new TrapezoidProfile.Constraints(
                         DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                         DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+    }
+
+    public static final class ShooterConstants {
+        // shooter motor ports
+        public static final int SHOOTER_LEFT_FALCON = 8; // left
+        public static final int SHOOTER_RIGHT_FALCON = 7; // right
+
+        public static final double SHOOTER_P = 0.00015;
+        public static final double SHOOTER_I = 0.0;
+        public static final double SHOOTER_D = 0.00001;
+        public static final double SHOOTER_F = 0.4;
+
+        public static final double MAX_VELOCITY = 32.0; // in meters/second
+
+        // feed forward values; characterized using meters
+        public static final double SHOOTER_KS = 0.65977;
+        public static final double SHOOTER_KV = 0.13; // Volts * second/meter
+        public static final double SHOOTER_KA = 0.23; // Volts * second^2/meter
+
+        // shooter motor speeds
+        public static final double SHOOTER_LOW_SPEED = 0.2; // for low goal shots
+
+        // shooter rpm calc constants
+        public static final double PULLEY_RATIO = 48.0 / 36.0;
+        public static final double ENCODER_TIME_CONVERSION = 600.0; // 100 ms per minute
+        public static final double ENCODER_RESOLUTION = 2048.0;
+        public static final double QUAD_FACTOR = 4.0; // quadrature encoder factor
+        public static final double VELOCITY_TOLERANCE = 0.5;
+
+        public static final double FLYWHEEL_DIAMETER_IN = 4.0; // inches
+        public static final double FLYWHEEL_DIAMETER_M = 0.1016; // meters
+        public static final double SHOOTER_HIGH_DIST = 82.0; // inches; ideal dist from shooter to go high
+        public static final double SHOOTER_DIST_TOLERANCE = 6.0; // inhces; see above
+    }
+
+    public static final class LimelightConstants {
+        // distance calc constants
+        public static final double KNOWN_DISTANCE = 161.3; // inches
+        public static final int PIXEL_WIDTH_KNOWN = 65; // pixels
+        public static final double KNOWN_TAPE_BOUND_WIDTH = 39.25; // inches
+        public static final double FOCAL_LENGTH = (KNOWN_DISTANCE * PIXEL_WIDTH_KNOWN) / KNOWN_TAPE_BOUND_WIDTH;
+
+        // trajectory constants
+        public static final double LIMELIGHT_HEIGHT = 28.4; // inches
+        public static final double GOAL_HEIGHT = 108.0; // inches
+        public static final double GRAVITY = 386.09; // inches/ sec ^2
+        public static final double MOUNTING_ANGLE = 31.5; // deg
     }
 }
