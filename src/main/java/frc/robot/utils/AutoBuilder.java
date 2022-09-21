@@ -1,6 +1,9 @@
 package frc.robot.utils;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -29,6 +32,8 @@ public class AutoBuilder {
         switch (autoMode) {
             case ONE_BALL:
                 oneBallAuto();
+            case FOUR_BALL:
+                fourBallAuto();
         }
 
         autoCommand.alongWith(pathCommands, commands)
@@ -47,9 +52,21 @@ public class AutoBuilder {
     private void oneBallAuto() {
         startPath = new AutoPath(robotContainer.drivetrainSubsystem,
                 false,
-                new Pose2d(TarmacPositions.tarmacVertexF, TarmacPositions.tarmacAngleA).transformBy(DriveConstants.ROBOT_CENTER),
+                new Pose2d(TarmacPositions.tarmacVertexB, TarmacPositions.tarmacAngleA).transformBy(DriveConstants.ROBOT_CENTER),
                 new Pose2d(CargoPositions.cargoB, TarmacPositions.tarmacAngleA));
 
         pathCommands.addCommands(startPath.getAutoPath());
+    }
+
+    private void fourBallAuto() {
+        startPath = new AutoPath(robotContainer.drivetrainSubsystem,
+                false,
+                new Pose2d(TarmacPositions.tarmacVertexE, TarmacPositions.tarmacAngleD).transformBy(DriveConstants.ROBOT_CENTER),
+                new Pose2d(CargoPositions.cargoE, TarmacPositions.tarmacAngleD)
+                        .transformBy(
+                                new Transform2d(CargoPositions.cargoE.minus(new Translation2d(0.0 ,-0.2)),
+                                        Rotation2d.fromDegrees(0.0))),
+                new Pose2d(TarmacPositions.tarmacVertexE, TarmacPositions.tarmacAngleD).transformBy(DriveConstants.ROBOT_CENTER)
+                );
     }
 }
