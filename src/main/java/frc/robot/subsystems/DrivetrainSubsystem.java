@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.io.FilterOutputStream;
+
 import static frc.robot.Constants.*;
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -54,16 +56,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
 			// Front left
-			new Translation2d(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+			new Translation2d(-DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
 					DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
 			// Front right
 			new Translation2d(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-					-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+					DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
 			// Back left
 			new Translation2d(-DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-					DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+					-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
 			// Back right
-			new Translation2d(-DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+			new Translation2d(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
 					-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
 	private final AHRS gyro = new AHRS(Port.kUSB); // NavX
@@ -124,6 +126,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				DriveConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
 				DriveConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
 				DriveConstants.BACK_RIGHT_MODULE_STEER_OFFSET);
+
+		new Thread(() -> {
+			try {
+				Thread.sleep(1000);
+				zeroGyroscope();
+			} catch (Exception e) {
+				System.out.println("");
+			}
+		}).start();
 	}
 
 	/**
@@ -141,12 +152,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public Rotation2d getGyroscopeRotation() {
 		if (gyro.isMagnetometerCalibrated()) {
 			// We will only get valid fused headings if the magnetometer is calibrated
-			return Rotation2d.fromDegrees(gyro.getFusedHeading());
+			return Rotation2d.fromDegrees(gyro.getFusedHeading()).unaryMinus();
 		}
 
 		// We have to invert the angle of the NavX so that rotating the robot
 		// counter-clockwise makes the angle increase.
-		return Rotation2d.fromDegrees(360.0 - gyro.getYaw());
+		return Rotation2d.fromDegrees(360.0 - gyro.getYaw()).unaryMinus();
 
 		// uncomment if switch to pigeon
 		// return Rotation2d.fromDegrees(gyro.getFusedHeading());
@@ -158,8 +169,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
+		System.out.println("GYRO: " + getGyroscopeRotation());
 		SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
 		SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
+
+		System.out.printf("FL Module: %s |||| FR Module: %s\nBL Module: %s |||| BR Module %s\n", states[0], states[1], states[2], states[3]);
 
 		frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
 				states[0].angle.getRadians());

@@ -25,10 +25,10 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 public class RobotContainer {
 	private final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
 
-	public final Joystick driverStationJoystick;
+	public final XboxController driverStationJoystick;
 
 	public RobotContainer() {
-		driverStationJoystick = new Joystick(OIConstants.DRIVER_STATION_JOY);
+		driverStationJoystick = new XboxController(OIConstants.DRIVER_STATION_JOY);
 
 		// The controls are for field-oriented driving:
 		// Left stick Y axis -> forward and backwards movement
@@ -55,19 +55,19 @@ public class RobotContainer {
 	}
 
 	private double getLeftY() {
-		return -driverStationJoystick.getRawAxis(0);
+		return driverStationJoystick.getLeftY();
 	}
 
 	private double getLeftX() {
-		return driverStationJoystick.getRawAxis(1);
+		return -driverStationJoystick.getLeftX();
 	}
 
 	private double getRightY() {
-		return -driverStationJoystick.getRawAxis(2);
+		return driverStationJoystick.getRightY();
 	}
 
 	private double getRightX() {
-		return driverStationJoystick.getRawAxis(3);
+		return -driverStationJoystick.getRightX();
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class RobotContainer {
 
 	private static double modifyAxis(double value) {
 		// Deadband
-		value = deadband(value, 0.05);
+		value = deadband(value, 0.08);
 
 		// Square the axis
 		value = Math.copySign(value * value, value);
