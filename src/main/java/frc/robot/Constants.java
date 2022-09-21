@@ -109,9 +109,9 @@ public final class Constants {
         public static final double FOCAL_LENGTH = (KNOWN_DISTANCE * PIXEL_WIDTH_KNOWN) / KNOWN_TAPE_BOUND_WIDTH;
 
         // trajectory constants
-        public static final double LIMELIGHT_HEIGHT = 37.5; // inches
+        public static final double LIMELIGHT_HEIGHT = 28.4; // inches
         public static final double GOAL_HEIGHT = 108.0; // inches
         public static final double GRAVITY = 386.09; // inches/ sec ^2
-        public static final double MOUNTING_ANGLE = 33.47; // deg
+        public static final double MOUNTING_ANGLE = 31.5; // deg
     }
 }

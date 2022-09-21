@@ -11,7 +11,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.drivetrain.FieldOrientedDrive;
+import frc.robot.commands.shooter.ToggleShooterCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
+import frc.robot.utils.JoyButton;
+import frc.robot.utils.JoyButton.ActiveState;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -24,6 +29,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
  */
 public class RobotContainer {
 	private final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
+	private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
 	public final Joystick driverStationJoystick;
 
@@ -52,6 +58,9 @@ public class RobotContainer {
 	 * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
 	 */
 	private void configureButtonBindings() {
+		setConditionalButton(2, new ToggleShooterCommand(ShooterMode.LIMELIGHT, shooterSubsystem),
+		// false currently cannot ocurr, check setConditionalButton
+				ActiveState.WHEN_PRESSED, new InstantCommand(), ActiveState.WHEN_PRESSED);
 	}
 
 	private double getLeftY() {
@@ -77,6 +86,18 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		return new InstantCommand();
+	}
+
+	private void setConditionalButton(
+			int button,
+			Command trueCommand,
+			ActiveState trueActiveState,
+			Command falseCommand,
+			ActiveState falseActiveState) {
+		new JoyButton(driverStationJoystick, button)
+				.conditionalPressed(
+						// currently only runs the true command
+						trueCommand, trueActiveState, falseCommand, falseActiveState, () -> true);
 	}
 
 	private static double deadband(double value, double deadband) {

@@ -112,6 +112,10 @@ public class ShooterSubsystem extends SubsystemBase {
         this.shooterMode = shooterMode;
     }
 
+    public ShooterMode getShooterMode() {
+        return this.shooterMode;
+    }
+
     private void shootFlywheel(double speed) {
         shooterFalcons.set(speed);
     }
