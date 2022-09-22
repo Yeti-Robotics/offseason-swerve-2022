@@ -114,7 +114,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	}
 
 	public Rotation2d getGyroscopeRotation() {
-		return Rotation2d.fromDegrees(Math.abs(gyro.getYaw() - 180));
+		return Rotation2d.fromDegrees(-gyro.getYaw() + 360);
 	}
 
 	public Pose2d getPose() {

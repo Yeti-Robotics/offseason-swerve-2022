@@ -80,11 +80,11 @@ public class RobotContainer {
 	}
 
 	private double getLeftY() {
-		return -driverStationJoystick.getRawAxis(0);
+		return driverStationJoystick.getRawAxis(0);
 	}
 
 	private double getLeftX() {
-		return driverStationJoystick.getRawAxis(1);
+		return -driverStationJoystick.getRawAxis(1);
 	}
 
 	private double getRightY() {
@@ -92,7 +92,7 @@ public class RobotContainer {
 	}
 
 	private double getRightX() {
-		return driverStationJoystick.getRawAxis(3);
+		return -driverStationJoystick.getRawAxis(3);
 	}
 
 	private void setConditionalButton(

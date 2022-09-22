@@ -51,7 +51,6 @@ public class FieldOrientedDrive extends CommandBase {
         double ySpeed = -translationYSupplier.getAsDouble();
         double thetaSpeed = -rotationSupplier.getAsDouble();
 
-        System.out.println("thetaSpeed: " + thetaSpeed);
         
         
         xSpeed = xLimiter.calculate(Math.abs(xSpeed) > OIConstants.DEADBAND ? xSpeed : 0.0)
@@ -64,6 +63,9 @@ public class FieldOrientedDrive extends CommandBase {
             thetaSpeed = thetaLimiter.calculate(Math.abs(thetaSpeed) > OIConstants.DEADBAND ? thetaSpeed : 0.0)
             * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
         }
+        System.out.println("xSpeed: " + xSpeed);
+        System.out.println("ySpeed: " + ySpeed);
+        System.out.println("thetaSpeed: " + thetaSpeed);
         
         drivetrainSubsystem.drive(
                 ChassisSpeeds.fromFieldRelativeSpeeds(

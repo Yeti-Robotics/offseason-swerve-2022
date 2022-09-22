@@ -28,7 +28,6 @@ public class SwerveModule {
         this.absoluteEncoderReversed = absoluteEncoderReversed;
         this.absoluteEncoderOffsetRad = absoluteEncoderOffsetRad;
         absoluteEncoder = new WPI_CANCoder(absoluteEncoderID);
-        absoluteEncoder.configMagnetOffset(absoluteEncoderOffsetRad);
 
         driveMotor = new WPI_TalonFX(driveMotorID);
         steerMotor = new WPI_TalonFX(steerMotorID);
@@ -54,8 +53,8 @@ public class SwerveModule {
     }
 
     public double getSteerRad() {
-        return Math.toRadians(absoluteEncoder.getAbsolutePosition());
-        //return Math.toRadians(absoluteEncoder.getAbsolutePosition()) - absoluteEncoderOffsetRad;
+        //return Math.toRadians(absoluteEncoder.getAbsolutePosition());
+        return Math.toRadians(absoluteEncoder.getAbsolutePosition()) - absoluteEncoderOffsetRad;
     }
 
     public double getDriveVelocity() {
