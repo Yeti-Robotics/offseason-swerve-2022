@@ -44,8 +44,16 @@ public class NeckSubsystem extends SubsystemBase {
     }
 
     public void stopNeck() {
-        frontSpark.set(0);
-        backSpark.set(0);
+        frontSpark.stopMotor();
+        backSpark.stopMotor();
+    }
+
+    public void stopFrontMotor() {
+        frontSpark.stopMotor();
+    }
+
+    public void stopBackMotor() {
+        backSpark.stopMotor();
     }
 
     public boolean getLowBeamBreak() {

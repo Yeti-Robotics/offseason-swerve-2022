@@ -26,7 +26,7 @@ public class ShooterSubsystem extends SubsystemBase {
         OFF
     }
 
-    private ShooterMode shooterMode;
+    private static ShooterMode shooterMode;
 
     private double setPoint = 0.0;
     public static boolean atSetPoint = false;
@@ -78,12 +78,12 @@ public class ShooterSubsystem extends SubsystemBase {
                         break;
                     }
                     setPoint = 25.0/3.0 * VisionSubsystem.getDistance() + 2991.66667;
-                    shootFlywheel(
+                    setFlywheelVolts(
                             feedForward.calculate(setPoint, 10.0)
                                     + shooterPID.calculate(getMetersPerSecond(), setPoint));
                     break;
                 case MANUAL:
-                    shootFlywheel(
+                    setFlywheelVolts(
                             feedForward.calculate(setPoint, 10.0)
                                     + shooterPID.calculate(getMetersPerSecond(), setPoint));
                     break;
@@ -109,11 +109,11 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void setShooterMode(ShooterMode shooterMode) {
-        this.shooterMode = shooterMode;
+        ShooterSubsystem.shooterMode = shooterMode;
     }
 
-    public ShooterMode getShooterMode() {
-        return this.shooterMode;
+    public static ShooterMode getShooterMode() {
+        return shooterMode;
     }
 
     private void shootFlywheel(double speed) {

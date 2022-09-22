@@ -1,4 +1,4 @@
-package frc.robot.commands.neck;
+package frc.robot.commands;
 
 import frc.robot.subsystems.NeckSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;

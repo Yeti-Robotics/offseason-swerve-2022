@@ -11,9 +11,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.AllOutCommand;
+import frc.robot.commands.AllinCommand;
 import frc.robot.commands.drivetrain.FieldOrientedDrive;
 import frc.robot.commands.shooter.ToggleShooterCommand;
 import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.NeckSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
 import frc.robot.utils.JoyButton;
@@ -31,6 +35,8 @@ import frc.robot.utils.JoyButton.ActiveState;
 public class RobotContainer {
 	public final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
 	private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+	private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+	private final NeckSubsystem neckSubsystem = new NeckSubsystem();
 
 	public final Joystick driverStationJoystick;
 
@@ -62,6 +68,14 @@ public class RobotContainer {
 		setConditionalButton(2, new ToggleShooterCommand(ShooterMode.LIMELIGHT, shooterSubsystem),
 		// false currently cannot ocurr, check setConditionalButton
 				ActiveState.WHEN_PRESSED, new InstantCommand(), ActiveState.WHEN_PRESSED);
+
+		setConditionalButton(1,
+				new AllinCommand(intakeSubsystem, neckSubsystem), ActiveState.WHILE_HELD,
+				new InstantCommand(), ActiveState.WHEN_PRESSED);
+
+		setConditionalButton(6,
+				new AllOutCommand(intakeSubsystem, neckSubsystem), ActiveState.WHILE_HELD,
+				new InstantCommand(), ActiveState.WHEN_PRESSED);
 	}
 
 	private double getLeftY() {
@@ -80,15 +94,6 @@ public class RobotContainer {
 		return driverStationJoystick.getRawAxis(3);
 	}
 
-	/**
-	 * Use this to pass the autonomous command to the main {@link Robot} class.
-	 *
-	 * @return the command to run in autonomous
-	 */
-	public Command getAutonomousCommand() {
-		return new InstantCommand();
-	}
-
 	private void setConditionalButton(
 			int button,
 			Command trueCommand,
@@ -99,27 +104,5 @@ public class RobotContainer {
 				.conditionalPressed(
 						// currently only runs the true command
 						trueCommand, trueActiveState, falseCommand, falseActiveState, () -> true);
-	}
-
-	private static double deadband(double value, double deadband) {
-		if (Math.abs(value) > deadband) {
-			if (value > 0.0) {
-				return (value - deadband) / (1.0 - deadband);
-			} else {
-				return (value + deadband) / (1.0 - deadband);
-			}
-		} else {
-			return 0.0;
-		}
-	}
-
-	private static double modifyAxis(double value) {
-		// Deadband
-		value = deadband(value, 0.05);
-
-		// Square the axis
-		value = Math.copySign(value * value, value);
-
-		return value;
 	}
 }
