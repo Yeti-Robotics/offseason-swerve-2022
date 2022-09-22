@@ -29,29 +29,6 @@ import static frc.robot.Constants.*;
 import static frc.robot.Constants.DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 
 public class DrivetrainSubsystem extends SubsystemBase {
-
-
-	/**
-	 * The maximum velocity of the robot in meters per second.
-	 * <p>
-	 * This is a measure of how fast the robot should be able to drive in a straight
-	 * line.
-	 * The formula for calculating the theoretical maximum velocity is:
-	 * [Motor free speed RPM] / 60 * [Drive reduction] * [Wheel diameter meters] *
-	 * pi
-	 */
-	public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
-			SdsModuleConfigurations.MK4_L2.getDriveReduction() *
-			SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
-	/**
-	 * The maximum angular velocity of the robot in radians per second.
-	 * <p>
-	 * This is a measure of how fast the robot can rotate in place.
-	 */
-	public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
-			Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-					DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
-
 	private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
 			// Front right
 			new Translation2d(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
@@ -186,5 +163,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		odometer.update(getGyroscopeRotation(),
 				frontRightModule.getState(), frontLeftModule.getState(),
 				backLeftModule.getState(), backRightModule.getState());
+
+		System.out.println("GYRO: " + getGyroscopeRotation());
 	}
 }
