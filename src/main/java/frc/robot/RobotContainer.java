@@ -22,6 +22,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
 import frc.robot.utils.JoyButton;
 import frc.robot.utils.JoyButton.ActiveState;
+import frc.robot.utils.MoveAndShootController;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -34,7 +35,7 @@ import frc.robot.utils.JoyButton.ActiveState;
  */
 public class RobotContainer {
 	public final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
-	private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+	private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(drivetrainSubsystem);
 	private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	private final NeckSubsystem neckSubsystem = new NeckSubsystem();
 

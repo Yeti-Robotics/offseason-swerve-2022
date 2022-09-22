@@ -174,6 +174,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	public void drive(ChassisSpeeds chassisSpeeds) {
 		this.chassisSpeeds = chassisSpeeds;
+		setDesiredStates(kinematics.toSwerveModuleStates(chassisSpeeds));
+	}
+
+	public ChassisSpeeds getChassisSpeeds() {
+		return chassisSpeeds;
 	}
 
 	@Override
@@ -181,7 +186,5 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		odometer.update(getGyroscopeRotation(),
 				frontRightModule.getState(), frontLeftModule.getState(),
 				backLeftModule.getState(), backRightModule.getState());
-
-		setDesiredStates(kinematics.toSwerveModuleStates(chassisSpeeds));
 	}
 }

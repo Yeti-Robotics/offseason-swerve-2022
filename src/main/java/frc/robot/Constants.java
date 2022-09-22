@@ -153,7 +153,7 @@ public final class Constants {
         public static final double TARGETING_I = 0.00;
         public static final double TARGETING_D = 0.00;
 
-        public static final double TARGET_OFFSET = 8.0;
+        public static final double TARGET_OFFSET = Units.inchesToMeters(8.0);
 
 
         public static final double MAX_VELOCITY = 32.0; // in meters/second
