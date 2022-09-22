@@ -105,6 +105,13 @@ public final class Constants {
         public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 4; // FIXME Set back right steer encoder ID
         public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(125.859); // FIXME Measure and set back
         // right steer offset
+
+        /**
+         * The maximum voltage that will be delivered to the drive motors.
+         * <p>
+         * This can be reduced to cap the robot's maximum speed. Typically, this is
+         * useful during initial testing of the robot.
+         */
         public static final double MAX_VOLTAGE = 12.0;
         public static final double FALCON_FREE_RPM = 6380.0; // free speed RPM @12V, found here https://motors.vex.com/vexpro-motors/falcon
         // if max voltage changes this value should be modified
@@ -134,20 +141,27 @@ public final class Constants {
 
     public static final class ShooterConstants {
         // shooter motor ports
-        public static final int SHOOTER_LEFT_FALCON = 8; // left
-        public static final int SHOOTER_RIGHT_FALCON = 7; // right
+        public static final int SHOOTER_LEFT_FALCON = 14; // left
+        public static final int SHOOTER_RIGHT_FALCON = 15; // right
 
         public static final double SHOOTER_P = 0.00015;
         public static final double SHOOTER_I = 0.0;
         public static final double SHOOTER_D = 0.00001;
         public static final double SHOOTER_F = 0.4;
 
+        public static final double TARGETING_P = 0.02;
+        public static final double TARGETING_I = 0.00;
+        public static final double TARGETING_D = 0.00;
+
+        public static final double TARGET_OFFSET = 8.0;
+
+
         public static final double MAX_VELOCITY = 32.0; // in meters/second
 
         // feed forward values; characterized using meters
-        public static final double SHOOTER_KS = 0.65977;
-        public static final double SHOOTER_KV = 0.13; // Volts * second/meter
-        public static final double SHOOTER_KA = 0.23; // Volts * second^2/meter
+        public static final double SHOOTER_KS = 0.60;
+        public static final double SHOOTER_KV = 0.27; // Volts * second/meter
+        public static final double SHOOTER_KA = 0.07; // Volts * second^2/meter
 
         // shooter motor speeds
         public static final double SHOOTER_LOW_SPEED = 0.2; // for low goal shots
@@ -160,7 +174,7 @@ public final class Constants {
         public static final double VELOCITY_TOLERANCE = 0.5;
 
         public static final double FLYWHEEL_DIAMETER_IN = 4.0; // inches
-        public static final double FLYWHEEL_DIAMETER_M = 0.1016; // meters
+        public static final double FLYWHEEL_DIAMETER_M = Units.inchesToMeters(FLYWHEEL_DIAMETER_IN); // meters
         public static final double SHOOTER_HIGH_DIST = 82.0; // inches; ideal dist from shooter to go high
         public static final double SHOOTER_DIST_TOLERANCE = 6.0; // inhces; see above
     }
@@ -173,27 +187,27 @@ public final class Constants {
         public static final double FOCAL_LENGTH = (KNOWN_DISTANCE * PIXEL_WIDTH_KNOWN) / KNOWN_TAPE_BOUND_WIDTH;
 
         // trajectory constants
-        public static final double LIMELIGHT_HEIGHT = 28.4; // inches
-        public static final double GOAL_HEIGHT = 108.0; // inches
+        public static final double LIMELIGHT_HEIGHT = Units.inchesToMeters(28.4); // meters
+        public static final double GOAL_HEIGHT = Units.inchesToMeters(108.0); // meters
         public static final double GRAVITY = 386.09; // inches/ sec ^2
         public static final double MOUNTING_ANGLE = 31.5; // deg
     }
 
     public static final class IntakeConstants {
-        public static final int INTAKE_SPARK = 0;
+        public static final int INTAKE_SPARK = 18;
         public static final int[] INTAKE_PISTONS_SOLENOID = {0,1};
         public static final double INTAKE_SPEED = 0.3;
         public static final double INTAKE_OUT_SPEED = 0.3;
     }
 
     public static final class NeckConstants {
-        public static final int FRONT_INDEXER = 0;
-        public static final int BACK_INDEXER = 0;
-        public static final int LOW_BEAM_BREAK = 0;
-        public static final int HIGH_BEAM_BREAK = 0;
-        public static final double NECK_FRONT_SPEED = 0;
-        public static final double NECK_BACK_SPEED = 0;
-        public static final double NECK_FRONT_OUT_SPEED = 0;
-        public static final double NECK_BACK_OUT_SPEED = 0;
+        public static final int FRONT_INDEXER = 17;
+        public static final int BACK_INDEXER = 16;
+        public static final int LOW_BEAM_BREAK = 6;
+        public static final int HIGH_BEAM_BREAK = 7;
+        public static final double NECK_FRONT_SPEED = 0.2;
+        public static final double NECK_BACK_SPEED = 0.2;
+        public static final double NECK_FRONT_OUT_SPEED = 0.2;
+        public static final double NECK_BACK_OUT_SPEED = 0.2;
     }
 }

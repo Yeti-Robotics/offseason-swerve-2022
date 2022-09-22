@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         m_robotContainer = new RobotContainer();
         compressor = new Compressor(PneumaticsModuleType.REVPH);
-        compressor.enableAnalog(110, 220);
+        compressor.enableAnalog(110, 120);
 
         autoChooser = new SendableChooser<>();
         autoChooser.setDefaultOption("ONE_BALL", AutoModes.ONE_BALL);

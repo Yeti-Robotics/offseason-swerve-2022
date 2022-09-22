@@ -69,12 +69,8 @@ public class PhotonVisionSubsystem implements VisionBackend {
       return 0.0;
     }
 
-    double angleToGoalDegrees = LimelightConstants.MOUNTING_ANGLE + getY();
-    double angleToGoalRadians = angleToGoalDegrees * (Math.PI / 180.0);
-    double distanceFromLimelightToGoalInches =
-        (LimelightConstants.GOAL_HEIGHT - LimelightConstants.LIMELIGHT_HEIGHT)
-            / Math.tan(angleToGoalRadians);
-
-    return distanceFromLimelightToGoalInches;
+    double angleToGoalRad = Math.toRadians(LimelightConstants.MOUNTING_ANGLE + getY());
+    return (LimelightConstants.GOAL_HEIGHT - LimelightConstants.LIMELIGHT_HEIGHT)
+            / Math.tan(angleToGoalRad);
   }
 }

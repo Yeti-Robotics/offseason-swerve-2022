@@ -77,7 +77,7 @@ public class ShooterSubsystem extends SubsystemBase {
                         shootFlywheel(setPoint);
                         break;
                     }
-                    setPoint = 25.0/3.0 * VisionSubsystem.getDistance() + 2991.66667;
+                    setPoint = 0.1389/0.9144 * VisionSubsystem.getDistance() + 15.9150;
                     setFlywheelVolts(
                             feedForward.calculate(setPoint, 10.0)
                                     + shooterPID.calculate(getMetersPerSecond(), setPoint));

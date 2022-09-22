@@ -29,13 +29,7 @@ import static frc.robot.Constants.*;
 import static frc.robot.Constants.DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 
 public class DrivetrainSubsystem extends SubsystemBase {
-	/**
-	 * The maximum voltage that will be delivered to the drive motors.
-	 * <p>
-	 * This can be reduced to cap the robot's maximum speed. Typically, this is
-	 * useful during initial testing of the robot.
-	 */
-	public static final double MAX_VOLTAGE = 12.0;
+
 
 	/**
 	 * The maximum velocity of the robot in meters per second.

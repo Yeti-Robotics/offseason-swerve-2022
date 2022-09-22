@@ -1,5 +1,6 @@
 package frc.robot.subsystems.VisionSubsystem;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants.LimelightConstants;
@@ -86,13 +87,10 @@ public class LimelightSubsystem implements VisionBackend {
       return 0.0;
     }
 
-    double angleToGoalDegrees = LimelightConstants.MOUNTING_ANGLE + getY();
-    double angleToGoalRadians = angleToGoalDegrees * (Math.PI / 180.0);
-    double distanceFromLimelightToGoalInches =
-        (LimelightConstants.GOAL_HEIGHT - LimelightConstants.LIMELIGHT_HEIGHT)
-            / Math.tan(angleToGoalRadians);
+    double angleToGoalRad = Math.toRadians(LimelightConstants.MOUNTING_ANGLE + getY());
 
-    return distanceFromLimelightToGoalInches;
+    return (LimelightConstants.GOAL_HEIGHT - LimelightConstants.LIMELIGHT_HEIGHT)
+            / Math.tan(angleToGoalRad);
   }
 
   private NetworkTableEntry getValue(String key) {
