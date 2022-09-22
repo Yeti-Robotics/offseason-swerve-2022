@@ -54,7 +54,13 @@ public class SwerveModule {
 
     public double getSteerRad() {
         //return Math.toRadians(absoluteEncoder.getAbsolutePosition());
-        return Math.toRadians(absoluteEncoder.getAbsolutePosition()) - absoluteEncoderOffsetRad;
+        double steerRadians = Math.toRadians(absoluteEncoder.getAbsolutePosition()) - absoluteEncoderOffsetRad;
+
+        if (steerRadians < 0) {
+            return 2 * Math.PI + steerRadians;
+        }
+
+        return steerRadians;
     }
 
     public double getDriveVelocity() {
@@ -81,6 +87,8 @@ public class SwerveModule {
         driveMotor.setVoltage(desiredState.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND
         * DriveConstants.MAX_VOLTAGE);
         steerMotor.set(steeringPIDController.calculate(getSteerRad(), desiredState.angle.getRadians()));
+
+        System.out.println(getSteerRad());
     }
 
     public void stop() {

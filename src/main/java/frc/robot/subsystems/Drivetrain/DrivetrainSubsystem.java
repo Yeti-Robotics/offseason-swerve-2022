@@ -28,6 +28,8 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 
+import java.util.Arrays;
+
 public class DrivetrainSubsystem extends SubsystemBase {
 	private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
 			// Front right
@@ -142,6 +144,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	}
 
 	public void setDesiredStates(SwerveModuleState[] desiredStates) {
+		// System.out.println(Arrays.toString(desiredStates));
 		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, MAX_VELOCITY_METERS_PER_SECOND);
 		frontRightModule.setDesiredState(desiredStates[0]);
 		frontLeftModule.setDesiredState(desiredStates[1]);
@@ -152,6 +155,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void drive(ChassisSpeeds chassisSpeeds) {
 		this.chassisSpeeds = chassisSpeeds;
 		setDesiredStates(kinematics.toSwerveModuleStates(chassisSpeeds));
+
 	}
 
 	public ChassisSpeeds getChassisSpeeds() {
@@ -163,7 +167,5 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		odometer.update(getGyroscopeRotation(),
 				frontRightModule.getState(), frontLeftModule.getState(),
 				backLeftModule.getState(), backRightModule.getState());
-
-		System.out.println(chassisSpeeds.toString());
 	}
 }
