@@ -164,6 +164,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				frontRightModule.getState(), frontLeftModule.getState(),
 				backLeftModule.getState(), backRightModule.getState());
 
-		System.out.println("GYRO: " + getGyroscopeRotation());
+		System.out.println(chassisSpeeds.toString());
 	}
 }

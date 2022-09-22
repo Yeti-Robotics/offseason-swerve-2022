@@ -36,7 +36,7 @@ public class SwerveModule {
         steerMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
 
         steeringPIDController = new PIDController(DriveConstants.STEER_MOTOR_P, 0.0, DriveConstants.STEER_MOTOR_D);
-        steeringPIDController.enableContinuousInput(0.0, 2 * Math.PI);
+        steeringPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
         state = new SwerveModuleState();
 
@@ -68,9 +68,7 @@ public class SwerveModule {
     }
 
     public SwerveModuleState getState() {
-        state.speedMetersPerSecond = getDriveVelocity();
-        state.angle = new Rotation2d(getSteerRad());
-        return state;
+        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getSteerRad()));
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {

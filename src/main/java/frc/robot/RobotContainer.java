@@ -39,10 +39,10 @@ public class RobotContainer {
 	private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	private final NeckSubsystem neckSubsystem = new NeckSubsystem();
 
-	public final Joystick driverStationJoystick;
+	public final XboxController driverStationJoystick;
 
 	public RobotContainer() {
-		driverStationJoystick = new Joystick(OIConstants.DRIVER_STATION_JOY);
+		driverStationJoystick = new XboxController(OIConstants.DRIVER_STATION_JOY);
 
 		// The controls are for field-oriented driving:
 		// Left stick Y axis -> forward and backwards movement
@@ -66,44 +66,44 @@ public class RobotContainer {
 	 * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
 	 */
 	private void configureButtonBindings() {
-		setConditionalButton(2, new ToggleShooterCommand(ShooterMode.LIMELIGHT, shooterSubsystem),
-		// false currently cannot ocurr, check setConditionalButton
-				ActiveState.WHEN_PRESSED, new InstantCommand(), ActiveState.WHEN_PRESSED);
+		// setConditionalButton(2, new ToggleShooterCommand(ShooterMode.LIMELIGHT, shooterSubsystem),
+		// // false currently cannot ocurr, check setConditionalButton
+		// 		ActiveState.WHEN_PRESSED, new InstantCommand(), ActiveState.WHEN_PRESSED);
 
-		setConditionalButton(1,
-				new AllinCommand(intakeSubsystem, neckSubsystem), ActiveState.WHILE_HELD,
-				new InstantCommand(), ActiveState.WHEN_PRESSED);
+		// setConditionalButton(1,
+		// 		new AllinCommand(intakeSubsystem, neckSubsystem), ActiveState.WHILE_HELD,
+		// 		new InstantCommand(), ActiveState.WHEN_PRESSED);
 
-		setConditionalButton(6,
-				new AllOutCommand(intakeSubsystem, neckSubsystem), ActiveState.WHILE_HELD,
-				new InstantCommand(), ActiveState.WHEN_PRESSED);
+		// setConditionalButton(6,
+		// 		new AllOutCommand(intakeSubsystem, neckSubsystem), ActiveState.WHILE_HELD,
+		// 		new InstantCommand(), ActiveState.WHEN_PRESSED);
 	}
 
 	private double getLeftY() {
-		return driverStationJoystick.getRawAxis(0);
+		return driverStationJoystick.getLeftY();
 	}
 
 	private double getLeftX() {
-		return -driverStationJoystick.getRawAxis(1);
+		return driverStationJoystick.getLeftX();
 	}
 
 	private double getRightY() {
-		return -driverStationJoystick.getRawAxis(2);
+		return driverStationJoystick.getRightY();
 	}
 
 	private double getRightX() {
-		return -driverStationJoystick.getRawAxis(3);
+		return driverStationJoystick.getRightX();
 	}
 
-	private void setConditionalButton(
-			int button,
-			Command trueCommand,
-			ActiveState trueActiveState,
-			Command falseCommand,
-			ActiveState falseActiveState) {
-		new JoyButton(driverStationJoystick, button)
-				.conditionalPressed(
-						// currently only runs the true command
-						trueCommand, trueActiveState, falseCommand, falseActiveState, () -> true);
-	}
+	// private void setConditionalButton(
+	// 		int button,
+	// 		Command trueCommand,
+	// 		ActiveState trueActiveState,
+	// 		Command falseCommand,
+	// 		ActiveState falseActiveState) {
+	// 	driverStationJoystick.
+	// 			.conditionalPressed(
+	// 					// currently only runs the true command
+	// 					trueCommand, trueActiveState, falseCommand, falseActiveState, () -> true);
+	// }
 }
