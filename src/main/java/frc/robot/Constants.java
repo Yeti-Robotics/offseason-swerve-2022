@@ -117,7 +117,14 @@ public final class Constants {
         // if max voltage changes this value should be modified
 
         public static final double STEER_MOTOR_P = 0.1; //0.08 //0.064
+        public static final double STEER_MOTOR_I = 0.0;
         public static final double STEER_MOTOR_D = 0.0;
+        public static final double STEER_MOTOR_F = 0.0;
+
+        public static final boolean ANGLE_ENABLE_CURRENT_LIMIT = true;
+        public static final int ANGLE_CONTINUOUS_CURRENT_LIMIT = 25;
+        public static final int ANGLE_PEAK_CURRENT_LIMIT = 40;
+        public static final double ANGLE_PEAK_CURRENT_DURATION = 0.1;
     }
 
     public static final class AutoConstants {

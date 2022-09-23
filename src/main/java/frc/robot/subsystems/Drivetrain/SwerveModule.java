@@ -2,15 +2,16 @@ package frc.robot.subsystems.Drivetrain;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.WPI_CANCoder;
+import com.ctre.phoenix.sensors.*;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.utils.CTREModuleState;
 
 public class SwerveModule {
     private final WPI_TalonFX driveMotor;
@@ -18,11 +19,8 @@ public class SwerveModule {
 
     private final WPI_CANCoder absoluteEncoder;
     private final boolean absoluteEncoderReversed;
-    private final double absoluteEncoderOffsetRad;
 
     private final PIDController steeringPIDController;
-
-    private SwerveModuleState state;
 
     public SwerveModule(
             int driveMotorID, int steerMotorID,
@@ -30,28 +28,57 @@ public class SwerveModule {
             int absoluteEncoderID, boolean absoluteEncoderReversed, double absoluteEncoderOffsetRad) {
 
         this.absoluteEncoderReversed = absoluteEncoderReversed;
-        this.absoluteEncoderOffsetRad = absoluteEncoderOffsetRad;
         absoluteEncoder = new WPI_CANCoder(absoluteEncoderID);
+        absoluteEncoder.configFactoryDefault();
+        absoluteEncoder.configAllSettings(getEncoderSettings());
+        absoluteEncoder.setPosition(absoluteEncoder.getAbsolutePosition() - absoluteEncoderOffsetRad);
+        absoluteEncoder.configMagnetOffset(Math.toDegrees(absoluteEncoderOffsetRad));
 
         driveMotor = new WPI_TalonFX(driveMotorID);
         steerMotor = new WPI_TalonFX(steerMotorID);
+        steerMotor.configFactoryDefault();
+        steerMotor.configAllSettings(getSteerMotorSettings());
 
         driveMotor.setNeutralMode(NeutralMode.Brake);
         steerMotor.setNeutralMode(NeutralMode.Brake);
 
         driveMotor.setInverted(driveInverted);
 
-        steerMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 10, 15, 0.5));
+//        steerMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 10, 15, 0.5));
 
         driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
-        steerMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
+//        steerMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
 
         steeringPIDController = new PIDController(DriveConstants.STEER_MOTOR_P, 0.0, DriveConstants.STEER_MOTOR_D);
         steeringPIDController.enableContinuousInput(0.0, 2 * Math.PI);
 
-        state = new SwerveModuleState();
-
         resetEncoders();
+    }
+
+    private CANCoderConfiguration getEncoderSettings() {
+        CANCoderConfiguration config = new CANCoderConfiguration();
+        config.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
+        config.sensorDirection = this.absoluteEncoderReversed;
+        config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
+        config.sensorTimeBase = SensorTimeBase.PerSecond;
+        config.unitString = "rad";
+        return config;
+    }
+
+    private TalonFXConfiguration getSteerMotorSettings() {
+        TalonFXConfiguration config = new TalonFXConfiguration();
+        config.slot0.kP = DriveConstants.STEER_MOTOR_P;
+        config.slot0.kI = DriveConstants.STEER_MOTOR_I;
+        config.slot0.kD = DriveConstants.STEER_MOTOR_D;
+        config.slot0.kF = DriveConstants.STEER_MOTOR_F;
+        config.supplyCurrLimit = new SupplyCurrentLimitConfiguration(
+                DriveConstants.ANGLE_ENABLE_CURRENT_LIMIT,
+                DriveConstants.ANGLE_CONTINUOUS_CURRENT_LIMIT,
+                DriveConstants.ANGLE_PEAK_CURRENT_LIMIT,
+                DriveConstants.ANGLE_PEAK_CURRENT_DURATION
+        );
+        config.initializationStrategy = SensorInitializationStrategy.BootToZero;
+        return config;
     }
 
     public void resetEncoders() {
@@ -64,13 +91,7 @@ public class SwerveModule {
     }
 
     public double getSteerRad() {
-        double steerRadians = Math.toRadians(absoluteEncoder.getAbsolutePosition()) - absoluteEncoderOffsetRad;
-
-        if (steerRadians < 0) {
-            return 2 * Math.PI + steerRadians;
-        }
-
-        return steerRadians;
+        return absoluteEncoder.getAbsolutePosition();
     }
 
     public double getDriveVelocity() {
@@ -92,7 +113,8 @@ public class SwerveModule {
             stop();
             return;
         }
-        desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
+//        desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
+        desiredState = CTREModuleState.optimize(desiredState, getState().angle);
 
         driveMotor.setVoltage(desiredState.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND
          * DriveConstants.MAX_VOLTAGE);
