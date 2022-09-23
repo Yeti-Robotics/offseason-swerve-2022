@@ -21,41 +21,42 @@ import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 import static frc.robot.Constants.*;
-import static frc.robot.Constants.DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 
 import java.util.Arrays;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 	private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-			// Front right
-			new Translation2d(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-					-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
 			// Front left
-			new Translation2d(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-					DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+			new Translation2d(DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
+					DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
+			// Front right
+			new Translation2d(DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
+					-DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
 			// Back left
-			new Translation2d(-DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-					DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+			new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
+					DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
 			// Back right
-			new Translation2d(-DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-					-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
+			new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
+					-DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0));
 
 	private final AHRS gyro = new AHRS(Port.kUSB); // NavX
 
 	// These are our modules. We initialize them in the constructor.
-	private final SwerveModule frontRightModule;
 	private final SwerveModule frontLeftModule;
-	private final SwerveModule backRightModule;
+	private final SwerveModule frontRightModule;
 	private final SwerveModule backLeftModule;
+	private final SwerveModule backRightModule;
 
 	private final PIDController yController = new PIDController(AutoConstants.Y_CONTROLLER_P, 0.0, 0.0);
 	private final PIDController xController = new PIDController(AutoConstants.X_CONTROLLER_P, 0.0, 0.0);
-	private final ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.THETA_CONTROLLER_P, 0.0, 0.0, AutoConstants.THETA_CONTROLLER_CONTRAINTS);
+	private final ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.THETA_CONTROLLER_P,
+			0.0, 0.0, AutoConstants.THETA_CONTROLLER_CONTRAINTS);
 
 	private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 	private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(kinematics, new Rotation2d(0));
@@ -63,33 +64,37 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public DrivetrainSubsystem() {
 		ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
-		frontRightModule = new SwerveModule(
-				DriveConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-				DriveConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
-				DriveConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,
-				false,
-				DriveConstants.FRONT_RIGHT_MODULE_STEER_OFFSET);
-
 		frontLeftModule = new SwerveModule(
 				DriveConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
 				DriveConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
+				true,
 				DriveConstants.FRONT_LEFT_MODULE_STEER_ENCODER,
 				false,
 				DriveConstants.FRONT_LEFT_MODULE_STEER_OFFSET);
 
-		backLeftModule = new SwerveModule(
-				DriveConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
-				DriveConstants.BACK_LEFT_MODULE_STEER_MOTOR,
-				DriveConstants.BACK_LEFT_MODULE_STEER_ENCODER,
+		frontRightModule = new SwerveModule(
+				DriveConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
+				DriveConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
 				false,
-				DriveConstants.BACK_LEFT_MODULE_STEER_OFFSET);
+				DriveConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,
+				false,
+				DriveConstants.FRONT_RIGHT_MODULE_STEER_OFFSET);
 
 		backRightModule = new SwerveModule(
 				DriveConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
 				DriveConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
+				false,
 				DriveConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
 				false,
-				DriveConstants.FRONT_RIGHT_MODULE_STEER_OFFSET);
+				DriveConstants.BACK_RIGHT_MODULE_STEER_OFFSET);
+
+		backLeftModule = new SwerveModule(
+				DriveConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
+				DriveConstants.BACK_LEFT_MODULE_STEER_MOTOR,
+				true,
+				DriveConstants.BACK_LEFT_MODULE_STEER_ENCODER,
+				false,
+				DriveConstants.BACK_LEFT_MODULE_STEER_OFFSET);
 
 		thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -144,10 +149,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	}
 
 	public void setDesiredStates(SwerveModuleState[] desiredStates) {
-		// System.out.println(Arrays.toString(desiredStates));
-		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, MAX_VELOCITY_METERS_PER_SECOND);
-		frontRightModule.setDesiredState(desiredStates[0]);
-		frontLeftModule.setDesiredState(desiredStates[1]);
+		SmartDashboard.putString("Front Right State", desiredStates[0].toString());
+		SmartDashboard.putString("Front Left State", desiredStates[1].toString());
+		SmartDashboard.putString("Back Left State", desiredStates[2].toString());
+		SmartDashboard.putString("Back Right State", desiredStates[3].toString());
+
+		System.out.println(Arrays.toString(desiredStates));
+		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+		frontLeftModule.setDesiredState(desiredStates[0]);
+		frontRightModule.setDesiredState(desiredStates[1]);
 		backLeftModule.setDesiredState(desiredStates[2]);
 		backRightModule.setDesiredState(desiredStates[3]);
 	}
@@ -165,7 +175,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		odometer.update(getGyroscopeRotation(),
-				frontRightModule.getState(), frontLeftModule.getState(),
+				frontLeftModule.getState(), frontRightModule.getState(),
 				backLeftModule.getState(), backRightModule.getState());
+
+		SmartDashboard.putNumber("Front Right", frontRightModule.getSteerRad());
+		SmartDashboard.putNumber("Front Left", frontLeftModule.getSteerRad());
+		SmartDashboard.putNumber("Back Left", backLeftModule.getSteerRad());
+		SmartDashboard.putNumber("Back Right", backRightModule.getSteerRad());
 	}
 }

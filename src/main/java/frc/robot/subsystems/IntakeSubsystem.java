@@ -26,7 +26,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     intakePistons = new DoubleSolenoid(PneumaticsModuleType.REVPH, IntakeConstants.INTAKE_PISTONS_SOLENOID[0], IntakeConstants.INTAKE_PISTONS_SOLENOID[1]);
     intakeSpark = new CANSparkMax(IntakeConstants.INTAKE_SPARK, MotorType.kBrushless);
-    intakePistons.set(Value.kForward);
+    intakePistons.set(Value.kReverse);
   }
 
   public void extendIntake(){

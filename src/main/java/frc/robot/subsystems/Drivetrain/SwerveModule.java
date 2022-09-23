@@ -1,10 +1,13 @@
 package frc.robot.subsystems.Drivetrain;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.DriveConstants;
@@ -23,6 +26,7 @@ public class SwerveModule {
 
     public SwerveModule(
             int driveMotorID, int steerMotorID,
+            boolean driveInverted,
             int absoluteEncoderID, boolean absoluteEncoderReversed, double absoluteEncoderOffsetRad) {
 
         this.absoluteEncoderReversed = absoluteEncoderReversed;
@@ -32,11 +36,18 @@ public class SwerveModule {
         driveMotor = new WPI_TalonFX(driveMotorID);
         steerMotor = new WPI_TalonFX(steerMotorID);
 
+        driveMotor.setNeutralMode(NeutralMode.Brake);
+        steerMotor.setNeutralMode(NeutralMode.Brake);
+
+        driveMotor.setInverted(driveInverted);
+
+        steerMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 10, 15, 0.5));
+
         driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
         steerMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
 
         steeringPIDController = new PIDController(DriveConstants.STEER_MOTOR_P, 0.0, DriveConstants.STEER_MOTOR_D);
-        steeringPIDController.enableContinuousInput(-Math.PI, Math.PI);
+        steeringPIDController.enableContinuousInput(0.0, 2 * Math.PI);
 
         state = new SwerveModuleState();
 
@@ -53,7 +64,6 @@ public class SwerveModule {
     }
 
     public double getSteerRad() {
-        //return Math.toRadians(absoluteEncoder.getAbsolutePosition());
         double steerRadians = Math.toRadians(absoluteEncoder.getAbsolutePosition()) - absoluteEncoderOffsetRad;
 
         if (steerRadians < 0) {
@@ -85,7 +95,7 @@ public class SwerveModule {
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
 
         driveMotor.setVoltage(desiredState.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND
-        * DriveConstants.MAX_VOLTAGE);
+         * DriveConstants.MAX_VOLTAGE);
         steerMotor.set(steeringPIDController.calculate(getSteerRad(), desiredState.angle.getRadians()));
 
         System.out.println(getSteerRad());
