@@ -50,14 +50,14 @@ public class SwerveModule {
 //        steerMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
 
         steeringPIDController = new PIDController(DriveConstants.STEER_MOTOR_P, 0.0, DriveConstants.STEER_MOTOR_D);
-        steeringPIDController.enableContinuousInput(0.0, 2 * Math.PI);
+        steeringPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
         resetEncoders();
     }
 
     private CANCoderConfiguration getEncoderSettings() {
         CANCoderConfiguration config = new CANCoderConfiguration();
-        config.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
+        config.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
         config.sensorDirection = this.absoluteEncoderReversed;
         config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
         config.sensorTimeBase = SensorTimeBase.PerSecond;
@@ -119,8 +119,6 @@ public class SwerveModule {
         driveMotor.setVoltage(desiredState.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND
          * DriveConstants.MAX_VOLTAGE);
         steerMotor.set(steeringPIDController.calculate(getSteerRad(), desiredState.angle.getRadians()));
-
-        System.out.println(getSteerRad());
     }
 
     public void stop() {

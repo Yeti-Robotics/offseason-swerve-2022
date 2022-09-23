@@ -116,9 +116,9 @@ public final class Constants {
         public static final double FALCON_FREE_RPM = 6380.0; // free speed RPM @12V, found here https://motors.vex.com/vexpro-motors/falcon
         // if max voltage changes this value should be modified
 
-        public static final double STEER_MOTOR_P = 0.1; //0.08 //0.064
+        public static final double STEER_MOTOR_P = 0.2; //0.08 //0.064
         public static final double STEER_MOTOR_I = 0.0;
-        public static final double STEER_MOTOR_D = 0.0;
+        public static final double STEER_MOTOR_D = 0.1;
         public static final double STEER_MOTOR_F = 0.0;
 
         public static final boolean ANGLE_ENABLE_CURRENT_LIMIT = true;

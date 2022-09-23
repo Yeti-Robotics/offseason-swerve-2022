@@ -149,12 +149,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	}
 
 	public void setDesiredStates(SwerveModuleState[] desiredStates) {
-		SmartDashboard.putString("Front Right State", desiredStates[0].toString());
-		SmartDashboard.putString("Front Left State", desiredStates[1].toString());
+		SmartDashboard.putString("Front Left State", desiredStates[0].toString());
+		SmartDashboard.putString("Front Right State", desiredStates[1].toString());
 		SmartDashboard.putString("Back Left State", desiredStates[2].toString());
 		SmartDashboard.putString("Back Right State", desiredStates[3].toString());
 
-		System.out.println(Arrays.toString(desiredStates));
+		System.out.printf("Front Left: %s  ||  %s \n Front Right: %s  ||  %s \n Back Left: %s  ||  %s \n Back Right: %s  ||  %s \n",
+				desiredStates[0],
+				frontLeftModule.getState(),
+				desiredStates[1],
+				frontRightModule.getState(),
+				desiredStates[2],
+				backLeftModule.getState(),
+				desiredStates[3],
+				backRightModule.getState());
 		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
 		frontLeftModule.setDesiredState(desiredStates[0]);
 		frontRightModule.setDesiredState(desiredStates[1]);

@@ -13,9 +13,10 @@ public class MoveAndShootController {
     private final DrivetrainSubsystem drivetrainSubsystem;
 
     private Pose2d targetPose;
+    private Pose2d originPose;
 
     private ChassisSpeeds chassisSpeeds;
-    private Transform2d targetOffset;
+    private Pose2d targetOffset;
     private final Rotation2d zeroRotation = new Rotation2d(0.0);
 
     private double vectorMagnitude;
@@ -24,16 +25,20 @@ public class MoveAndShootController {
         this.drivetrainSubsystem = drivetrainSubsystem;
 
         targetPose = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
+        originPose = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
     }
 
     private void updateTargetLocation() {
         chassisSpeeds = drivetrainSubsystem.getChassisSpeeds();
-        targetOffset = new Transform2d(
-                new Translation2d(-chassisSpeeds.vxMetersPerSecond, -chassisSpeeds.vyMetersPerSecond), zeroRotation);
+        targetPose = originPose.relativeTo(drivetrainSubsystem.getPose());
 
-        targetPose = targetPose.relativeTo(drivetrainSubsystem.getPose()).transformBy(targetOffset);
+        if (targetPose.getX() > 0) {
+            chassisSpeeds.vxMetersPerSecond = -chassisSpeeds.vxMetersPerSecond;
+            chassisSpeeds.vyMetersPerSecond = -chassisSpeeds.vyMetersPerSecond;
+        }
 
-        double vectorMagnitude = Math.sqrt(Math.pow(targetPose.getX(), 2) + Math.pow(targetPose.getY(), 2));
+        double vectorMagnitude = Math.sqrt(Math.pow(chassisSpeeds.vyMetersPerSecond, 2)
+                + Math.pow(chassisSpeeds.vyMetersPerSecond, 2));
     }
 
     public double calculateShooterSpeed() {
