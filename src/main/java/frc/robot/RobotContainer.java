@@ -7,13 +7,17 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.AllOutCommand;
 import frc.robot.commands.AllinCommand;
 import frc.robot.commands.drivetrain.FieldOrientedDrive;
+import frc.robot.commands.intake.ToggleIntakeCommand;
 import frc.robot.commands.shooter.ToggleShooterCommand;
 import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -66,6 +70,8 @@ public class RobotContainer {
 	 * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
 	 */
 	private void configureButtonBindings() {
+		setButtonWhenPressed(driverStationJoystick, Button.kA.value, new ToggleIntakeCommand(intakeSubsystem));
+
 		// setConditionalButton(2, new ToggleShooterCommand(ShooterMode.LIMELIGHT, shooterSubsystem),
 		// // false currently cannot ocurr, check setConditionalButton
 		// 		ActiveState.WHEN_PRESSED, new InstantCommand(), ActiveState.WHEN_PRESSED);
@@ -93,6 +99,14 @@ public class RobotContainer {
 
 	private double getRightX() {
 		return driverStationJoystick.getRightX();
+	}
+
+	private void setButtonWhenPressed(GenericHID genericHID, int button, CommandBase command) {
+		new JoystickButton(genericHID, button).whenPressed(command);
+	}
+
+	private void setButtonWhileHeld(GenericHID genericHID, int button, CommandBase command) {
+		new JoystickButton(genericHID, button).whileHeld(command);
 	}
 
 	// private void setConditionalButton(
