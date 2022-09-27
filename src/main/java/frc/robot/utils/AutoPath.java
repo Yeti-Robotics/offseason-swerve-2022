@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
 
@@ -54,7 +55,7 @@ public class AutoPath {
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
                 maxVel,
                 maxAccel)
-                .setKinematics(drivetrainSubsystem.getKinematics())
+                .setKinematics(DriveConstants.DRIVE_KINEMATICS)
                 .setStartVelocity(startVel)
                 .setEndVelocity(endVel)
                 .setReversed(isReversed);
@@ -64,7 +65,7 @@ public class AutoPath {
         swerveControllerCommand = new SwerveControllerCommand(
                 trajectory,
                 drivetrainSubsystem::getPose,
-                drivetrainSubsystem.getKinematics(),
+                DriveConstants.DRIVE_KINEMATICS,
                 drivetrainSubsystem.getxController(),
                 drivetrainSubsystem.getyController(),
                 drivetrainSubsystem.getThetaController(),

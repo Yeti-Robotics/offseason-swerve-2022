@@ -8,6 +8,7 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
@@ -55,6 +56,22 @@ public final class Constants {
          */
         public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(21.75);
 
+        public static final SwerveDriveKinematics DRIVE_KINEMATICS =
+                new SwerveDriveKinematics(
+                        // Front left
+                        new Translation2d(DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
+                                DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
+                        // Front right
+                        new Translation2d(DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
+                                -DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
+                        // Back left
+                        new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
+                                DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
+                        // Back right
+                        new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
+                                -DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0)
+                );
+
         /**
          * The maximum velocity of the robot in meters per second.
          * <p>
@@ -67,44 +84,60 @@ public final class Constants {
         public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
                 SdsModuleConfigurations.MK4_L2.getDriveReduction() *
                 SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
-
         /**
          * The maximum angular velocity of the robot in radians per second.
          * <p>
          * This is a measure of how fast the robot can rotate in place.
          */
-        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
+        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
+                MAX_VELOCITY_METERS_PER_SECOND /
                 Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
                         DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
-        public static final double MAX_ACCELERATION = MAX_VELOCITY_METERS_PER_SECOND * 0.75;
-        public static final double MAX_ANGULAR_ACCELERATION = MAX_VELOCITY_METERS_PER_SECOND * 0.75;
+        // Falcon to wheel reduction * Encoder counts to Falcon rotation / Degrees in full rotation;
+        public static final double DEGREES_TO_FALCON = 150/7 * 2048 / 360;
 
-        public static final int DRIVETRAIN_PIGEON_ID = 0; // FIXME Set Pigeon ID
+        public static final double MAX_ACCELERATION = MAX_VELOCITY_METERS_PER_SECOND * 2;
+        public static final double MAX_ANGULAR_ACCELERATION = MAX_VELOCITY_METERS_PER_SECOND * 2;
 
-        public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 7; // FIXME Set front left module drive motor ID
-        public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 6; // FIXME Set front left module steer motor ID
-        public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 2; // FIXME Set front left steer encoder ID
-        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = Math.toRadians(152.666); // FIXME Measure and set front
-                                                                                          // left steer offset
+        public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 7;
+        public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 6;
+        public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 2;
+        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 152.666;
 
-        public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 9; // FIXME Set front right drive motor ID
-        public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 8; // FIXME Set front right steer motor ID
-        public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 3; // FIXME Set front right steer encoder ID
-        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = Math.toRadians(260.859); // FIXME Measure and set
-                                                                                           // front right steer offset
+        public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 9;
+        public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 8;
+        public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 3;
+        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 260.859;
 
-        public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 13; // FIXME Set back left drive motor ID
-        public static final int BACK_LEFT_MODULE_STEER_MOTOR = 12; // FIXME Set back left steer motor ID
-        public static final int BACK_LEFT_MODULE_STEER_ENCODER = 5; // FIXME Set back left steer encoder ID
-        public static final double BACK_LEFT_MODULE_STEER_OFFSET = Math.toRadians(149.502); //FIXME Measure and set back
-                                                                                         // left steer offset
+        public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 13;
+        public static final int BACK_LEFT_MODULE_STEER_MOTOR = 12;
+        public static final int BACK_LEFT_MODULE_STEER_ENCODER = 5;
+        public static final double BACK_LEFT_MODULE_STEER_OFFSET = 149.502;
 
-        public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 11; // FIXME Set back right drive motor ID
-        public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 10; // FIXME Set back right steer motor ID
-        public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 4; // FIXME Set back right steer encoder ID
-        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = Math.toRadians(131.); // FIXME Measure and set back
-        // right steer offset
+        public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 11;
+        public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 10;
+        public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 4;
+        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 131.0;
+
+        public static final double DRIVE_MOTOR_P = 0.0;
+        public static final double DRIVE_MOTOR_I = 0.0;
+        public static final double DRIVE_MOTOR_D = 0.0;
+        public static final double DRIVE_MOTOR_KS = 0.0;
+        public static final double DRIVE_MOTOR_KV = 0.0;
+        public static final double DRIVE_MOTOR_KA = 0.0;
+
+        public static final double STEER_MOTOR_P = 0.2; //0.08 //0.064
+        public static final double STEER_MOTOR_I = 0.0;
+        public static final double STEER_MOTOR_D = 0.1;
+        public static final double STEER_MOTOR_KS = 0.0;
+        public static final double STEER_MOTOR_KV = 0.0;
+        public static final double STEER_MOTOR_KA = 0.0;
+
+        public static final boolean ANGLE_ENABLE_CURRENT_LIMIT = true;
+        public static final int ANGLE_CONTINUOUS_CURRENT_LIMIT = 25;
+        public static final int ANGLE_PEAK_CURRENT_LIMIT = 40;
+        public static final double ANGLE_PEAK_CURRENT_DURATION = 0.1;
 
         /**
          * The maximum voltage that will be delivered to the drive motors.
@@ -115,16 +148,6 @@ public final class Constants {
         public static final double MAX_VOLTAGE = 12.0;
         public static final double FALCON_FREE_RPM = 6380.0; // free speed RPM @12V, found here https://motors.vex.com/vexpro-motors/falcon
         // if max voltage changes this value should be modified
-
-        public static final double STEER_MOTOR_P = 0.2; //0.08 //0.064
-        public static final double STEER_MOTOR_I = 0.0;
-        public static final double STEER_MOTOR_D = 0.1;
-        public static final double STEER_MOTOR_F = 0.0;
-
-        public static final boolean ANGLE_ENABLE_CURRENT_LIMIT = true;
-        public static final int ANGLE_CONTINUOUS_CURRENT_LIMIT = 25;
-        public static final int ANGLE_PEAK_CURRENT_LIMIT = 40;
-        public static final double ANGLE_PEAK_CURRENT_DURATION = 0.1;
     }
 
     public static final class AutoConstants {

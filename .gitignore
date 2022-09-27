@@ -168,3 +168,6 @@ bin/
 
 # Sim GUI JSONS
 *simgui*.json
+
+# Sysid
+.sysid

@@ -68,5 +68,7 @@ public class AutoBuilder {
                                         Rotation2d.fromDegrees(0.0))),
                 new Pose2d(TarmacPositions.tarmacVertexE, TarmacPositions.tarmacAngleD).transformBy(DriveConstants.ROBOT_CENTER)
                 );
+
+        pathCommands.addCommands(startPath.getAutoPath());
     }
 }

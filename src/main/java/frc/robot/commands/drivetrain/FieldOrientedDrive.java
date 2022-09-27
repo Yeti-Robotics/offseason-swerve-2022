@@ -1,8 +1,10 @@
 package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.DriveConstants;
@@ -22,7 +24,17 @@ public class FieldOrientedDrive extends CommandBase {
 
     private final SlewRateLimiter xLimiter, yLimiter, thetaLimiter;
 
-    private final PIDController targetLockPID;
+    private final ProfiledPIDController targetLockPID =
+            new ProfiledPIDController(
+                    ShooterConstants.TARGETING_P,
+                    ShooterConstants.TARGETING_I,
+                    ShooterConstants.TARGETING_D,
+                    new TrapezoidProfile.Constraints(
+                            360,
+                            720
+                    )
+            );
+
     private final MoveAndShootController moveAndShootController;
     private boolean targetLock = false;
 
@@ -39,7 +51,6 @@ public class FieldOrientedDrive extends CommandBase {
         this.yLimiter = new SlewRateLimiter(DriveConstants.MAX_ACCELERATION);
         this.thetaLimiter = new SlewRateLimiter(DriveConstants.MAX_ANGULAR_ACCELERATION);
 
-        targetLockPID = new PIDController(ShooterConstants.TARGETING_P, ShooterConstants.TARGETING_I, ShooterConstants.TARGETING_D);
         moveAndShootController = new MoveAndShootController(drivetrainSubsystem);
 
         addRequirements(drivetrainSubsystem);
@@ -89,14 +100,16 @@ public class FieldOrientedDrive extends CommandBase {
     private double lockToTargetWhileMoving() {
         return targetLockPID.calculate(
                 VisionSubsystem.getX(),
-                Math.toDegrees(Math.atan(ShooterConstants.TARGET_OFFSET / VisionSubsystem.getDistance())
+                Math.toDegrees(
+                        Math.atan(ShooterConstants.TARGET_OFFSET / (VisionSubsystem.getDistance() + 24.0))
                         + moveAndShootController.calculateAngleOffset())
         );
     }
     private double lockToTarget() {
         return targetLockPID.calculate(
                 VisionSubsystem.getX(),
-                Math.toDegrees(Math.atan(ShooterConstants.TARGET_OFFSET / VisionSubsystem.getDistance()))
+                Math.toDegrees(
+                        Math.atan(ShooterConstants.TARGET_OFFSET / (VisionSubsystem.getDistance() + 24.0)))
         );
     }
 

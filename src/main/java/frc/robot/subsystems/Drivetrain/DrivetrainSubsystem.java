@@ -31,20 +31,6 @@ import static frc.robot.Constants.*;
 import java.util.Arrays;
 
 public class DrivetrainSubsystem extends SubsystemBase {
-	private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-			// Front left
-			new Translation2d(DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
-					DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-			// Front right
-			new Translation2d(DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
-					-DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-			// Back left
-			new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
-					DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-			// Back right
-			new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
-					-DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0));
-
 	private final AHRS gyro = new AHRS(Port.kUSB); // NavX
 
 	// These are our modules. We initialize them in the constructor.
@@ -59,39 +45,39 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			0.0, 0.0, AutoConstants.THETA_CONTROLLER_CONTRAINTS);
 
 	private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-	private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(kinematics, new Rotation2d(0));
+	private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.DRIVE_KINEMATICS, new Rotation2d(0));
 
 	public DrivetrainSubsystem() {
 		ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
 		frontLeftModule = new SwerveModule(
 				DriveConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
-				DriveConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
 				true,
+				DriveConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
 				DriveConstants.FRONT_LEFT_MODULE_STEER_ENCODER,
 				false,
 				DriveConstants.FRONT_LEFT_MODULE_STEER_OFFSET);
 
 		frontRightModule = new SwerveModule(
 				DriveConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-				DriveConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
 				false,
+				DriveConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
 				DriveConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,
 				false,
 				DriveConstants.FRONT_RIGHT_MODULE_STEER_OFFSET);
 
 		backRightModule = new SwerveModule(
 				DriveConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
-				DriveConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
 				false,
+				DriveConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
 				DriveConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
 				false,
 				DriveConstants.BACK_RIGHT_MODULE_STEER_OFFSET);
 
 		backLeftModule = new SwerveModule(
 				DriveConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
-				DriveConstants.BACK_LEFT_MODULE_STEER_MOTOR,
 				true,
+				DriveConstants.BACK_LEFT_MODULE_STEER_MOTOR,
 				DriveConstants.BACK_LEFT_MODULE_STEER_ENCODER,
 				false,
 				DriveConstants.BACK_LEFT_MODULE_STEER_OFFSET);
@@ -121,7 +107,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	}
 
 	public Rotation2d getGyroscopeRotation() {
-		return Rotation2d.fromDegrees(-gyro.getYaw() + 360);
+		return gyro.getRotation2d();
 	}
 
 	public Pose2d getPose() {
@@ -130,10 +116,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	public void resetOdometer(Pose2d pose) {
 		odometer.resetPosition(pose, getGyroscopeRotation());
-	}
-
-	public SwerveDriveKinematics getKinematics() {
-		return kinematics;
 	}
 
 	public PIDController getxController() {
@@ -172,8 +154,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	public void drive(ChassisSpeeds chassisSpeeds) {
 		this.chassisSpeeds = chassisSpeeds;
-		setDesiredStates(kinematics.toSwerveModuleStates(chassisSpeeds));
-
+		setDesiredStates(DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds));
 	}
 
 	public ChassisSpeeds getChassisSpeeds() {
