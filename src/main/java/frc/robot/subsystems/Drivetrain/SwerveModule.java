@@ -1,7 +1,9 @@
 package frc.robot.subsystems.Drivetrain;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -12,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.CTREModuleState;
+import frc.robot.utils.Conversions;
 
 public class SwerveModule {
     private final WPI_TalonFX driveMotor;
@@ -19,6 +22,7 @@ public class SwerveModule {
 
     private final WPI_CANCoder absoluteEncoder;
     private final boolean absoluteEncoderReversed;
+    private final double absouluteEncoderOffsetDeg;
 
     private final PIDController steeringPIDController;
 
@@ -27,32 +31,33 @@ public class SwerveModule {
             boolean driveInverted,
             int absoluteEncoderID, boolean absoluteEncoderReversed, double absoluteEncoderOffsetRad) {
 
+        this.absouluteEncoderOffsetDeg = Math.toDegrees(absoluteEncoderOffsetRad);
         this.absoluteEncoderReversed = absoluteEncoderReversed;
         absoluteEncoder = new WPI_CANCoder(absoluteEncoderID);
         absoluteEncoder.configFactoryDefault();
         absoluteEncoder.configAllSettings(getEncoderSettings());
-        absoluteEncoder.setPosition(absoluteEncoder.getAbsolutePosition() - absoluteEncoderOffsetRad);
-        absoluteEncoder.configMagnetOffset(Math.toDegrees(absoluteEncoderOffsetRad));
+        // absoluteEncoder.configMagnetOffset(Math.toDegrees(-absoluteEncoderOffsetRad));
 
         driveMotor = new WPI_TalonFX(driveMotorID);
         steerMotor = new WPI_TalonFX(steerMotorID);
-        steerMotor.configFactoryDefault();
-        steerMotor.configAllSettings(getSteerMotorSettings());
+        // steerMotor.configFactoryDefault();
+        // steerMotor.configAllSettings(getSteerMotorSettings());
 
         driveMotor.setNeutralMode(NeutralMode.Brake);
         steerMotor.setNeutralMode(NeutralMode.Brake);
 
         driveMotor.setInverted(driveInverted);
 
-//        steerMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 10, 15, 0.5));
+        steerMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 10, 15, 0.5));
 
         driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
-//        steerMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
+        steerMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
 
         steeringPIDController = new PIDController(DriveConstants.STEER_MOTOR_P, 0.0, DriveConstants.STEER_MOTOR_D);
-        steeringPIDController.enableContinuousInput(-Math.PI, Math.PI);
+        steeringPIDController.enableContinuousInput(-180, 180);
 
         resetEncoders();
+        // resetSteerToAbsolute();
     }
 
     private CANCoderConfiguration getEncoderSettings() {
@@ -61,7 +66,7 @@ public class SwerveModule {
         config.sensorDirection = this.absoluteEncoderReversed;
         config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
         config.sensorTimeBase = SensorTimeBase.PerSecond;
-        config.unitString = "rad";
+        config.unitString = "deg";
         return config;
     }
 
@@ -86,12 +91,17 @@ public class SwerveModule {
         steerMotor.setSelectedSensorPosition(0);
     }
 
+    public void resetSteerToAbsolute() {
+        double absolutePostion = Conversions.degreesToFalcon(absoluteEncoder.getAbsolutePosition() - absouluteEncoderOffsetDeg, 150/7);
+        steerMotor.setSelectedSensorPosition(2000.0);
+    }
+
     public double getDrivePosition() {
         return driveMotor.getSelectedSensorPosition();
     }
 
-    public double getSteerRad() {
-        return absoluteEncoder.getAbsolutePosition();
+    public double getSteerPosition() {
+        return steerMotor.getSelectedSensorPosition();
     }
 
     public double getDriveVelocity() {
@@ -105,7 +115,7 @@ public class SwerveModule {
     }
 
     public SwerveModuleState getState() {
-        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getSteerRad()));
+        return new SwerveModuleState(getDriveVelocity(), Rotation2d.fromDegrees(Conversions.falconToDegrees(getSteerPosition(), 150/7)));
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {
@@ -116,9 +126,12 @@ public class SwerveModule {
 //        desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
         desiredState = CTREModuleState.optimize(desiredState, getState().angle);
 
-        driveMotor.setVoltage(desiredState.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND
-         * DriveConstants.MAX_VOLTAGE);
-        steerMotor.set(steeringPIDController.calculate(getSteerRad(), desiredState.angle.getRadians()));
+         driveMotor.setVoltage(desiredState.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND
+          * DriveConstants.MAX_VOLTAGE);
+        
+        // steerMotor.set(steeringPIDController.calculate(getSteerPosition(), desiredState.angle.getDegrees()));
+        // steerMotor.set(steeringPIDController.calculate(getSteerPosition(), 45));
+        steerMotor.set(ControlMode.Position, 0);
     }
 
     public void stop() {

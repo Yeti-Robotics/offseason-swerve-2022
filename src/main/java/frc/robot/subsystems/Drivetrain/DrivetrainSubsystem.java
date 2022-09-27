@@ -186,9 +186,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				frontLeftModule.getState(), frontRightModule.getState(),
 				backLeftModule.getState(), backRightModule.getState());
 
-		SmartDashboard.putNumber("Front Right", frontRightModule.getSteerRad());
-		SmartDashboard.putNumber("Front Left", frontLeftModule.getSteerRad());
-		SmartDashboard.putNumber("Back Left", backLeftModule.getSteerRad());
-		SmartDashboard.putNumber("Back Right", backRightModule.getSteerRad());
+		SmartDashboard.putNumber("Front Right", frontRightModule.getSteerPosition());
+		SmartDashboard.putNumber("Front Left", frontLeftModule.getSteerPosition());
+		SmartDashboard.putNumber("Back Left", backLeftModule.getSteerPosition());
+		SmartDashboard.putNumber("Back Right", backRightModule.getDrivePosition());
 	}
 }
