@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -46,6 +47,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
         shooterLeftFalcon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
         shooterRightFalcon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
+
+        shooterLeftFalcon.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+        shooterLeftFalcon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 20);
+        shooterRightFalcon.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+        shooterRightFalcon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 20);
 
         shooterLeftFalcon.follow(shooterRightFalcon);
         shooterLeftFalcon.setInverted(InvertType.OpposeMaster);

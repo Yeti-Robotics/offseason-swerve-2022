@@ -16,6 +16,26 @@ public class NeckSubsystem extends SubsystemBase {
     public NeckSubsystem() {
         frontSpark = new CANSparkMax(Constants.NeckConstants.FRONT_INDEXER, CANSparkMaxLowLevel.MotorType.kBrushless);
         backSpark = new CANSparkMax(Constants.NeckConstants.BACK_INDEXER, CANSparkMaxLowLevel.MotorType.kBrushless);
+
+        frontSpark.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        backSpark.setIdleMode(CANSparkMax.IdleMode.kCoast);
+
+        frontSpark.setInverted(false);
+        backSpark.setInverted(false);
+
+        frontSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 250);
+        frontSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 250);
+        frontSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 250);
+        frontSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus3, 250);
+
+        backSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 250);
+        backSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 250);
+        backSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 250);
+        backSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus3, 250);
+
+        frontSpark.setSmartCurrentLimit(20);
+        backSpark.setSmartCurrentLimit(20);
+
         lowBeamBreak = new DigitalInput(Constants.NeckConstants.LOW_BEAM_BREAK);
         highBeamBreak = new DigitalInput(Constants.NeckConstants.HIGH_BEAM_BREAK);
     }

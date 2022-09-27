@@ -4,56 +4,70 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IntakeConstants;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
-  /** Creates a new IntakeSubsystem. */
+    /**
+     * Creates a new IntakeSubsystem.
+     */
 
-  private final CANSparkMax intakeSpark;
-  private final DoubleSolenoid intakePistons;
+    private final CANSparkMax intakeSpark;
+    private final DoubleSolenoid intakePistons;
 
-  public IntakeSubsystem() {
-    intakePistons = new DoubleSolenoid(PneumaticsModuleType.REVPH, IntakeConstants.INTAKE_PISTONS_SOLENOID[0], IntakeConstants.INTAKE_PISTONS_SOLENOID[1]);
-    intakeSpark = new CANSparkMax(IntakeConstants.INTAKE_SPARK, MotorType.kBrushless);
-    intakePistons.set(Value.kReverse);
-  }
+    public IntakeSubsystem() {
+        intakePistons = new DoubleSolenoid(PneumaticsModuleType.REVPH, IntakeConstants.INTAKE_PISTONS_SOLENOID[0], IntakeConstants.INTAKE_PISTONS_SOLENOID[1]);
+        intakeSpark = new CANSparkMax(IntakeConstants.INTAKE_SPARK, MotorType.kBrushless);
 
-  public void extendIntake(){
-    intakePistons.set(Value.kReverse);
-  }
+        intakeSpark.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
-  public void retractIntake(){
-    intakePistons.set(Value.kForward);
-  }
+        intakeSpark.setInverted(false);
 
-  public void rollIn(){
-    intakeSpark.set(IntakeConstants.INTAKE_SPEED);
-  }
+        intakeSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 250);
+        intakeSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 250);
+        intakeSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 250);
+        intakeSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus3, 250);
 
-  public void rollIn(double speed){
-    intakeSpark.set(speed);
-  }
+        intakeSpark.setSmartCurrentLimit(20);
 
-  public void rollOut(){
-    intakeSpark.set(IntakeConstants.INTAKE_OUT_SPEED);
-  }
+        intakePistons.set(Value.kReverse);
+    }
 
-  public void stopRoll(){
-    intakeSpark.set(0);
-  }
+    public void extendIntake() {
+        intakePistons.set(Value.kReverse);
+    }
 
-  public void toggleIntake(){
-    intakePistons.toggle();
-  }
+    public void retractIntake() {
+        intakePistons.set(Value.kForward);
+    }
+
+    public void rollIn() {
+        intakeSpark.set(IntakeConstants.INTAKE_SPEED);
+    }
+
+    public void rollIn(double speed) {
+        intakeSpark.set(speed);
+    }
+
+    public void rollOut() {
+        intakeSpark.set(IntakeConstants.INTAKE_OUT_SPEED);
+    }
+
+    public void stopRoll() {
+        intakeSpark.set(0);
+    }
+
+    public Value intakePosition() {
+        return intakePistons.get();
+    }
+
+    public void toggleIntake() {
+        intakePistons.toggle();
+    }
 }
