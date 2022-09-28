@@ -95,7 +95,7 @@ public final class Constants {
                         DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
         // Falcon to wheel reduction * Encoder counts to Falcon rotation / Degrees in full rotation;
-        public static final double DEGREES_TO_FALCON = 150/7 * 2048 / 360;
+        public static final double DEGREES_TO_FALCON = 150/7.0 * 2048 / 360.0;
 
         public static final double MAX_ACCELERATION = MAX_VELOCITY_METERS_PER_SECOND * 2;
         public static final double MAX_ANGULAR_ACCELERATION = MAX_VELOCITY_METERS_PER_SECOND * 2;
@@ -103,33 +103,33 @@ public final class Constants {
         public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 7;
         public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 6;
         public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 2;
-        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 152.666;
+        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 32.78;
 
         public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 9;
         public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 8;
         public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 3;
-        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 260.859;
+        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 103.71;
 
         public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 13;
         public static final int BACK_LEFT_MODULE_STEER_MOTOR = 12;
         public static final int BACK_LEFT_MODULE_STEER_ENCODER = 5;
-        public static final double BACK_LEFT_MODULE_STEER_OFFSET = 149.502;
+        public static final double BACK_LEFT_MODULE_STEER_OFFSET = 35.07;
 
         public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 11;
         public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 10;
         public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 4;
-        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 131.0;
+        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -125.86;
 
-        public static final double DRIVE_MOTOR_P = 0.0;
+        public static final double DRIVE_MOTOR_P = 1.0;
         public static final double DRIVE_MOTOR_I = 0.0;
         public static final double DRIVE_MOTOR_D = 0.0;
         public static final double DRIVE_MOTOR_KS = 0.0;
         public static final double DRIVE_MOTOR_KV = 0.0;
         public static final double DRIVE_MOTOR_KA = 0.0;
 
-        public static final double STEER_MOTOR_P = 0.2; //0.08 //0.064
+        public static final double STEER_MOTOR_P = 8.0; //0.08 //0.064
         public static final double STEER_MOTOR_I = 0.0;
-        public static final double STEER_MOTOR_D = 0.1;
+        public static final double STEER_MOTOR_D = 0.0;
         public static final double STEER_MOTOR_KS = 0.0;
         public static final double STEER_MOTOR_KV = 0.0;
         public static final double STEER_MOTOR_KA = 0.0;

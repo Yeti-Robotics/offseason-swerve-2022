@@ -6,6 +6,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -58,23 +59,23 @@ public class FieldOrientedDrive extends CommandBase {
 
     @Override
     public void execute() {
-        double xSpeed = translationXSupplier.getAsDouble();
-        double ySpeed = -translationYSupplier.getAsDouble();
-        double thetaSpeed = -rotationSupplier.getAsDouble();
+//        System.out.println("X Supplier: " + translationXSupplier.getAsDouble());
+//        System.out.println("Y Supplier: " + translationYSupplier.getAsDouble());
+//        System.out.println("Rotation Supplier: " + rotationSupplier.getAsDouble());
 
-        // System.out.println("Before xSpeed: " + xSpeed);
-        // System.out.println("Before ySpeed: " + ySpeed);
-        // System.out.println("Before thetaSpeed: " + thetaSpeed);
-        
-        xSpeed = xLimiter.calculate(Math.abs(xSpeed) > OIConstants.DEADBAND ? xSpeed : 0.0)
-        * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-        ySpeed = yLimiter.calculate(Math.abs(ySpeed) > OIConstants.DEADBAND ? ySpeed : 0.0)
-        * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+        double xSpeed = modifyAxis(translationXSupplier.getAsDouble()) *
+                DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+        double ySpeed = modifyAxis(-translationYSupplier.getAsDouble()) *
+                DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+        double thetaSpeed = modifyAxis(-rotationSupplier.getAsDouble()) *
+                DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+
+//        System.out.println("Before xSpeed: " + xSpeed);
+//        System.out.println("Before ySpeed: " + ySpeed);
+//        System.out.println("Before thetaSpeed: " + thetaSpeed);
+
         if (targetLock) {
             thetaSpeed = lockToTarget() * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
-        } else {
-            thetaSpeed = thetaLimiter.calculate(Math.abs(thetaSpeed) > OIConstants.DEADBAND ? thetaSpeed : 0.0)
-            * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
         }
         // System.out.println("xSpeed: " + xSpeed);
         // System.out.println("ySpeed: " + ySpeed);
@@ -111,6 +112,14 @@ public class FieldOrientedDrive extends CommandBase {
                 Math.toDegrees(
                         Math.atan(ShooterConstants.TARGET_OFFSET / (VisionSubsystem.getDistance() + 24.0)))
         );
+    }
+
+    private double modifyAxis(double value) {
+        if (Math.abs(value) <= OIConstants.DEADBAND) {
+            return 0.0;
+        }
+
+        return Math.copySign(value * value, value);
     }
 
     @Override
