@@ -1,7 +1,5 @@
 package frc.robot.commands.shooter;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
@@ -9,15 +7,15 @@ import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
 public class ToggleShooterCommand extends InstantCommand {
 	private final ShooterMode shooterMode;
 	private final ShooterSubsystem shooterSubsystem;
-	private DoubleSupplier setPointSupplier;
+	private double setPoint;
 
 	public ToggleShooterCommand(ShooterMode shooterMode, ShooterSubsystem shooterSubsystem) {
 		this.shooterMode = shooterMode;
 		this.shooterSubsystem = shooterSubsystem;
 	}
 
-	public ToggleShooterCommand(DoubleSupplier setPointSupplier, ShooterSubsystem shooterSubsystem) {
-		this.setPointSupplier = setPointSupplier;
+	public ToggleShooterCommand(double setPoint, ShooterSubsystem shooterSubsystem) {
+		this.setPoint = setPoint;
 		this.shooterMode = ShooterMode.MANUAL;
 		this.shooterSubsystem = shooterSubsystem;
 	}
@@ -29,7 +27,7 @@ public class ToggleShooterCommand extends InstantCommand {
 		} else {
 			shooterSubsystem.setShooterMode(shooterMode);
 			if (shooterMode == ShooterMode.MANUAL)
-				shooterSubsystem.setSetPoint(setPointSupplier.getAsDouble());
+				shooterSubsystem.setSetPoint(setPoint);
 		}
 	}
 }

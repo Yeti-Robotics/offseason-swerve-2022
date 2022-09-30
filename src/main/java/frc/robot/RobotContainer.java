@@ -73,6 +73,8 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		setButtonWhenPressed(driverStationJoystick, Button.kA.value, new ToggleIntakeCommand(intakeSubsystem));
 		setButtonWhileHeld(driverStationJoystick, Button.kB.value, new IntakeInCommand(intakeSubsystem));
+		setButtonWhenPressed(driverStationJoystick, Button.kLeftBumper.value, new ToggleShooterCommand(10.0, shooterSubsystem));
+		setButtonWhileHeld(driverStationJoystick, Button.kRightBumper.value, new AllinCommand(intakeSubsystem, neckSubsystem));
 
 		// setConditionalButton(2, new ToggleShooterCommand(ShooterMode.LIMELIGHT, shooterSubsystem),
 		// // false currently cannot ocurr, check setConditionalButton

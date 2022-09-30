@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -34,9 +35,10 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 250);
         intakeSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus3, 250);
 
-        intakeSpark.setSmartCurrentLimit(20);
+        intakeSpark.setSmartCurrentLimit(35);
+        intakeSpark.enableVoltageCompensation(Constants.MOTOR_VOLTAGE_COMP);
 
-        intakePistons.set(Value.kReverse);
+        intakePistons.set(Value.kForward);
     }
 
     public void extendIntake() {

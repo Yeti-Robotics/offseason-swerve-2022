@@ -51,8 +51,9 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterLeftFalcon.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
         shooterLeftFalcon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 20);
         shooterRightFalcon.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
-        shooterRightFalcon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 20);
+        shooterRightFalcon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
 
+        shooterRightFalcon.setInverted(true);
         shooterLeftFalcon.follow(shooterRightFalcon);
         shooterLeftFalcon.setInverted(InvertType.OpposeMaster);
 
@@ -165,7 +166,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double getFlywheelRPM() {
-        return getAverageEncoder() * ShooterConstants.ENCODER_TIME_CONVERSION
+        return getLeftEncoder() * ShooterConstants.ENCODER_TIME_CONVERSION
                 / ShooterConstants.ENCODER_RESOLUTION
                 * ShooterConstants.PULLEY_RATIO;
     }
