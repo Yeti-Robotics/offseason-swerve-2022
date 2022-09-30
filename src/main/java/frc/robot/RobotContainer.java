@@ -17,6 +17,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.AllOutCommand;
 import frc.robot.commands.AllinCommand;
 import frc.robot.commands.drivetrain.FieldOrientedDrive;
+import frc.robot.commands.intake.IntakeInCommand;
 import frc.robot.commands.intake.ToggleIntakeCommand;
 import frc.robot.commands.shooter.ToggleShooterCommand;
 import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
@@ -71,6 +72,7 @@ public class RobotContainer {
 	 */
 	private void configureButtonBindings() {
 		setButtonWhenPressed(driverStationJoystick, Button.kA.value, new ToggleIntakeCommand(intakeSubsystem));
+		setButtonWhileHeld(driverStationJoystick, Button.kB.value, new IntakeInCommand(intakeSubsystem));
 
 		// setConditionalButton(2, new ToggleShooterCommand(ShooterMode.LIMELIGHT, shooterSubsystem),
 		// // false currently cannot ocurr, check setConditionalButton

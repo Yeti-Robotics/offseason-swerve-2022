@@ -65,9 +65,9 @@ public class FieldOrientedDrive extends CommandBase {
 
         double xSpeed = modifyAxis(translationXSupplier.getAsDouble()) *
                 DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-        double ySpeed = modifyAxis(-translationYSupplier.getAsDouble()) *
+        double ySpeed = modifyAxis(translationYSupplier.getAsDouble()) *
                 DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-        double thetaSpeed = modifyAxis(-rotationSupplier.getAsDouble()) *
+        double thetaSpeed = modifyAxis(rotationSupplier.getAsDouble()) *
                 DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
 //        System.out.println("Before xSpeed: " + xSpeed);
