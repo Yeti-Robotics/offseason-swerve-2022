@@ -23,8 +23,6 @@ public class FieldOrientedDrive extends CommandBase {
     private final DoubleSupplier translationYSupplier;
     private final DoubleSupplier rotationSupplier;
 
-    private final SlewRateLimiter xLimiter, yLimiter, thetaLimiter;
-
     private final ProfiledPIDController targetLockPID =
             new ProfiledPIDController(
                     ShooterConstants.TARGETING_P,
@@ -47,10 +45,6 @@ public class FieldOrientedDrive extends CommandBase {
         this.translationXSupplier = translationXSupplier;
         this.translationYSupplier = translationYSupplier;
         this.rotationSupplier = rotationSupplier;
-
-        this.xLimiter = new SlewRateLimiter(DriveConstants.MAX_ACCELERATION);
-        this.yLimiter = new SlewRateLimiter(DriveConstants.MAX_ACCELERATION);
-        this.thetaLimiter = new SlewRateLimiter(DriveConstants.MAX_ANGULAR_ACCELERATION);
 
         moveAndShootController = new MoveAndShootController(drivetrainSubsystem);
 

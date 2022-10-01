@@ -4,14 +4,17 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.AnalogTrigger;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.AllOutCommand;
@@ -25,6 +28,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NeckSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
+import frc.robot.utils.AxisToButton;
 import frc.robot.utils.JoyButton;
 import frc.robot.utils.JoyButton.ActiveState;
 import frc.robot.utils.MoveAndShootController;
@@ -40,6 +44,11 @@ import frc.robot.utils.MoveAndShootController;
  */
 public class RobotContainer {
 	public final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
+	private final FieldOrientedDrive fieldOrientedDrive = new FieldOrientedDrive(
+			drivetrainSubsystem,
+			this::getLeftY,
+			this::getLeftX,
+			this::getRightX);
 	private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(drivetrainSubsystem);
 	private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	private final NeckSubsystem neckSubsystem = new NeckSubsystem();
@@ -53,11 +62,7 @@ public class RobotContainer {
 		// Left stick Y axis -> forward and backwards movement
 		// Left stick X axis -> left and right movement
 		// Right stick X axis -> rotation
-		drivetrainSubsystem.setDefaultCommand(
-				new FieldOrientedDrive(drivetrainSubsystem,
-						this::getLeftY,
-						this::getLeftX,
-						this::getRightX));
+		drivetrainSubsystem.setDefaultCommand(fieldOrientedDrive);
 
 		configureButtonBindings();
 	}
@@ -71,22 +76,12 @@ public class RobotContainer {
 	 * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
 	 */
 	private void configureButtonBindings() {
-		setButtonWhenPressed(driverStationJoystick, Button.kA.value, new ToggleIntakeCommand(intakeSubsystem));
-		setButtonWhileHeld(driverStationJoystick, Button.kB.value, new IntakeInCommand(intakeSubsystem));
-		setButtonWhenPressed(driverStationJoystick, Button.kLeftBumper.value, new ToggleShooterCommand(10.0, shooterSubsystem));
-		setButtonWhileHeld(driverStationJoystick, Button.kRightBumper.value, new AllinCommand(intakeSubsystem, neckSubsystem));
+		setAxisWhileHeld(driverStationJoystick, Axis.kLeftTrigger.value, new AllOutCommand(intakeSubsystem, neckSubsystem));
+		setAxisWhileHeld(driverStationJoystick, Axis.kRightTrigger.value, new AllinCommand(intakeSubsystem, neckSubsystem));
+		setButtonWhenPressed(driverStationJoystick, Button.kRightStick.value, new ToggleIntakeCommand(intakeSubsystem));
 
-		// setConditionalButton(2, new ToggleShooterCommand(ShooterMode.LIMELIGHT, shooterSubsystem),
-		// // false currently cannot ocurr, check setConditionalButton
-		// 		ActiveState.WHEN_PRESSED, new InstantCommand(), ActiveState.WHEN_PRESSED);
-
-		// setConditionalButton(1,
-		// 		new AllinCommand(intakeSubsystem, neckSubsystem), ActiveState.WHILE_HELD,
-		// 		new InstantCommand(), ActiveState.WHEN_PRESSED);
-
-		// setConditionalButton(6,
-		// 		new AllOutCommand(intakeSubsystem, neckSubsystem), ActiveState.WHILE_HELD,
-		// 		new InstantCommand(), ActiveState.WHEN_PRESSED);
+		setButtonWhenPressed(driverStationJoystick, Button.kRightBumper.value, new ToggleShooterCommand(10.0, shooterSubsystem));
+		setButtonWhenPressed(driverStationJoystick, Button.kLeftBumper.value, new InstantCommand(() -> fieldOrientedDrive.toggleTargetLock()));
 	}
 
 	private double getLeftY() {
@@ -113,15 +108,11 @@ public class RobotContainer {
 		new JoystickButton(genericHID, button).whileHeld(command);
 	}
 
-	// private void setConditionalButton(
-	// 		int button,
-	// 		Command trueCommand,
-	// 		ActiveState trueActiveState,
-	// 		Command falseCommand,
-	// 		ActiveState falseActiveState) {
-	// 	driverStationJoystick.
-	// 			.conditionalPressed(
-	// 					// currently only runs the true command
-	// 					trueCommand, trueActiveState, falseCommand, falseActiveState, () -> true);
-	// }
+	private void setAxisWhenPressed(GenericHID genericHID, int port, CommandBase command) {
+		new AxisToButton(genericHID, port, 0.75).whenPressed(command);
+	}
+
+	private void setAxisWhileHeld(GenericHID genericHID, int port, CommandBase command) {
+		new AxisToButton(genericHID, port, 0.75).whileHeld(command);
+	}
 }
