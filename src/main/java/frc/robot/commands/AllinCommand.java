@@ -17,6 +17,7 @@ public class AllinCommand extends CommandBase {
         this.intakeSubsystem = intakeSubsystem;
         this.neckSubsystem = neckSubsystem;
 
+        timer = new Timer();
         addRequirements(intakeSubsystem, neckSubsystem);
     }
 
@@ -60,4 +61,8 @@ public class AllinCommand extends CommandBase {
         neckSubsystem.stopNeck();
     }
 
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }
