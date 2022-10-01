@@ -227,7 +227,7 @@ public final class Constants {
         public static final int INTAKE_SPARK = 18;
         public static final int[] INTAKE_PISTONS_SOLENOID = {14, 15};
         public static final double INTAKE_SPEED = 0.3;
-        public static final double INTAKE_OUT_SPEED = 0.3;
+        public static final double INTAKE_OUT_SPEED = -0.3;
     }
 
     public static final class NeckConstants {

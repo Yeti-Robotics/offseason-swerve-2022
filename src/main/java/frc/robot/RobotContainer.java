@@ -44,11 +44,6 @@ import frc.robot.utils.MoveAndShootController;
  */
 public class RobotContainer {
 	public final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
-	private final FieldOrientedDrive fieldOrientedDrive = new FieldOrientedDrive(
-			drivetrainSubsystem,
-			this::getLeftY,
-			this::getLeftX,
-			this::getRightX);
 	private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(drivetrainSubsystem);
 	private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	private final NeckSubsystem neckSubsystem = new NeckSubsystem();
@@ -62,7 +57,11 @@ public class RobotContainer {
 		// Left stick Y axis -> forward and backwards movement
 		// Left stick X axis -> left and right movement
 		// Right stick X axis -> rotation
-		drivetrainSubsystem.setDefaultCommand(fieldOrientedDrive);
+		drivetrainSubsystem.setDefaultCommand(new FieldOrientedDrive(
+				drivetrainSubsystem,
+				this::getLeftY,
+				this::getLeftX,
+				this::getRightX));
 
 		configureButtonBindings();
 	}
@@ -81,7 +80,7 @@ public class RobotContainer {
 		setButtonWhenPressed(driverStationJoystick, Button.kRightStick.value, new ToggleIntakeCommand(intakeSubsystem));
 
 		setButtonWhenPressed(driverStationJoystick, Button.kRightBumper.value, new ToggleShooterCommand(10.0, shooterSubsystem));
-		setButtonWhenPressed(driverStationJoystick, Button.kLeftBumper.value, new InstantCommand(() -> fieldOrientedDrive.toggleTargetLock()));
+		setButtonWhenPressed(driverStationJoystick, Button.kLeftBumper.value, new InstantCommand(() -> FieldOrientedDrive.toggleTargetLock()));
 	}
 
 	private double getLeftY() {

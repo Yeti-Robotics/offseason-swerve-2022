@@ -35,7 +35,7 @@ public class FieldOrientedDrive extends CommandBase {
             );
 
     private final MoveAndShootController moveAndShootController;
-    private boolean targetLock = false;
+    private static boolean targetLock = false;
 
     public FieldOrientedDrive(DrivetrainSubsystem drivetrainSubsystem,
                               DoubleSupplier translationXSupplier,
@@ -84,12 +84,12 @@ public class FieldOrientedDrive extends CommandBase {
         );
     }
 
-    public void toggleTargetLock() {
-        targetLock = !targetLock;
+    public static void toggleTargetLock() {
+        FieldOrientedDrive.targetLock = !FieldOrientedDrive.targetLock;
     }
 
     public boolean isTargetLock() {
-        return targetLock;
+        return FieldOrientedDrive.targetLock;
     }
 
     private double lockToTargetWhileMoving() {

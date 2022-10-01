@@ -7,6 +7,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NeckSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
+import javax.print.attribute.standard.ReferenceUriSchemesSupported;
+
 public class AllinCommand extends CommandBase {
     private final IntakeSubsystem intakeSubsystem;
     private final NeckSubsystem neckSubsystem;
@@ -47,8 +49,9 @@ public class AllinCommand extends CommandBase {
             if (neckSubsystem.getHighBeamBreak()) {
                 timer.reset();
             }
-            if (!timer.hasElapsed(0.5)) {
-                neckSubsystem.stopNeck();
+            if (!timer.hasElapsed(1)) {
+                neckSubsystem.stopBackMotor();
+                return;
             }
 
             neckSubsystem.moveUp();
