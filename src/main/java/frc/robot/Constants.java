@@ -123,15 +123,15 @@ public final class Constants {
         public static final double DRIVE_MOTOR_P = 1.0;
         public static final double DRIVE_MOTOR_I = 0.0;
         public static final double DRIVE_MOTOR_D = 0.0;
-        public static final double DRIVE_MOTOR_KS = 0.0;
-        public static final double DRIVE_MOTOR_KV = 0.0;
-        public static final double DRIVE_MOTOR_KA = 0.0;
+        public static final double DRIVE_MOTOR_KS = 0.643;
+        public static final double DRIVE_MOTOR_KV = 2.178;
+        public static final double DRIVE_MOTOR_KA = 0.406;
 
-        public static final double STEER_MOTOR_P = 8.0; //0.08 //0.064
+        public static final double STEER_MOTOR_P = 6.; //0.08 //0.064
         public static final double STEER_MOTOR_I = 0.0;
-        public static final double STEER_MOTOR_D = 0.0;
-        public static final double STEER_MOTOR_KS = 0.0;
-        public static final double STEER_MOTOR_KV = 0.0;
+        public static final double STEER_MOTOR_D = 0.01;
+        public static final double STEER_MOTOR_KS = 0.75;
+        public static final double STEER_MOTOR_KV = 0.7;
         public static final double STEER_MOTOR_KA = 0.0;
 
         public static final boolean ANGLE_ENABLE_CURRENT_LIMIT = true;
@@ -174,11 +174,15 @@ public final class Constants {
         public static final int SHOOTER_LEFT_FALCON = 14; // left
         public static final int SHOOTER_RIGHT_FALCON = 15; // right
 
-        public static final double SHOOTER_P = 0.00015;
+        public static final double SHOOTER_P = 0.25;
         public static final double SHOOTER_I = 0.0;
-        public static final double SHOOTER_D = 0.00001;
-        public static final double SHOOTER_F = 0.4;
+        public static final double SHOOTER_D = 0.0;
+        // feed forward values; characterized using meters
+        public static final double SHOOTER_KS = 0.5;
+        public static final double SHOOTER_KV = 0.21; // Volts * second/meter
+        public static final double SHOOTER_KA = 0.09; // Volts * second^2/meter
 
+        public static final double SHOOTER_F = 0.693;
         public static final double TARGETING_P = 0.02;
         public static final double TARGETING_I = 0.00;
         public static final double TARGETING_D = 0.00;
@@ -188,10 +192,6 @@ public final class Constants {
 
         public static final double MAX_VELOCITY = 32.0; // in meters/second
 
-        // feed forward values; characterized using meters
-        public static final double SHOOTER_KS = 0.60;
-        public static final double SHOOTER_KV = 0.27; // Volts * second/meter
-        public static final double SHOOTER_KA = 0.07; // Volts * second^2/meter
 
         // shooter motor speeds
         public static final double SHOOTER_LOW_SPEED = 0.2; // for low goal shots

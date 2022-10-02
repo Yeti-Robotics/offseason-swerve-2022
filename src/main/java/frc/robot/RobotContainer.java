@@ -79,7 +79,7 @@ public class RobotContainer {
 		setAxisWhileHeld(driverStationJoystick, Axis.kRightTrigger.value, new AllinCommand(intakeSubsystem, neckSubsystem));
 		setButtonWhenPressed(driverStationJoystick, Button.kRightStick.value, new ToggleIntakeCommand(intakeSubsystem));
 
-		setButtonWhenPressed(driverStationJoystick, Button.kRightBumper.value, new ToggleShooterCommand(10.0, shooterSubsystem));
+		setButtonWhenPressed(driverStationJoystick, Button.kRightBumper.value, new ToggleShooterCommand(20, shooterSubsystem));
 		setButtonWhenPressed(driverStationJoystick, Button.kLeftBumper.value, new InstantCommand(() -> FieldOrientedDrive.toggleTargetLock()));
 	}
 

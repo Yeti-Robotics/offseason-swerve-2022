@@ -77,8 +77,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Flywheel Set Point: ", setPoint);
-        SmartDashboard.putNumber("Flywheel Voltage", shooterRightFalcon.getMotorOutputVoltage());
         atSetPoint = setPoint >= getMetersPerSecond() - ShooterConstants.VELOCITY_TOLERANCE
                 && shooterMode != ShooterMode.OFF;
 

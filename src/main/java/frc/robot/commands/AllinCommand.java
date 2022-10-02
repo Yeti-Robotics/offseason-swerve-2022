@@ -46,7 +46,7 @@ public class AllinCommand extends CommandBase {
         } else {
             intakeSubsystem.rollIn();
 
-            if (neckSubsystem.getHighBeamBreak()) {
+            if (neckSubsystem.getHighBeamBreak() && timer.hasElapsed(1.1)) {
                 timer.reset();
             }
             if (!timer.hasElapsed(1)) {

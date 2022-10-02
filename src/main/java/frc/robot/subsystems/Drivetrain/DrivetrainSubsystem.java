@@ -48,7 +48,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.DRIVE_KINEMATICS, new Rotation2d(0));
 
 	public DrivetrainSubsystem() {
-		ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 			frontLeftModule = new SwerveModule(
 					DriveConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
 					false,
@@ -130,11 +129,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	}
 
 	public void setDesiredStates(SwerveModuleState[] desiredStates) {
-		SmartDashboard.putString("Front Left State", desiredStates[0].toString());
-		SmartDashboard.putString("Front Right State", desiredStates[1].toString());
-		SmartDashboard.putString("Back Left State", desiredStates[2].toString());
-		SmartDashboard.putString("Back Right State", desiredStates[3].toString());
-//
+
 //		System.out.printf("Front Left: %s  ||  %s \n Front Right: %s  ||  %s \n Back Left: %s  ||  %s \n Back Right: %s  ||  %s \n",
 //				desiredStates[0],
 //				frontLeftModule.getState(),
@@ -166,11 +161,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				frontLeftModule.getState(), frontRightModule.getState(),
 				backLeftModule.getState(), backRightModule.getState());
 
-		System.out.println(odometer.getPoseMeters().getRotation());
-
-		SmartDashboard.putNumber("Front Right", frontRightModule.getSteerPosition());
-		SmartDashboard.putNumber("Front Left", frontLeftModule.getSteerPosition());
-		SmartDashboard.putNumber("Back Left", backLeftModule.getSteerPosition());
-		SmartDashboard.putNumber("Back Right", backRightModule.getDrivePosition());
+		// System.out.println(odometer.getPoseMeters().getRotation());
 	}
 }
