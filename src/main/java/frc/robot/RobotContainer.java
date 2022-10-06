@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.AnalogTrigger;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -81,6 +83,10 @@ public class RobotContainer {
 
 		setButtonWhenPressed(driverStationJoystick, Button.kRightBumper.value, new ToggleShooterCommand(20, shooterSubsystem));
 		setButtonWhenPressed(driverStationJoystick, Button.kLeftBumper.value, new InstantCommand(() -> FieldOrientedDrive.toggleTargetLock()));
+
+		setButtonWhenPressed(driverStationJoystick, Button.kY.value, new InstantCommand(() -> drivetrainSubsystem.resetOdometer(
+				new Pose2d(FieldConstants.launchPadB, new Rotation2d(0.0)).transformBy(DriveConstants.ROBOT_CENTER)
+		)));
 	}
 
 	private double getLeftY() {
