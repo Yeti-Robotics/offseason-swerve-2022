@@ -33,6 +33,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private static ShooterMode shooterMode;
 
     private double setPoint = 0.0;
+    private double acceleration = 0.0;
     public static boolean atSetPoint = false;
 
     private final PIDController shooterPID;
@@ -89,7 +90,7 @@ public class ShooterSubsystem extends SubsystemBase {
                     }
                     setSetPoint(0.1389/0.9144 * VisionSubsystem.getDistance() + 15.9150 + moveAndShootController.calculateShooterSpeed());
                     setFlywheelVolts(
-                            feedForward.calculate(setPoint, 10.0)
+                            feedForward.calculate(setPoint, acceleration)
                                     + shooterPID.calculate(getMetersPerSecond(), setPoint));
                     break;
                 case LIMELIGHT:
@@ -100,12 +101,12 @@ public class ShooterSubsystem extends SubsystemBase {
                     }
                     setSetPoint(0.1389/0.9144 * VisionSubsystem.getDistance() + 15.9150);
                     setFlywheelVolts(
-                            feedForward.calculate(setPoint, 10.0)
+                            feedForward.calculate(setPoint, acceleration)
                                     + shooterPID.calculate(getMetersPerSecond(), setPoint));
                     break;
                 case MANUAL:
                     setFlywheelVolts(
-                            feedForward.calculate(setPoint, 10.0)
+                            feedForward.calculate(setPoint, acceleration)
                                     + shooterPID.calculate(getMetersPerSecond(), setPoint));
                     break;
                 case LOWGOAL:
@@ -122,11 +123,8 @@ public class ShooterSubsystem extends SubsystemBase {
      * @param setPoint in meters/second
      */
     public void setSetPoint(double setPoint) {
-        if (setPoint > ShooterConstants.MAX_VELOCITY) {
-            this.setPoint = 32.0;
-            return;
-        }
-        this.setPoint = setPoint;
+        this.acceleration = setPoint > 21.0 ? 17.0 : 0.8 * setPoint;
+        this.setPoint = setPoint > ShooterConstants.MAX_VELOCITY ? 32 : setPoint;
     }
 
     public void setShooterMode(ShooterMode shooterMode) {
