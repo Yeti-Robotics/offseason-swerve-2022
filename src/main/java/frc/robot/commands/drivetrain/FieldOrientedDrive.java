@@ -29,18 +29,19 @@ public class FieldOrientedDrive extends CommandBase {
                     ShooterConstants.TARGETING_I,
                     ShooterConstants.TARGETING_D,
                     new TrapezoidProfile.Constraints(
-                            360,
-                            720
+                            2 * Math.PI,
+                            4 * Math.PI
                     )
             );
 
     private final MoveAndShootController moveAndShootController;
     private static boolean targetLock = false;
 
-    public FieldOrientedDrive(DrivetrainSubsystem drivetrainSubsystem,
-                              DoubleSupplier translationXSupplier,
-                              DoubleSupplier translationYSupplier,
-                              DoubleSupplier rotationSupplier) {
+    public FieldOrientedDrive(
+            DrivetrainSubsystem drivetrainSubsystem,
+            DoubleSupplier translationXSupplier,
+            DoubleSupplier translationYSupplier,
+            DoubleSupplier rotationSupplier) {
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.translationXSupplier = translationXSupplier;
         this.translationYSupplier = translationYSupplier;
@@ -69,7 +70,7 @@ public class FieldOrientedDrive extends CommandBase {
 //        System.out.println("Before thetaSpeed: " + thetaSpeed);
 
         if (targetLock) {
-            thetaSpeed = lockToTarget() * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+            thetaSpeed = lockToTarget();
         }
         // System.out.println("xSpeed: " + xSpeed);
         // System.out.println("ySpeed: " + ySpeed);

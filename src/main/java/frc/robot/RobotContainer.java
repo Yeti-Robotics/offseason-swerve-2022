@@ -118,6 +118,6 @@ public class RobotContainer {
 	}
 
 	private void setAxisWhileHeld(GenericHID genericHID, int port, CommandBase command) {
-		new AxisToButton(genericHID, port, 0.75).whileHeld(command);
+		new AxisToButton(genericHID, port, 0.25).whileHeld(command);
 	}
 }
