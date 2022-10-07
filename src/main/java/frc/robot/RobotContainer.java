@@ -93,13 +93,13 @@ public class RobotContainer {
 		setButtonWhenPressed(driverStationJoystick, Button.kRightStick.value, new ToggleIntakeCommand(intakeSubsystem));
 
 		setButtonWhenPressed(driverStationJoystick, Button.kRightBumper.value, new ToggleShooterCommand(20, shooterSubsystem));
-		setButtonWhenPressed(driverStationJoystick, Button.kLeftBumper.value, new InstantCommand(() -> FieldOrientedDrive.toggleTargetLock()));
+		setButtonWhenPressed(driverStationJoystick, Button.kLeftBumper.value, new InstantCommand(FieldOrientedDrive::toggleTargetLock));
 
 		setButtonWhenPressed(driverStationJoystick, Button.kY.value, new InstantCommand(() -> drivetrainSubsystem.resetOdometer(
 				new Pose2d(FieldConstants.launchPadB, new Rotation2d(0.0)).transformBy(DriveConstants.ROBOT_CENTER)
 		)));
 
-		setButtonWhenPressed(driverStationJoystick, Button.kB.value, new InstantCommand(() -> drivetrainSubsystem.toggleSwerveLock()));
+		setButtonWhenPressed(driverStationJoystick, Button.kB.value, new InstantCommand(drivetrainSubsystem::toggleSwerveLock));
 	}
 
 	private double getLeftY() {

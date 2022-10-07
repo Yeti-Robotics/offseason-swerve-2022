@@ -10,12 +10,10 @@ import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
 public class MoveAndShootController {
     private final DrivetrainSubsystem drivetrainSubsystem;
 
-    private ChassisSpeeds chassisSpeeds;
     private Pose2d robotPose;
 
     private Pose2d targetPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
-    private Pose2d origin = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
-    private double vectorMagnitude;
+    private final Pose2d origin = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
     private Rotation2d vectorAngle;
     private Translation2d robotToTargetVector;
     private Translation2d movementVector;
@@ -25,7 +23,7 @@ public class MoveAndShootController {
     }
 
     private void updateTargetLocation() {
-        chassisSpeeds = drivetrainSubsystem.getChassisSpeeds();
+        ChassisSpeeds chassisSpeeds = drivetrainSubsystem.getChassisSpeeds();
         robotPose = drivetrainSubsystem.getPose();
         targetPose = origin.relativeTo(robotPose);
 

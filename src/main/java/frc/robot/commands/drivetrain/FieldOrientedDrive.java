@@ -46,10 +46,6 @@ public class FieldOrientedDrive extends CommandBase {
         addRequirements(drivetrainSubsystem);
     }
 
-    public static void toggleTargetLock() {
-        FieldOrientedDrive.targetLock = !FieldOrientedDrive.targetLock;
-    }
-
     @Override
     public void execute() {
 //        System.out.println("X Supplier: " + translationXSupplier.getAsDouble());
@@ -81,6 +77,10 @@ public class FieldOrientedDrive extends CommandBase {
                 thetaSpeed,
                 drivetrainSubsystem.getPose().getRotation())
         );
+    }
+
+    public static void toggleTargetLock() {
+        FieldOrientedDrive.targetLock = !FieldOrientedDrive.targetLock;
     }
 
     public boolean isTargetLock() {
