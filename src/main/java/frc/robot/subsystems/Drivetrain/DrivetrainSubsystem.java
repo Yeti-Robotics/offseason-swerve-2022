@@ -39,6 +39,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	private final SwerveModule backLeftModule;
 	private final SwerveModule backRightModule;
 
+	private boolean isSwerveLock;
+
 	private final PIDController yController = new PIDController(AutoConstants.Y_CONTROLLER_P, 0.0, 0.0);
 	private final PIDController xController = new PIDController(AutoConstants.X_CONTROLLER_P, 0.0, 0.0);
 	private final ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.THETA_CONTROLLER_P,
@@ -129,7 +131,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	}
 
 	public void setDesiredStates(SwerveModuleState[] desiredStates) {
-
 //		System.out.printf("Front Left: %s  ||  %s \n Front Right: %s  ||  %s \n Back Left: %s  ||  %s \n Back Right: %s  ||  %s \n",
 //				desiredStates[0],
 //				frontLeftModule.getState(),
@@ -147,8 +148,30 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	}
 
 	public void drive(ChassisSpeeds chassisSpeeds) {
+		if (isSwerveLock){
+			swerveLock();
+			return;
+		}
 		this.chassisSpeeds = chassisSpeeds;
 		setDesiredStates(DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds));
+	}
+
+	private void swerveLock() {
+		if (chassisSpeeds.vxMetersPerSecond > 0.5 && chassisSpeeds.vyMetersPerSecond > 0.5) {
+			isSwerveLock = false;
+			return;
+		}
+
+		SwerveModuleState[] desiredStates = new SwerveModuleState[4];
+		desiredStates[0] = new SwerveModuleState(0, Rotation2d.fromDegrees(-45));
+		desiredStates[1] = new SwerveModuleState(0, Rotation2d.fromDegrees(45));
+		desiredStates[2] = new SwerveModuleState(0, Rotation2d.fromDegrees(45));
+		desiredStates[3] = new SwerveModuleState(0, Rotation2d.fromDegrees(-45));
+		setDesiredStates(desiredStates);
+	}
+
+	public void toggleSwerveLock() {
+		isSwerveLock = !isSwerveLock;
 	}
 
 	public ChassisSpeeds getChassisSpeeds() {

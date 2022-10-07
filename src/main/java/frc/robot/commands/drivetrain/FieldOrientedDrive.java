@@ -14,6 +14,7 @@ import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
 import frc.robot.subsystems.VisionSubsystem.VisionSubsystem;
 import frc.robot.utils.MoveAndShootController;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class FieldOrientedDrive extends CommandBase {

@@ -50,10 +50,12 @@ public class RobotContainer {
 	private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	private final NeckSubsystem neckSubsystem = new NeckSubsystem();
 
-	public final XboxController driverStationJoystick;
+	public final GenericHID driverStationJoystick;
+	public final OIConstants.CONTROLLER controllerType = OIConstants.CONTROLLER.XBOX;
 
 	public RobotContainer() {
-		driverStationJoystick = new XboxController(OIConstants.DRIVER_STATION_JOY);
+		driverStationJoystick = controllerType == OIConstants.CONTROLLER.XBOX ? new XboxController(OIConstants.DRIVER_STATION_JOY)
+				: new Joystick(OIConstants.DRIVER_STATION_JOY);
 
 		// The controls are for field-oriented driving:
 		// Left stick Y axis -> forward and backwards movement
@@ -63,9 +65,14 @@ public class RobotContainer {
 				drivetrainSubsystem,
 				this::getLeftY,
 				this::getLeftX,
-				this::getRightX));
+				this::getRightX)
+		);
 
-		configureButtonBindings();
+		if (controllerType == OIConstants.CONTROLLER.CUSTOM) {
+			configureButtonBindings();
+		} else {
+			configureButtonXboxBindings();
+		}
 	}
 
 	/**
@@ -77,6 +84,10 @@ public class RobotContainer {
 	 * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
 	 */
 	private void configureButtonBindings() {
+
+	}
+
+	private void configureButtonXboxBindings() {
 		setAxisWhileHeld(driverStationJoystick, Axis.kLeftTrigger.value, new AllOutCommand(intakeSubsystem, neckSubsystem));
 		setAxisWhileHeld(driverStationJoystick, Axis.kRightTrigger.value, new AllinCommand(intakeSubsystem, neckSubsystem));
 		setButtonWhenPressed(driverStationJoystick, Button.kRightStick.value, new ToggleIntakeCommand(intakeSubsystem));
@@ -87,22 +98,28 @@ public class RobotContainer {
 		setButtonWhenPressed(driverStationJoystick, Button.kY.value, new InstantCommand(() -> drivetrainSubsystem.resetOdometer(
 				new Pose2d(FieldConstants.launchPadB, new Rotation2d(0.0)).transformBy(DriveConstants.ROBOT_CENTER)
 		)));
+
+		setButtonWhenPressed(driverStationJoystick, Button.kB.value, new InstantCommand(() -> drivetrainSubsystem.toggleSwerveLock()));
 	}
 
 	private double getLeftY() {
-		return driverStationJoystick.getLeftY();
+		return controllerType == OIConstants.CONTROLLER.XBOX ? driverStationJoystick.getRawAxis(Axis.kLeftY.value)
+				: driverStationJoystick.getRawAxis(1);
 	}
 
 	private double getLeftX() {
-		return driverStationJoystick.getLeftX();
+		return controllerType == OIConstants.CONTROLLER.XBOX ? driverStationJoystick.getRawAxis(Axis.kLeftX.value)
+				: driverStationJoystick.getRawAxis(2);
 	}
 
 	private double getRightY() {
-		return driverStationJoystick.getRightY();
+		return controllerType == OIConstants.CONTROLLER.XBOX ? driverStationJoystick.getRawAxis(Axis.kRightY.value)
+				: driverStationJoystick.getRawAxis(3);
 	}
 
 	private double getRightX() {
-		return driverStationJoystick.getRightX();
+		return controllerType == OIConstants.CONTROLLER.XBOX ? driverStationJoystick.getRawAxis(Axis.kRightX.value)
+				: driverStationJoystick.getRawAxis(4);
 	}
 
 	private void setButtonWhenPressed(GenericHID genericHID, int button, CommandBase command) {

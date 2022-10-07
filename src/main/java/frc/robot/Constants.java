@@ -29,6 +29,10 @@ public final class Constants {
 
     public static final class OIConstants {
         public static final int DRIVER_STATION_JOY = 0;
+        public enum CONTROLLER {
+            XBOX,
+            CUSTOM
+        }
 
         public static final double DEADBAND = 0.06;
     }
