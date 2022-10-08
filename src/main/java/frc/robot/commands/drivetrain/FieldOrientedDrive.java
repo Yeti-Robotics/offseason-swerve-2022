@@ -33,6 +33,7 @@ public class FieldOrientedDrive extends CommandBase {
 
     public FieldOrientedDrive(
         DrivetrainSubsystem drivetrainSubsystem,
+        MoveAndShootController moveAndShootController,
         DoubleSupplier translationXSupplier,
         DoubleSupplier translationYSupplier,
         DoubleSupplier rotationSupplier) {
@@ -41,7 +42,7 @@ public class FieldOrientedDrive extends CommandBase {
         this.translationYSupplier = translationYSupplier;
         this.rotationSupplier = rotationSupplier;
 
-        moveAndShootController = new MoveAndShootController(drivetrainSubsystem);
+        this.moveAndShootController = moveAndShootController;
 
         addRequirements(drivetrainSubsystem);
     }

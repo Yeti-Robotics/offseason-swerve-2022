@@ -73,6 +73,6 @@ public class MoveAndShootController {
     public double calculateRadOffset() {
         updateTargetLocation();
 
-        return vectorAngle.getDegrees();
+        return Math.toRadians(vectorAngle.getDegrees());
     }
 }

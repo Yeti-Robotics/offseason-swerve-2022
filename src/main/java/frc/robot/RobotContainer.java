@@ -46,7 +46,9 @@ import frc.robot.utils.MoveAndShootController;
  */
 public class RobotContainer {
 	public final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
-	private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(drivetrainSubsystem);
+
+	private final MoveAndShootController moveAndShootController = new MoveAndShootController(drivetrainSubsystem);
+	private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(drivetrainSubsystem, moveAndShootController);
 	private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	private final NeckSubsystem neckSubsystem = new NeckSubsystem();
 
@@ -63,6 +65,7 @@ public class RobotContainer {
 		// Right stick X axis -> rotation
 		drivetrainSubsystem.setDefaultCommand(new FieldOrientedDrive(
 				drivetrainSubsystem,
+				moveAndShootController,
 				this::getLeftY,
 				this::getLeftX,
 				this::getRightX)

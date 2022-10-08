@@ -40,7 +40,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private final SimpleMotorFeedforward feedForward;
     private final MoveAndShootController moveAndShootController;
 
-    public ShooterSubsystem(DrivetrainSubsystem drivetrainSubsystem) {
+    public ShooterSubsystem(DrivetrainSubsystem drivetrainSubsystem, MoveAndShootController moveAndShootController) {
         shooterLeftFalcon = new WPI_TalonFX(ShooterConstants.SHOOTER_LEFT_FALCON);
         shooterRightFalcon = new WPI_TalonFX(ShooterConstants.SHOOTER_RIGHT_FALCON);
 
@@ -73,7 +73,7 @@ public class ShooterSubsystem extends SubsystemBase {
                 ShooterConstants.SHOOTER_P, ShooterConstants.SHOOTER_I, ShooterConstants.SHOOTER_D);
         feedForward = new SimpleMotorFeedforward(
                 ShooterConstants.SHOOTER_KS, ShooterConstants.SHOOTER_KV, ShooterConstants.SHOOTER_KA);
-        moveAndShootController = new MoveAndShootController(drivetrainSubsystem);
+        this.moveAndShootController = moveAndShootController;
     }
 
     @Override
