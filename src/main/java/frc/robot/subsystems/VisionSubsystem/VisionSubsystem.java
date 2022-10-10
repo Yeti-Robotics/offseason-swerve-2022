@@ -4,7 +4,7 @@ import frc.robot.subsystems.VisionSubsystem.VisionBackend.CameraMode;
 import frc.robot.subsystems.VisionSubsystem.VisionBackend.LEDMode;
 
 public class VisionSubsystem {
-  private static final VisionAPI api = VisionAPI.PHOTONVISION;
+  private static final VisionAPI api = VisionAPI.LIMELIGHT;
   private static final VisionBackend visionSubsystem = getBackend();
   // change this to change what backend we use
 
@@ -30,7 +30,7 @@ public class VisionSubsystem {
   }
 
   public static double getX() {
-    return visionSubsystem.getX();
+    return -visionSubsystem.getX();
   }
 
   public static double getY() {

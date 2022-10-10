@@ -187,7 +187,7 @@ public final class Constants {
         public static final double SHOOTER_KA = 0.09; // Volts * second^2/meter
 
         public static final double SHOOTER_F = 0.693;
-        public static final double TARGETING_P = 0.02;
+        public static final double TARGETING_P = 0.0825;
         public static final double TARGETING_I = 0.00;
         public static final double TARGETING_D = 0.00;
 

@@ -78,6 +78,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        System.out.println("Flywheel Speed: " + getMetersPerSecond());
         atSetPoint = setPoint >= getMetersPerSecond() - ShooterConstants.VELOCITY_TOLERANCE
                 && shooterMode != ShooterMode.OFF;
 
