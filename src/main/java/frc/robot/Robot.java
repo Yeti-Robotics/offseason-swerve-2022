@@ -32,6 +32,7 @@ public class Robot extends TimedRobot {
         TWO_BALL,
         THREE_BALL,
         FOUR_BALL,
+        TUNNING
     }
     private AutoModes previousSelectedAuto;
     private AutoBuilder autoBuilder;
@@ -53,6 +54,7 @@ public class Robot extends TimedRobot {
         autoChooser.addOption("TWO_BALL", AutoModes.TWO_BALL);
         autoChooser.addOption("THREE_BALL", AutoModes.THREE_BALL);
         autoChooser.addOption("FOUR_BALL", AutoModes.FOUR_BALL);
+        autoChooser.addOption("TUNNING", AutoModes.TUNNING);
         SmartDashboard.putData("Auto Chooser", autoChooser);
         previousSelectedAuto = autoChooser.getSelected();
 

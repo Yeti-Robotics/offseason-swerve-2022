@@ -1,5 +1,7 @@
 package frc.robot.utils;
 
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
@@ -12,6 +14,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
 
+import javax.swing.plaf.nimbus.State;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +23,7 @@ public class AutoPath {
     private final List<Pose2d> waypoints;
     private final boolean isReversed;
     private Trajectory trajectory;
+    private PathPlannerTrajectory pathPlannerTrajectory;
     private SwerveControllerCommand swerveControllerCommand;
     private double startVel = 0.0;
     private double endVel = 0.0;
@@ -47,6 +51,14 @@ public class AutoPath {
         this.isReversed = isReversed;
 
         generateAutoPathCommand();
+    }
+
+    public AutoPath(DrivetrainSubsystem drivetrainSubsystem, String trajectoryFile) {
+        this.drivetrainSubsystem = drivetrainSubsystem;
+        this.pathPlannerTrajectory = PathPlanner.loadPath(trajectoryFile, maxVel, maxAccel);
+
+        waypoints = null;
+        isReversed = false;
     }
 
     private void generateAutoPathCommand() {
@@ -87,6 +99,15 @@ public class AutoPath {
 
     public Pose2d getInitPose() {
         return trajectory.getInitialPose();
+    }
+
+    public Pose2d getEndPose() {
+        List<Trajectory.State> poses = trajectory.getStates();
+        return poses.get(poses.size() - 1).poseMeters;
+    }
+
+    public Trajectory getTrajectory() {
+        return trajectory;
     }
 
     public double getPathDuration() {

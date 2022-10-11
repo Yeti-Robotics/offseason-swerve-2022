@@ -41,10 +41,10 @@ public class RobotContainer {
     public final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
     public final GenericHID controller;
     public final OIConstants.CONTROLLER controllerType = OIConstants.CONTROLLER.XBOX;
-    private final MoveAndShootController moveAndShootController = new MoveAndShootController(drivetrainSubsystem);
-    private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(drivetrainSubsystem, moveAndShootController);
-    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-    private final NeckSubsystem neckSubsystem = new NeckSubsystem();
+    public final MoveAndShootController moveAndShootController = new MoveAndShootController(drivetrainSubsystem);
+    public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(drivetrainSubsystem, moveAndShootController);
+    public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+    public final NeckSubsystem neckSubsystem = new NeckSubsystem();
 
     public RobotContainer() {
         controller = controllerType == OIConstants.CONTROLLER.XBOX ? new XboxController(OIConstants.DRIVER_STATION_JOY)

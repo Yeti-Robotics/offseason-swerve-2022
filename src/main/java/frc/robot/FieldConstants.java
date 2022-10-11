@@ -126,6 +126,9 @@ public final class FieldConstants {
         // Terminal cargo point
         public static final Rotation2d terminalOuterRotation =
                 Rotation2d.fromDegrees(133.75);
+
+        public static final Rotation2d faceTerminalRotation =
+            Rotation2d.fromDegrees(226.25);
         public static final double terminalLength =
                 Units.inchesToMeters(324.0 - 256.42);
         public static final double terminalWidth = Math.tan(

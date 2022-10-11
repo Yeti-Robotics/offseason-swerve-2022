@@ -34,11 +34,11 @@ public class MoveAndShootController {
     }
 
     private void getAngleBetweenVectors() {
-        double angle = Math.min(
-            Math.acos(
-                (movementVector.getX() * robotToTargetVector.getX()) + (movementVector.getY() * robotToTargetVector.getY())
-                / (movementVector.getNorm() * robotToTargetVector.getNorm())) * Math.PI / 2,
-            Math.PI / 9);
+        double angle =
+            Math.atan(movementVector.getNorm()/ robotToTargetVector.getNorm());
+//        Math.min(Math.acos(movementVector.getX() * robotToTargetVector.getX()) + (movementVector.getY() * robotToTargetVector.getY())
+//                / (movementVector.getNorm() * robotToTargetVector.getNorm()) * Math.PI / 2,
+//            Math.PI / 9);
 
         if (angle < 0.08) {
             vectorAngle = new Rotation2d(0.0);
