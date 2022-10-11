@@ -163,10 +163,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		}
 
 		SwerveModuleState[] desiredStates = new SwerveModuleState[4];
-		desiredStates[0] = new SwerveModuleState(0, Rotation2d.fromDegrees(-45));
-		desiredStates[1] = new SwerveModuleState(0, Rotation2d.fromDegrees(45));
-		desiredStates[2] = new SwerveModuleState(0, Rotation2d.fromDegrees(45));
-		desiredStates[3] = new SwerveModuleState(0, Rotation2d.fromDegrees(-45));
+		desiredStates[0] = new SwerveModuleState(0, Rotation2d.fromDegrees(45));
+		desiredStates[1] = new SwerveModuleState(0, Rotation2d.fromDegrees(-45));
+		desiredStates[2] = new SwerveModuleState(0, Rotation2d.fromDegrees(-45));
+		desiredStates[3] = new SwerveModuleState(0, Rotation2d.fromDegrees(45));
 		setDesiredStates(desiredStates);
 	}
 

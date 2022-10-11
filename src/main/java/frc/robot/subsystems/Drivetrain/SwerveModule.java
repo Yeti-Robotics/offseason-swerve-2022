@@ -126,7 +126,8 @@ public class SwerveModule {
         double driveVelocity = getDriveVelocity();
         double steerAngle = getSteerPosition();
 
-        if (Math.abs(desiredState.speedMetersPerSecond) < 0.01) {
+        if (Math.abs(desiredState.speedMetersPerSecond) < 0.01
+            && Math.abs(desiredState.angle.getRadians() - steerAngle) < 0.05) {
             stop();
             return;
         }
