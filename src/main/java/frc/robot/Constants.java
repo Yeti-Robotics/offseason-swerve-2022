@@ -29,7 +29,7 @@ public final class Constants {
 
     public static final class OIConstants {
         public static final int DRIVER_STATION_JOY = 0;
-        public static final double DEADBAND = 0.06;
+        public static final double DEADBAND = 0.08;
 
         public enum CONTROLLER {
             XBOX,
@@ -178,13 +178,13 @@ public final class Constants {
         public static final int SHOOTER_LEFT_FALCON = 14; // left
         public static final int SHOOTER_RIGHT_FALCON = 15; // right
 
-        public static final double SHOOTER_P = 0.25;
+        public static final double SHOOTER_P = 0.22;
         public static final double SHOOTER_I = 0.0;
         public static final double SHOOTER_D = 0.0;
         // feed forward values; characterized using meters
         public static final double SHOOTER_KS = 0.5;
-        public static final double SHOOTER_KV = 0.21; // Volts * second/meter
-        public static final double SHOOTER_KA = 0.09; // Volts * second^2/meter
+        public static final double SHOOTER_KV = 0.20; // Volts * second/meter
+        public static final double SHOOTER_KA = 0.08; // Volts * second^2/meter
 
         public static final double SHOOTER_F = 0.693;
         public static final double TARGETING_P = 0.0825;

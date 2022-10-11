@@ -97,7 +97,7 @@ public class RobotContainer {
         setAxisWhileHeld(controller, Axis.kRightTrigger.value, new AllinCommand(intakeSubsystem, neckSubsystem));
         setButtonWhenPressed(controller, Button.kLeftBumper.value, new ToggleIntakeCommand(intakeSubsystem));
 
-        setButtonWhenPressed(controller, Button.kRightBumper.value, new ToggleShooterCommand(20, shooterSubsystem));
+        setButtonWhenPressed(controller, Button.kRightBumper.value, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LIMELIGHT, shooterSubsystem));
         setButtonWhenPressed(controller, Button.kA.value, new InstantCommand(FieldOrientedDrive::toggleTargetLock));
 
         setButtonWhenPressed(controller, Button.kStart.value, new InstantCommand(() -> drivetrainSubsystem.resetOdometer(

@@ -35,7 +35,7 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 250);
         intakeSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus3, 250);
 
-        intakeSpark.setSmartCurrentLimit(35);
+        intakeSpark.setSmartCurrentLimit(40);
         intakeSpark.enableVoltageCompensation(Constants.MOTOR_VOLTAGE_COMP);
 
         intakePistons.set(Value.kForward);
