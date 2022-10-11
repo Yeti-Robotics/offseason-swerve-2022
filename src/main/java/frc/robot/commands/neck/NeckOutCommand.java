@@ -1,6 +1,7 @@
 package frc.robot.commands.neck;
-import frc.robot.subsystems.NeckSubsystem;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.NeckSubsystem;
 
 
 public class NeckOutCommand extends CommandBase {
@@ -32,6 +33,6 @@ public class NeckOutCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-         neckSubsystem.stopNeck();
+        neckSubsystem.stopNeck();
     }
 }

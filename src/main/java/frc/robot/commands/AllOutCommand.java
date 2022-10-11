@@ -1,8 +1,8 @@
 package frc.robot.commands;
 
-import frc.robot.subsystems.NeckSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.NeckSubsystem;
 
 
 public class AllOutCommand extends CommandBase {

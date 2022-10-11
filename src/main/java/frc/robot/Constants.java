@@ -29,24 +29,24 @@ public final class Constants {
 
     public static final class OIConstants {
         public static final int DRIVER_STATION_JOY = 0;
+        public static final double DEADBAND = 0.06;
+
         public enum CONTROLLER {
             XBOX,
             CUSTOM
         }
-
-        public static final double DEADBAND = 0.06;
     }
 
     public static final class DriveConstants {
         public static final Transform2d X_ROBOT_CENTER = new Transform2d(
-                new Translation2d(Units.inchesToMeters(33.5215/2.0), 0.0),
-                Rotation2d.fromDegrees(0.0));
+            new Translation2d(Units.inchesToMeters(33.5215 / 2.0), 0.0),
+            Rotation2d.fromDegrees(0.0));
         public static final Transform2d Y_ROBOT_CENTER = new Transform2d(
-                new Translation2d(0.0, Units.inchesToMeters(33.5215/2.0)),
-                Rotation2d.fromDegrees(0.0));
+            new Translation2d(0.0, Units.inchesToMeters(33.5215 / 2.0)),
+            Rotation2d.fromDegrees(0.0));
         public static final Transform2d ROBOT_CENTER = new Transform2d(
-                new Translation2d(Units.inchesToMeters(33.5215/2.0), Units.inchesToMeters(33.5215/2.0)),
-                Rotation2d.fromDegrees(0.0));
+            new Translation2d(Units.inchesToMeters(33.5215 / 2.0), Units.inchesToMeters(33.5215 / 2.0)),
+            Rotation2d.fromDegrees(0.0));
         /**
          * The left-to-right distance between the drivetrain wheels
          * <p>
@@ -61,20 +61,20 @@ public final class Constants {
         public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(21.75);
 
         public static final SwerveDriveKinematics DRIVE_KINEMATICS =
-                new SwerveDriveKinematics(
-                        // Front left
-                        new Translation2d(DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
-                                DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-                        // Front right
-                        new Translation2d(DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
-                                -DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-                        // Back left
-                        new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
-                                DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-                        // Back right
-                        new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
-                                -DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0)
-                );
+            new SwerveDriveKinematics(
+                // Front left
+                new Translation2d(DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
+                    DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
+                // Front right
+                new Translation2d(DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
+                    -DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
+                // Back left
+                new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
+                    DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
+                // Back right
+                new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
+                    -DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0)
+            );
 
         /**
          * The maximum velocity of the robot in meters per second.
@@ -86,20 +86,20 @@ public final class Constants {
          * pi
          */
         public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
-                SdsModuleConfigurations.MK4_L2.getDriveReduction() *
-                SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
+            SdsModuleConfigurations.MK4_L2.getDriveReduction() *
+            SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
         /**
          * The maximum angular velocity of the robot in radians per second.
          * <p>
          * This is a measure of how fast the robot can rotate in place.
          */
         public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
-                MAX_VELOCITY_METERS_PER_SECOND /
+            MAX_VELOCITY_METERS_PER_SECOND /
                 Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-                        DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
+                    DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
         // Falcon to wheel reduction * Encoder counts to Falcon rotation / Degrees in full rotation;
-        public static final double DEGREES_TO_FALCON = 150/7.0 * 2048 / 360.0;
+        public static final double DEGREES_TO_FALCON = 150 / 7.0 * 2048 / 360.0;
 
         public static final double MAX_ACCELERATION = MAX_VELOCITY_METERS_PER_SECOND * 2;
         public static final double MAX_ANGULAR_ACCELERATION = MAX_VELOCITY_METERS_PER_SECOND * 2;
@@ -168,9 +168,9 @@ public final class Constants {
         public static final double Y_CONTROLLER_P = 0.0;
         public static final double THETA_CONTROLLER_P = 0.0;
         public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = //
-                new TrapezoidProfile.Constraints(
-                        DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                        DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+            new TrapezoidProfile.Constraints(
+                DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
     }
 
     public static final class ShooterConstants {

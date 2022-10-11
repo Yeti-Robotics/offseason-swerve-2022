@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.CompressorConfigType;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -24,19 +23,19 @@ import frc.robot.utils.AutoBuilder;
  * project.
  */
 public class Robot extends TimedRobot {
+    private static SendableChooser<AutoModes> autoChooser;
     private Command m_autonomousCommand;
     private Compressor compressor;
     private RobotContainer m_robotContainer;
-
     public enum AutoModes {
         ONE_BALL,
         TWO_BALL,
         THREE_BALL,
         FOUR_BALL,
     }
-    private static SendableChooser<AutoModes> autoChooser;
     private AutoModes previousSelectedAuto;
     private AutoBuilder autoBuilder;
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any
@@ -85,7 +84,9 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
     }
 
-    /** This function is called once each time the robot enters Disabled mode. */
+    /**
+     * This function is called once each time the robot enters Disabled mode.
+     */
     @Override
     public void disabledInit() {
     }
@@ -113,7 +114,9 @@ public class Robot extends TimedRobot {
         }
     }
 
-    /** This function is called periodically during autonomous. */
+    /**
+     * This function is called periodically during autonomous.
+     */
     @Override
     public void autonomousPeriodic() {
     }
@@ -129,7 +132,9 @@ public class Robot extends TimedRobot {
         }
     }
 
-    /** This function is called periodically during operator control. */
+    /**
+     * This function is called periodically during operator control.
+     */
     @Override
     public void teleopPeriodic() {
     }
@@ -140,18 +145,25 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().cancelAll();
     }
 
-    /** This function is called periodically during test mode. */
+    /**
+     * This function is called periodically during test mode.
+     */
     @Override
     public void testPeriodic() {
     }
 
-    /** This function is called once when the robot is first started up. */
+    /**
+     * This function is called once when the robot is first started up.
+     */
     @Override
     public void simulationInit() {
     }
 
-    /** This function is called periodically whilst in simulation. */
+    /**
+     * This function is called periodically whilst in simulation.
+     */
     @Override
     public void simulationPeriodic() {
     }
+
 }

@@ -1,13 +1,10 @@
 package frc.robot.commands;
 
-import com.sun.source.tree.SwitchTree;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NeckSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-
-import javax.print.attribute.standard.ReferenceUriSchemesSupported;
 
 public class AllinCommand extends CommandBase {
     private final IntakeSubsystem intakeSubsystem;

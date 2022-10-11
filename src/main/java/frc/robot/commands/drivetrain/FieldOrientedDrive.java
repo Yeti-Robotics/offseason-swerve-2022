@@ -37,6 +37,7 @@ public class FieldOrientedDrive extends CommandBase {
         DoubleSupplier translationXSupplier,
         DoubleSupplier translationYSupplier,
         DoubleSupplier rotationSupplier) {
+
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.translationXSupplier = translationXSupplier;
         this.translationYSupplier = translationYSupplier;
@@ -47,12 +48,12 @@ public class FieldOrientedDrive extends CommandBase {
         addRequirements(drivetrainSubsystem);
     }
 
+    public static void toggleTargetLock() {
+        FieldOrientedDrive.targetLock = !FieldOrientedDrive.targetLock;
+    }
+
     @Override
     public void execute() {
-//        System.out.println("X Supplier: " + translationXSupplier.getAsDouble());
-//        System.out.println("Y Supplier: " + translationYSupplier.getAsDouble());
-//        System.out.println("Rotation Supplier: " + rotationSupplier.getAsDouble());
-
         double xSpeed = modifyAxis(translationXSupplier.getAsDouble()) *
             DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
         double ySpeed = modifyAxis(translationYSupplier.getAsDouble()) *
@@ -60,16 +61,9 @@ public class FieldOrientedDrive extends CommandBase {
         double thetaSpeed = modifyAxis(rotationSupplier.getAsDouble()) *
             DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
-//        System.out.println("Before xSpeed: " + xSpeed);
-//        System.out.println("Before ySpeed: " + ySpeed);
-//        System.out.println("Before thetaSpeed: " + thetaSpeed);
-
         if (targetLock) {
             thetaSpeed = lockToTarget();
         }
-        // System.out.println("xSpeed: " + xSpeed);
-        // System.out.println("ySpeed: " + ySpeed);
-        // System.out.println("thetaSpeed: " + thetaSpeed);
 
         drivetrainSubsystem.drive(
             ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -78,10 +72,6 @@ public class FieldOrientedDrive extends CommandBase {
                 thetaSpeed,
                 drivetrainSubsystem.getPose().getRotation())
         );
-    }
-
-    public static void toggleTargetLock() {
-        FieldOrientedDrive.targetLock = !FieldOrientedDrive.targetLock;
     }
 
     public boolean isTargetLock() {
