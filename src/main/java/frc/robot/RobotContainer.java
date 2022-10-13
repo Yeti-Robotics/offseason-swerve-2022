@@ -108,22 +108,22 @@ public class RobotContainer {
     }
 
     private double getLeftY() {
-        return controllerType == OIConstants.CONTROLLER.XBOX ? controller.getRawAxis(Axis.kLeftY.value)
+        return controllerType == OIConstants.CONTROLLER.XBOX ? -controller.getRawAxis(Axis.kLeftY.value)
             : -controller.getRawAxis(0);
     }
 
     private double getLeftX() {
-        return controllerType == OIConstants.CONTROLLER.XBOX ? controller.getRawAxis(Axis.kLeftX.value)
+        return controllerType == OIConstants.CONTROLLER.XBOX ? -controller.getRawAxis(Axis.kLeftX.value)
             : controller.getRawAxis(1);
     }
 
     private double getRightY() {
-        return controllerType == OIConstants.CONTROLLER.XBOX ? controller.getRawAxis(Axis.kRightY.value)
+        return controllerType == OIConstants.CONTROLLER.XBOX ? -controller.getRawAxis(Axis.kRightY.value)
             : -controller.getRawAxis(2);
     }
 
     private double getRightX() {
-        return controllerType == OIConstants.CONTROLLER.XBOX ? controller.getRawAxis(Axis.kRightX.value)
+        return controllerType == OIConstants.CONTROLLER.XBOX ? -controller.getRawAxis(Axis.kRightX.value)
             : controller.getRawAxis(3);
     }
 

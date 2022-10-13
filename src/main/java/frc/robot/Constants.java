@@ -164,13 +164,24 @@ public final class Constants {
          */
         public static final double MAX_ACCEL = DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.75;
 
-        public static final double X_CONTROLLER_P = 0.0;
-        public static final double Y_CONTROLLER_P = 0.0;
-        public static final double THETA_CONTROLLER_P = 0.0;
+        public static final double X_CONTROLLER_P = 2.9;
+        public static final double Y_CONTROLLER_P = 2.9;
+        public static final double THETA_CONTROLLER_P = 3.0;
         public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = //
             new TrapezoidProfile.Constraints(
                 DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                 DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+
+        public static final String oneBallPath = "oneBallPath";
+
+        public static final String twoBallPath = "twoBallPath";
+
+        public static final String threeBallPath = "threeBallPath";
+
+        public static final String fourBallPathOne = "fourBallPathOne";
+        public static final String fourBallPathTwo = "fourBallPathTwo";
+
+        public static final String tuningAutoPath = "tuningAutoPath";
     }
 
     public static final class ShooterConstants {

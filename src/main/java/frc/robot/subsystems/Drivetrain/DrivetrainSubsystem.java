@@ -13,7 +13,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.AutoConstants;
@@ -21,6 +23,7 @@ import static frc.robot.Constants.DriveConstants;
 
 public class DrivetrainSubsystem extends SubsystemBase {
     private final AHRS gyro = new AHRS(Port.kUSB); // NavX
+    private final Rotation2d flipGyro = new Rotation2d(Math.PI);
 
     // These are our modules. We initialize them in the constructor.
     private final SwerveModule frontLeftModule;
@@ -38,7 +41,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public DrivetrainSubsystem() {
         frontLeftModule = new SwerveModule(
             DriveConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
-            false,
+            true,
             DriveConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
             DriveConstants.FRONT_LEFT_MODULE_STEER_ENCODER,
             false,
@@ -46,7 +49,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         frontRightModule = new SwerveModule(
             DriveConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-            true,
+            false,
             DriveConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
             DriveConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,
             false,
@@ -54,7 +57,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         backLeftModule = new SwerveModule(
             DriveConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
-            false,
+            true,
             DriveConstants.BACK_LEFT_MODULE_STEER_MOTOR,
             DriveConstants.BACK_LEFT_MODULE_STEER_ENCODER,
             false,
@@ -62,7 +65,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         backRightModule = new SwerveModule(
             DriveConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
-            true,
+            false,
             DriveConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
             DriveConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
             false,
@@ -127,6 +130,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
             return;
         }
         this.chassisSpeeds = chassisSpeeds;
+        System.out.println(chassisSpeeds);
+        System.out.println(odometer.getPoseMeters());
         setDesiredStates(DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds));
     }
 
