@@ -78,7 +78,7 @@ public class FieldOrientedDrive extends CommandBase {
         return FieldOrientedDrive.targetLock;
     }
 
-    private double lockToTargetWhileMoving() {
+    private double lockToTarget() {
         double movementOffset = moveAndShootController.calculateDegOffset();
         double offset = Math.copySign(ShooterConstants.TARGET_OFFSET, movementOffset);
 
@@ -87,14 +87,6 @@ public class FieldOrientedDrive extends CommandBase {
             Math.toDegrees(
                 Math.atan(offset / (VisionSubsystem.getDistance() + 24.0))
                     + movementOffset)
-        );
-    }
-
-    private double lockToTarget() {
-        return targetLockPID.calculate(
-            VisionSubsystem.getX(),
-            Math.toDegrees(
-                Math.atan(ShooterConstants.TARGET_OFFSET / (VisionSubsystem.getDistance() + 24.0)))
         );
     }
 

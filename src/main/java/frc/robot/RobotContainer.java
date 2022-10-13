@@ -42,7 +42,7 @@ public class RobotContainer {
     public final GenericHID controller;
     public final OIConstants.CONTROLLER controllerType = OIConstants.CONTROLLER.XBOX;
     public final MoveAndShootController moveAndShootController = new MoveAndShootController(drivetrainSubsystem);
-    public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(drivetrainSubsystem, moveAndShootController);
+    public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(moveAndShootController);
     public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     public final NeckSubsystem neckSubsystem = new NeckSubsystem();
 
@@ -82,8 +82,11 @@ public class RobotContainer {
         setButtonWhenPressed(controller, 6, new AllOutCommand(intakeSubsystem, neckSubsystem));
         setButtonWhenPressed(controller, 12, new ToggleIntakeCommand(intakeSubsystem));
 
-        setButtonWhenPressed(controller, 2, new ToggleShooterCommand(20, shooterSubsystem));
+        setButtonWhenPressed(controller, 2, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LIMELIGHT, shooterSubsystem));
+        setButtonWhenPressed(controller, 3, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LOWGOAL, shooterSubsystem));
+
         setButtonWhenPressed(controller, 11, new InstantCommand(FieldOrientedDrive::toggleTargetLock));
+        setButtonWhenPressed(controller, 10, new InstantCommand(moveAndShootController::toggleMoveAndShootController));
 
         setButtonWhenPressed(controller, 5, new InstantCommand(() -> drivetrainSubsystem.resetOdometer(
             new Pose2d(FieldConstants.launchPadB, new Rotation2d(0.0)).transformBy(DriveConstants.ROBOT_CENTER)
@@ -98,7 +101,10 @@ public class RobotContainer {
         setButtonWhenPressed(controller, Button.kLeftBumper.value, new ToggleIntakeCommand(intakeSubsystem));
 
         setButtonWhenPressed(controller, Button.kRightBumper.value, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LIMELIGHT, shooterSubsystem));
+        setButtonWhenPressed(controller, Button.kX.value, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LOWGOAL, shooterSubsystem));
+
         setButtonWhenPressed(controller, Button.kA.value, new InstantCommand(FieldOrientedDrive::toggleTargetLock));
+        setButtonWhenPressed(controller, Button.kBack.value, new InstantCommand(moveAndShootController::toggleMoveAndShootController));
 
         setButtonWhenPressed(controller, Button.kStart.value, new InstantCommand(() -> drivetrainSubsystem.resetOdometer(
             new Pose2d(FieldConstants.launchPadB, new Rotation2d(0.0)).transformBy(DriveConstants.ROBOT_CENTER)
@@ -136,7 +142,7 @@ public class RobotContainer {
     }
 
     private void setAxisWhenPressed(GenericHID genericHID, int port, CommandBase command) {
-        new AxisToButton(genericHID, port, 0.75).whenPressed(command);
+        new AxisToButton(genericHID, port, 0.25).whenPressed(command);
     }
 
     private void setAxisWhileHeld(GenericHID genericHID, int port, CommandBase command) {

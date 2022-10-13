@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
 import frc.robot.subsystems.VisionSubsystem.VisionSubsystem;
 import frc.robot.utils.MoveAndShootController;
 
@@ -26,7 +25,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private final MoveAndShootController moveAndShootController;
     private double setPoint = 0.0;
     private double acceleration = 0.0;
-    public ShooterSubsystem(DrivetrainSubsystem drivetrainSubsystem, MoveAndShootController moveAndShootController) {
+    public ShooterSubsystem(MoveAndShootController moveAndShootController) {
         shooterLeftFalcon = new WPI_TalonFX(ShooterConstants.SHOOTER_LEFT_FALCON);
         shooterRightFalcon = new WPI_TalonFX(ShooterConstants.SHOOTER_RIGHT_FALCON);
 
@@ -76,24 +75,13 @@ public class ShooterSubsystem extends SubsystemBase {
             && shooterMode != ShooterMode.OFF;
 
         switch (shooterMode) {
-            case TEST_MOVE:
-                if (VisionSubsystem.getDistance() == 0.0) {
-                    setPoint = 12;
-                    shootFlywheel(setPoint);
-                    break;
-                }
-                setSetPoint(0.1389 / 0.9144 * VisionSubsystem.getDistance() + 15.9150 + moveAndShootController.calculateShooterSpeed());
-                setFlywheelVolts(
-                    feedForward.calculate(setPoint, acceleration)
-                        + shooterPID.calculate(getMetersPerSecond(), setPoint));
-                break;
             case LIMELIGHT:
                 if (VisionSubsystem.getDistance() == 0.0) {
                     setPoint = 12;
                     shootFlywheel(setPoint);
                     break;
                 }
-                setSetPoint(2.564 * VisionSubsystem.getDistance() + 12.787);
+                setSetPoint(2.564 * VisionSubsystem.getDistance() + 12.787 + moveAndShootController.calculateShooterSpeed());
                 setFlywheelVolts(
                     feedForward.calculate(setPoint, acceleration)
                         + shooterPID.calculate(getMetersPerSecond(), setPoint));
@@ -104,7 +92,9 @@ public class ShooterSubsystem extends SubsystemBase {
                         + shooterPID.calculate(getMetersPerSecond(), setPoint));
                 break;
             case LOWGOAL:
-                shootFlywheel(ShooterConstants.SHOOTER_LOW_SPEED);
+                setSetPoint(10);
+                setFlywheelVolts(feedForward.calculate(setPoint, acceleration)
+                        + shooterPID.calculate(getMetersPerSecond(), setPoint));
                 break;
             default:
                 stopFlywheel();
@@ -168,7 +158,6 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public enum ShooterMode {
-        TEST_MOVE,
         LIMELIGHT,
         MANUAL,
         LOWGOAL,

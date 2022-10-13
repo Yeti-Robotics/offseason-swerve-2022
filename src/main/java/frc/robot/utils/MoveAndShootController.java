@@ -9,7 +9,7 @@ import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
 
 public class MoveAndShootController {
     private final DrivetrainSubsystem drivetrainSubsystem;
-
+    private boolean isControllerEnabled = true;
     private Pose2d robotPose;
 
     private Pose2d targetPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
@@ -57,6 +57,9 @@ public class MoveAndShootController {
     }
 
     public double calculateShooterSpeed() {
+        if (!isControllerEnabled) {
+            return 0;
+        }
         updateTargetLocation();
 
         Pose2d predictedTargetPose = targetPose.transformBy(new Transform2d(movementVector, Rotation2d.fromDegrees(0)));
@@ -65,14 +68,28 @@ public class MoveAndShootController {
     }
 
     public double calculateDegOffset() {
+        if (!isControllerEnabled) {
+            return 0;
+        }
         updateTargetLocation();
 
         return vectorAngle.getDegrees();
     }
 
     public double calculateRadOffset() {
+        if (!isControllerEnabled) {
+            return 0;
+        }
         updateTargetLocation();
 
         return Math.toRadians(vectorAngle.getDegrees());
+    }
+
+    public boolean getIsControllerEnabled() {
+        return isControllerEnabled;
+    }
+
+    public void toggleMoveAndShootController() {
+        isControllerEnabled = !isControllerEnabled;
     }
 }
