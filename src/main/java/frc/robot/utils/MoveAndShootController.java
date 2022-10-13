@@ -9,7 +9,7 @@ import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
 
 public class MoveAndShootController {
     private final DrivetrainSubsystem drivetrainSubsystem;
-    private boolean isControllerEnabled = true;
+    private boolean isControllerEnabled = false;
     private Pose2d robotPose;
 
     private Pose2d targetPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));

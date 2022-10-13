@@ -232,6 +232,7 @@ public final class Constants {
         public static final double FOCAL_LENGTH = (KNOWN_DISTANCE * PIXEL_WIDTH_KNOWN) / KNOWN_TAPE_BOUND_WIDTH;
 
         // trajectory constants
+        public static final double UPPER_HUB_RADIUS = Units.inchesToMeters(24.0);
         public static final double LIMELIGHT_HEIGHT = Units.inchesToMeters(28.4); // meters
         public static final double GOAL_HEIGHT = Units.inchesToMeters(108.0); // meters
         public static final double GRAVITY = 386.09; // inches/ sec ^2

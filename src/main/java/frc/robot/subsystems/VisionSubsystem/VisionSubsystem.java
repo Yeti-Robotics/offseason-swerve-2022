@@ -25,7 +25,7 @@ public class VisionSubsystem {
     }
 
     public static double getX() {
-        return -visionSubsystem.getX();
+        return visionSubsystem.getX();
     }
 
     public static double getY() {

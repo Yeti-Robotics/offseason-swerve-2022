@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -85,7 +86,7 @@ public class FieldOrientedDrive extends CommandBase {
         return targetLockPID.calculate(
             VisionSubsystem.getX(),
             Math.toDegrees(
-                Math.atan(offset / (VisionSubsystem.getDistance() + 24.0))
+                Math.atan(offset / (VisionSubsystem.getDistance() + Constants.LimelightConstants.UPPER_HUB_RADIUS))
                     + movementOffset)
         );
     }

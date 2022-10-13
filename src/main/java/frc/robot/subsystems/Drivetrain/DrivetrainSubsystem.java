@@ -94,7 +94,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public Rotation2d getGyroscopeRotation() {
         // return gyro.getRotation2d();
-        return Rotation2d.fromDegrees(gyro.getYaw());
+        return Rotation2d.fromDegrees(-gyro.getYaw());
     }
 
     public Pose2d getPose() {
@@ -131,8 +131,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
             return;
         }
         this.chassisSpeeds = chassisSpeeds;
-        System.out.println(chassisSpeeds);
-        System.out.println(odometer.getPoseMeters());
         setDesiredStates(DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds));
     }
 
