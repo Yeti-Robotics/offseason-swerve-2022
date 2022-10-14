@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -49,6 +50,8 @@ public class Robot extends TimedRobot {
         m_robotContainer = new RobotContainer();
         compressor = new Compressor(PneumaticsModuleType.REVPH);
         compressor.enableAnalog(110, 120);
+
+        CameraServer.startAutomaticCapture();
 
         autoChooser = new SendableChooser<>();
         autoChooser.setDefaultOption("ONE_BALL", AutoModes.ONE_BALL);

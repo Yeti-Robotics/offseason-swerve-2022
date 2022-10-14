@@ -12,6 +12,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
+import javax.sql.rowset.serial.SerialStruct;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -178,8 +180,12 @@ public final class Constants {
 
         public static final String threeBallPath = "threeBallPath";
 
+        public static final String ballThreeToTerminal = "ballThreeToTerminal";
+
         public static final String fourBallPathOne = "fourBallPathOne";
-        public static final String fourBallPathTwo = "fourBallPathTwo";
+
+        public static final String fiveBallPathOne = "fiveBallPathOne";
+        public static final String fiveBallPathTwo = "fiveBallPathTwo";
 
         public static final String tuningAutoPath = "tuningAutoPath";
     }

@@ -107,7 +107,7 @@ public class RobotContainer {
         setButtonWhenPressed(controller, Button.kBack.value, new InstantCommand(moveAndShootController::toggleMoveAndShootController));
 
         setButtonWhenPressed(controller, Button.kStart.value, new InstantCommand(() -> drivetrainSubsystem.resetOdometer(
-            new Pose2d(FieldConstants.launchPadB, new Rotation2d(0.0)).transformBy(DriveConstants.ROBOT_CENTER)
+            new Pose2d(FieldConstants.launchPadB, new Rotation2d(0.0))
         )));
 
         setButtonWhenPressed(controller, Button.kB.value, new InstantCommand(drivetrainSubsystem::toggleSwerveLock));

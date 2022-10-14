@@ -42,8 +42,7 @@ public final class FieldConstants {
 
         public static final Translation2d launchPadA = new Translation2d(
                 -(Units.inchesToMeters(324 - 128.75)), Units.inchesToMeters(162 - 6));
-        public static final Translation2d launchPadB = new Translation2d(
-                -(Units.inchesToMeters(324 - 128.75)), Units.inchesToMeters(162 - 110));
+        public static final Translation2d launchPadB = new Translation2d(3.7, 5.5);
 
         /**
          * Diameter of a circle tangent to each side of the octagon
