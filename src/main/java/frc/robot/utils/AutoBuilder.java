@@ -38,8 +38,11 @@ public class AutoBuilder {
                 startPath = new AutoPath(robotContainer.drivetrainSubsystem, AutoConstants.oneBallPathD);
                 oneBallAutoNoPath();
                 break;
-            case TWO_BALL:
-                twoBallAuto();
+            case TWO_BALL_A:
+                twoBallAutoA();
+                break;
+            case TWO_BALL_B:
+                twoBallAutoB();
                 break;
             case THREE_BALL:
                 threeBallAuto();
@@ -47,7 +50,7 @@ public class AutoBuilder {
             case FOUR_BALL:
                 fourBallAuto();
                 break;
-            case TUNNING:
+            case TUNING:
                 tuningAuto();
                 break;
         }
@@ -76,11 +79,32 @@ public class AutoBuilder {
         );
     }
 
-    private void twoBallAuto() {
+    private void twoBallAutoA() {
         startPath = new AutoPath(robotContainer.drivetrainSubsystem,
-            AutoConstants.twoBallPath,
-            AutoConstants.MAX_VELOCITY,
-            AutoConstants.MAX_ACCEL);
+            AutoConstants.twoBallPathA);
+
+        autoCommand.addCommands(
+            startPath.getAutoPath().alongWith(
+                new SequentialCommandGroup(
+                    new ToggleIntakeCommand(robotContainer.intakeSubsystem),
+                    new WaitCommand(startPath.getPathDuration() - 1.5),
+                    new AllinCommand(robotContainer.intakeSubsystem, robotContainer.neckSubsystem).withTimeout(0.7),
+                    new ToggleIntakeCommand(robotContainer.intakeSubsystem),
+                    new WaitCommand(0.2),
+                    new ToggleShooterCommand(17, robotContainer.shooterSubsystem),
+                    new WaitCommand(0.4),
+                    new ToggleShooterCommand(ShooterMode.LIMELIGHT, robotContainer.shooterSubsystem),
+                    new WaitCommand(0.2),
+                    new AllinCommand(robotContainer.intakeSubsystem, robotContainer.neckSubsystem).withTimeout(1.0)
+                )
+            ),
+            new ToggleShooterCommand(ShooterMode.OFF, robotContainer.shooterSubsystem)
+        );
+    }
+
+    private void twoBallAutoB() {
+        startPath = new AutoPath(robotContainer.drivetrainSubsystem,
+            AutoConstants.twoBallPathB);
 
         autoCommand.addCommands(
             startPath.getAutoPath().alongWith(
@@ -102,7 +126,7 @@ public class AutoBuilder {
     }
 
     private void threeBallAuto() {
-        twoBallAuto();
+        twoBallAutoB();
 
         AutoPath twoBallToBallThree = new AutoPath(robotContainer.drivetrainSubsystem,
             AutoConstants.threeBallPath);

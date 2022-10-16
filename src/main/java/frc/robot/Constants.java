@@ -179,7 +179,8 @@ public final class Constants {
         public static final String oneBallPathC = "oneBallPathC";
         public static final String oneBallPathD = "oneBallPathD";
 
-        public static final String twoBallPath = "twoBallPath";
+        public static final String twoBallPathA = "twoBallPathA";
+        public static final String twoBallPathB = "twoBallPathB";
 
         public static final String threeBallPath = "threeBallPath";
 

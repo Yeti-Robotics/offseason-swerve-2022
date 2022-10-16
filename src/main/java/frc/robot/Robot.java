@@ -6,14 +6,12 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.VisionSubsystem.VisionSubsystem;
 import frc.robot.utils.AutoBuilder;
 
 /**
@@ -35,10 +33,11 @@ public class Robot extends TimedRobot {
         ONE_BALL_B,
         ONE_BALL_C,
         ONE_BALL_D,
-        TWO_BALL,
+        TWO_BALL_A,
+        TWO_BALL_B,
         THREE_BALL,
         FOUR_BALL,
-        TUNNING
+        TUNING
     }
     private AutoModes previousSelectedAuto;
     private AutoBuilder autoBuilder;
@@ -62,10 +61,11 @@ public class Robot extends TimedRobot {
         autoChooser.addOption("ONE_BALL_B", AutoModes.ONE_BALL_B);
         autoChooser.addOption("ONE_BALL_C", AutoModes.ONE_BALL_C);
         autoChooser.addOption("ONE_BALL_D", AutoModes.ONE_BALL_D);
-        autoChooser.addOption("TWO_BALL", AutoModes.TWO_BALL);
+        autoChooser.addOption("TWO_BALL_A", AutoModes.TWO_BALL_A);
+        autoChooser.addOption("TWO_BALL_B", AutoModes.TWO_BALL_B);
         autoChooser.addOption("THREE_BALL", AutoModes.THREE_BALL);
         autoChooser.addOption("FOUR_BALL", AutoModes.FOUR_BALL);
-        autoChooser.addOption("TUNNING", AutoModes.TUNNING);
+        autoChooser.addOption("TUNING", AutoModes.TUNING);
         SmartDashboard.putData("Auto Chooser", autoChooser);
         previousSelectedAuto = autoChooser.getSelected();
 
