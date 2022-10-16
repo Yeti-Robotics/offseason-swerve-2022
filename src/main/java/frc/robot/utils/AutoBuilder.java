@@ -22,8 +22,21 @@ public class AutoBuilder {
         autoCommand = new SequentialCommandGroup();
 
         switch (autoMode) {
-            case ONE_BALL:
-                oneBallAuto();
+            case ONE_BALL_A:
+                startPath = new AutoPath(robotContainer.drivetrainSubsystem, AutoConstants.oneBallPathA);
+                oneBallAutoNoPath();
+                break;
+            case ONE_BALL_B:
+                startPath = new AutoPath(robotContainer.drivetrainSubsystem, AutoConstants.oneBallPathB);
+                oneBallAutoNoPath();
+                break;
+            case ONE_BALL_C:
+                startPath = new AutoPath(robotContainer.drivetrainSubsystem, AutoConstants.oneBallPathC);
+                oneBallAutoNoPath();
+                break;
+            case ONE_BALL_D:
+                startPath = new AutoPath(robotContainer.drivetrainSubsystem, AutoConstants.oneBallPathD);
+                oneBallAutoNoPath();
                 break;
             case TWO_BALL:
                 twoBallAuto();
@@ -51,10 +64,7 @@ public class AutoBuilder {
         this.autoMode = autoMode;
     }
 
-    private void oneBallAuto() {
-        startPath = new AutoPath(robotContainer.drivetrainSubsystem,
-            AutoConstants.oneBallPath);
-
+    private void oneBallAutoNoPath() {
         autoCommand.addCommands(
             new SequentialCommandGroup(
                 new ToggleShooterCommand(ShooterMode.LIMELIGHT, robotContainer.shooterSubsystem),

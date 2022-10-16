@@ -31,7 +31,10 @@ public class Robot extends TimedRobot {
     private Compressor compressor;
     private RobotContainer m_robotContainer;
     public enum AutoModes {
-        ONE_BALL,
+        ONE_BALL_A,
+        ONE_BALL_B,
+        ONE_BALL_C,
+        ONE_BALL_D,
         TWO_BALL,
         THREE_BALL,
         FOUR_BALL,
@@ -54,8 +57,11 @@ public class Robot extends TimedRobot {
         CameraServer.startAutomaticCapture();
 
         autoChooser = new SendableChooser<>();
-        autoChooser.setDefaultOption("ONE_BALL", AutoModes.ONE_BALL);
-        autoChooser.addOption("ONE_BALL", AutoModes.ONE_BALL);
+        autoChooser.setDefaultOption("ONE_BALL_A", AutoModes.ONE_BALL_A);
+        autoChooser.addOption("ONE_BALL_A", AutoModes.ONE_BALL_A);
+        autoChooser.addOption("ONE_BALL_B", AutoModes.ONE_BALL_B);
+        autoChooser.addOption("ONE_BALL_C", AutoModes.ONE_BALL_C);
+        autoChooser.addOption("ONE_BALL_D", AutoModes.ONE_BALL_D);
         autoChooser.addOption("TWO_BALL", AutoModes.TWO_BALL);
         autoChooser.addOption("THREE_BALL", AutoModes.THREE_BALL);
         autoChooser.addOption("FOUR_BALL", AutoModes.FOUR_BALL);

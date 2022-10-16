@@ -174,7 +174,10 @@ public final class Constants {
                 DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                 DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
-        public static final String oneBallPath = "oneBallPath";
+        public static final String oneBallPathA = "oneBallPathA";
+        public static final String oneBallPathB = "oneBallPathB";
+        public static final String oneBallPathC = "oneBallPathC";
+        public static final String oneBallPathD = "oneBallPathD";
 
         public static final String twoBallPath = "twoBallPath";
 
