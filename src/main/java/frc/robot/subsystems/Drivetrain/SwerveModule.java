@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderStatusFrame;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -103,8 +102,8 @@ public class SwerveModule {
 
     public double getDriveVelocity() {
         return driveMotor.getSelectedSensorVelocity() * 10 / 2048
-            * SdsModuleConfigurations.MK4_L2.getDriveReduction() *
-            SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
+            * DriveConstants.MK4_L2_REDUCTION*
+           DriveConstants.WHEEL_DIAMETER * Math.PI;
     }
 
     public double getSteerVelocity() {
