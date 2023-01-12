@@ -39,7 +39,8 @@ public class SwerveModule {
     private final SimpleMotorFeedforward steerFeedforward = new SimpleMotorFeedforward(
         DriveConstants.STEER_MOTOR_KS, DriveConstants.STEER_MOTOR_KV, DriveConstants.STEER_MOTOR_KA
     );
-    private SwerveModuleState state = new SwerveModuleState();
+    private SwerveModuleState final_state = new SwerveModuleState();
+    private SwerveModuleState temp_state = new SwerveModuleState();
 
     public SwerveModule(
         int driveMotorID,
@@ -111,13 +112,14 @@ public class SwerveModule {
     }
 
     public SwerveModuleState getState() {
-        // updateState();
-        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getSteerPosition()));
+        updateState();
+        return final_state;
     }
 
     public void updateState() {
-        state.speedMetersPerSecond = getDriveVelocity();
-        state.angle = new Rotation2d(getSteerPosition());
+        temp_state.speedMetersPerSecond = getDriveVelocity();
+        temp_state.angle = new Rotation2d(getSteerPosition());
+        final_state = temp_state;
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {
