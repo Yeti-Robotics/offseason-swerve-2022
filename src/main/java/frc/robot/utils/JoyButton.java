@@ -7,8 +7,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import java.util.function.BooleanSupplier;
 
-import static edu.wpi.first.wpilibj.util.ErrorMessages.requireNonNullParam;
-
 public class JoyButton extends JoystickButton {
 
     public JoyButton(Joystick joystick, int number) {
@@ -21,18 +19,15 @@ public class JoyButton extends JoystickButton {
         Command falseCommand,
         ActiveState falseActiveState,
         BooleanSupplier booleanSupplier) {
-        requireNonNullParam(trueCommand, "trueCommand", "conditionalPressed");
-        requireNonNullParam(falseCommand, "falseCommand", "conditionalPressed");
-        requireNonNullParam(booleanSupplier, "booleanSupplier", "conditionalPressed");
 
-        CommandScheduler.getInstance()
-            .addButton(
+        CommandScheduler.getInstance().getActiveButtonLoop()
+            .bind(
                 new Runnable() {
-                    private boolean pressedLast = get();
+                    private boolean pressedLast = getAsBoolean();
 
                     @Override
                     public void run() {
-                        boolean pressed = get();
+                        boolean pressed = getAsBoolean();
 
                         if (booleanSupplier.getAsBoolean()) {
                             conditionRunner(trueCommand, trueActiveState, pressed, pressedLast);

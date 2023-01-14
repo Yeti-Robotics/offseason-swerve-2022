@@ -9,13 +9,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj.SerialPort.Port;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.AutoConstants;
@@ -30,11 +25,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final SwerveModule frontRightModule;
     private final SwerveModule backLeftModule;
     private final SwerveModule backRightModule;
+
+    private final SwerveModulePosition[] positions = new SwerveModulePosition[4];
+
     private final PIDController yController = new PIDController(AutoConstants.Y_CONTROLLER_P, 0.0, 0.0);
     private final PIDController xController = new PIDController(AutoConstants.X_CONTROLLER_P, 0.0, 0.0);
     private final ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.THETA_CONTROLLER_P,
         0.0, 0.0, AutoConstants.THETA_CONTROLLER_CONTRAINTS);
-    private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.DRIVE_KINEMATICS, new Rotation2d(0));
+    private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.DRIVE_KINEMATICS, new Rotation2d(0), positions);
     private boolean isSwerveLock;
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -71,6 +69,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
             false,
             DriveConstants.BACK_RIGHT_MODULE_STEER_OFFSET);
 
+        positions[0] = frontLeftModule.getPosition();
+        positions[1] = frontRightModule.getPosition();
+        positions[2] = backLeftModule.getPosition();
+        positions[4] = backRightModule.getPosition();
+
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         new Thread(() -> {
@@ -102,7 +105,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void resetOdometer(Pose2d pose) {
-        odometer.resetPosition(pose, getGyroscopeRotation());
+        odometer.resetPosition(getGyroscopeRotation(), positions, pose);
     }
 
     public PIDController getxController() {
@@ -158,8 +161,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        odometer.update(getGyroscopeRotation(),
-            frontLeftModule.getState(), frontRightModule.getState(),
-            backLeftModule.getState(), backRightModule.getState());
+        odometer.update(getGyroscopeRotation(), positions);
     }
 }

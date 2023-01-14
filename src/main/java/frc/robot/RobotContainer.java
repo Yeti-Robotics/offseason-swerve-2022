@@ -134,18 +134,18 @@ public class RobotContainer {
     }
 
     private void setButtonWhenPressed(GenericHID genericHID, int button, CommandBase command) {
-        new JoystickButton(genericHID, button).whenPressed(command);
+        new JoystickButton(genericHID, button).onTrue(command);
     }
 
     private void setButtonWhileHeld(GenericHID genericHID, int button, CommandBase command) {
-        new JoystickButton(genericHID, button).whileHeld(command);
+        new JoystickButton(genericHID, button).whileTrue(command);
     }
 
     private void setAxisWhenPressed(GenericHID genericHID, int port, CommandBase command) {
-        new AxisToButton(genericHID, port, 0.25).whenPressed(command);
+        new AxisToButton(genericHID, port, 0.25).onTrue(command);
     }
 
     private void setAxisWhileHeld(GenericHID genericHID, int port, CommandBase command) {
-        new AxisToButton(genericHID, port, 0.25).whileHeld(command);
+        new AxisToButton(genericHID, port, 0.25).whileTrue(command);
     }
 }

@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.Constants.DriveConstants;
@@ -40,7 +41,7 @@ public class SwerveModule {
     private final SimpleMotorFeedforward steerFeedforward = new SimpleMotorFeedforward(
         DriveConstants.STEER_MOTOR_KS, DriveConstants.STEER_MOTOR_KV, DriveConstants.STEER_MOTOR_KA
     );
-    private SwerveModuleState state = new SwerveModuleState();
+    private final SwerveModulePosition position = new SwerveModulePosition();
 
     public SwerveModule(
         int driveMotorID,
@@ -111,14 +112,14 @@ public class SwerveModule {
         return steerMotor.getSelectedSensorVelocity() * 10;
     }
 
-    public SwerveModuleState getState() {
+    public SwerveModulePosition getPosition() {
         // updateState();
-        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getSteerPosition()));
+        return this.position;
     }
 
     public void updateState() {
-        state.speedMetersPerSecond = getDriveVelocity();
-        state.angle = new Rotation2d(getSteerPosition());
+        position.distanceMeters = absoluteEncoder.getAbsolutePosition();
+        position.angle = new Rotation2d(getSteerPosition());
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {
