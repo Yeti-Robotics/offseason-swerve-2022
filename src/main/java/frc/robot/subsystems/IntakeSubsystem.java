@@ -20,6 +20,7 @@ public class IntakeSubsystem extends SubsystemBase {
      */
 
     private final CANSparkMax intakeSpark;
+
     private final DoubleSolenoid intakePistons;
 
     public IntakeSubsystem() {
