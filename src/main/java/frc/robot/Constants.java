@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -40,6 +39,10 @@ public final class Constants {
     }
 
     public static final class DriveConstants {
+
+        public static final double MK4_L2_REDUCTION = (14.0/50.0) *(27.0 / 17.0) * ( 15.0/45.0);
+        public static final double WHEEL_DIAMETER = 0.10033;
+
         public static final Transform2d X_ROBOT_CENTER = new Transform2d(
             new Translation2d(Units.inchesToMeters(33.5215 / 2.0), 0.0),
             Rotation2d.fromDegrees(0.0));
@@ -88,8 +91,7 @@ public final class Constants {
          * pi
          */
         public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
-            SdsModuleConfigurations.MK4_L2.getDriveReduction() *
-            SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
+            MK4_L2_REDUCTION * WHEEL_DIAMETER * Math.PI;
         /**
          * The maximum angular velocity of the robot in radians per second.
          * <p>
