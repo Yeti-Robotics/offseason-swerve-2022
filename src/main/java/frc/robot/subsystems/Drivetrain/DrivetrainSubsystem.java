@@ -32,7 +32,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final PIDController xController = new PIDController(AutoConstants.X_CONTROLLER_P, 0.0, 0.0);
     private final ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.THETA_CONTROLLER_P,
         0.0, 0.0, AutoConstants.THETA_CONTROLLER_CONTRAINTS);
-    private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.DRIVE_KINEMATICS, new Rotation2d(0), positions);
+    private final SwerveDriveOdometry odometer;
     private boolean isSwerveLock;
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -72,7 +72,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
         positions[0] = frontLeftModule.getPosition();
         positions[1] = frontRightModule.getPosition();
         positions[2] = backLeftModule.getPosition();
-        positions[4] = backRightModule.getPosition();
+        positions[3] = backRightModule.getPosition();
+
+        odometer = new SwerveDriveOdometry(DriveConstants.DRIVE_KINEMATICS, new Rotation2d(0), positions);
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
