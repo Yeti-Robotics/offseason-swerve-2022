@@ -140,6 +140,12 @@ public final class Constants {
         public static final double STEER_MOTOR_KV = 0.7;
         public static final double STEER_MOTOR_KA = 0.0;
 
+        public static final double DRIVE_PITCH_P = 0.02;
+        public static final double DRIVE_PITCH_I = 0.00000001;
+        public static final double DRIVE_PITCH_D = 0.00000001;
+        public static final double DRIVE_PITCH_F = 0.00000001;
+
+
         public static final boolean ANGLE_ENABLE_CURRENT_LIMIT = true;
         public static final int ANGLE_CONTINUOUS_CURRENT_LIMIT = 25;
         public static final int ANGLE_PEAK_CURRENT_LIMIT = 40;

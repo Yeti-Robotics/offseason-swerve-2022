@@ -26,6 +26,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final SwerveModule backLeftModule;
     private final SwerveModule backRightModule;
 
+    private final SwerveModule[] modules;
+
     private final SwerveModulePosition[] positions = new SwerveModulePosition[4];
 
     private final PIDController yController = new PIDController(AutoConstants.Y_CONTROLLER_P, 0.0, 0.0);
@@ -69,12 +71,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
             false,
             DriveConstants.BACK_RIGHT_MODULE_STEER_OFFSET);
 
+        modules = new SwerveModule[] {frontLeftModule, frontRightModule, backLeftModule, backRightModule};
+
         positions[0] = frontLeftModule.getPosition();
         positions[1] = frontRightModule.getPosition();
         positions[2] = backLeftModule.getPosition();
         positions[4] = backRightModule.getPosition();
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+
 
         new Thread(() -> {
             try {
@@ -102,6 +108,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public Pose2d getPose() {
         return odometer.getPoseMeters();
+    }
+
+    public Rotation2d getPitch() {
+        return Rotation2d.fromDegrees(gyro.getPitch());
+    }
+
+    public Rotation2d getYaw() {
+        return Rotation2d.fromDegrees(gyro.getYaw());
+    }
+
+    public Rotation2d getRoll(){
+        return Rotation2d.fromDegrees(gyro.getRoll());
     }
 
     public void resetOdometer(Pose2d pose) {
@@ -137,6 +155,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
         setDesiredStates(DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds));
     }
 
+    public SwerveModule[] getModules(){
+        return modules;
+    }
     private void swerveLock() {
         if (chassisSpeeds.vxMetersPerSecond > 0.5 && chassisSpeeds.vyMetersPerSecond > 0.5) {
             isSwerveLock = false;
