@@ -31,10 +31,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
         intakeSpark.setInverted(false);
 
-        intakeSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 250);
-        intakeSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 250);
-        intakeSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 250);
-        intakeSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus3, 250);
+        intakeSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 300);
+        intakeSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 300);
+        intakeSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 300);
+        intakeSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus3, 300);
 
         intakeSpark.setSmartCurrentLimit(40);
         intakeSpark.enableVoltageCompensation(Constants.MOTOR_VOLTAGE_COMP);

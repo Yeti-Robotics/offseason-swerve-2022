@@ -23,15 +23,15 @@ public class NeckSubsystem extends SubsystemBase {
         frontSpark.setInverted(false);
         backSpark.setInverted(false);
 
-        frontSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 250);
-        frontSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 250);
-        frontSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 250);
-        frontSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus3, 250);
+        frontSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 300);
+        frontSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 300);
+        frontSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 300);
+        frontSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus3, 300);
 
-        backSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 250);
-        backSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 250);
-        backSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 250);
-        backSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus3, 250);
+        backSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 300);
+        backSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 300);
+        backSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 300);
+        backSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus3, 300);
 
         frontSpark.setSmartCurrentLimit(20);
         backSpark.setSmartCurrentLimit(20);

@@ -4,21 +4,19 @@
 
 package frc.robot.subsystems.Drivetrain;
 
-import com.kauailabs.navx.frc.AHRS;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
-import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.AutoConstants;
 import static frc.robot.Constants.DriveConstants;
 
 public class DrivetrainSubsystem extends SubsystemBase {
-    private final AHRS gyro = new AHRS(Port.kUSB); // NavX
-    private final Rotation2d flipGyro = new Rotation2d(Math.PI);
+    private final WPI_Pigeon2 gyro = new WPI_Pigeon2(DriveConstants.GYRO);
 
     // These are our modules. We initialize them in the constructor.
     private final SwerveModule frontLeftModule;
@@ -97,9 +95,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         gyro.reset();
     }
 
-    public Rotation2d getGyroscopeRotation() {
-        // return gyro.getRotation2d();
-        return Rotation2d.fromDegrees(-gyro.getYaw());
+    public Rotation2d getGyroscopeHeading() {
+        return new Rotation2d(gyro.getYaw());
     }
 
     public Pose2d getPose() {
@@ -107,7 +104,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void resetOdometer(Pose2d pose) {
-        odometer.resetPosition(getGyroscopeRotation(), positions, pose);
+        odometer.resetPosition(getGyroscopeHeading(), positions, pose);
     }
 
     public PIDController getxController() {
@@ -163,6 +160,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        odometer.update(getGyroscopeRotation(), positions);
+        odometer.update(getGyroscopeHeading(), positions);
     }
 }
