@@ -34,9 +34,9 @@ public class AutoBalancing extends CommandBase {
     public void end(boolean interrupted) {
         SwerveModule[] swerveModules = drivetrainSubsystem.getModules();
         swerveModules[0].setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(45.0))));
-        swerveModules[0].setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(315.0))));
-        swerveModules[0].setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(315.0))));
-        swerveModules[0].setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(45.0))));
+        swerveModules[1].setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(315.0))));
+        swerveModules[2].setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(315.0))));
+        swerveModules[3].setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(45.0))));
 
         }
 
