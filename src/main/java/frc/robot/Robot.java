@@ -51,8 +51,6 @@ public class Robot extends TimedRobot {
         compressor = new Compressor(PneumaticsModuleType.REVPH);
         compressor.enableAnalog(110, 120);
 
-        CameraServer.startAutomaticCapture();
-
         autoChooser = new SendableChooser<>();
         autoChooser.setDefaultOption("ONE_BALL", AutoModes.ONE_BALL);
         autoChooser.addOption("ONE_BALL", AutoModes.ONE_BALL);

@@ -96,6 +96,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public Rotation2d getGyroscopeHeading() {
+        System.out.println(gyro.getYaw());
         return new Rotation2d(gyro.getYaw());
     }
 

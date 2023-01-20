@@ -112,7 +112,7 @@ public class SwerveModule {
     }
 
     public SwerveModulePosition getPosition() {
-        // updateState();
+        updateState();
         return this.position;
     }
 
