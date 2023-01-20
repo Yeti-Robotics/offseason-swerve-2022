@@ -67,11 +67,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             false,
             DriveConstants.BACK_RIGHT_MODULE_STEER_OFFSET);
 
-        positions[0] = frontLeftModule.getPosition();
-        positions[1] = frontRightModule.getPosition();
-        positions[2] = backLeftModule.getPosition();
-        positions[3] = backRightModule.getPosition();
-
+        updateSwerveModulePositions();
         odometer = new SwerveDriveOdometry(DriveConstants.DRIVE_KINEMATICS, new Rotation2d(0), positions);
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
@@ -105,6 +101,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void resetOdometer(Pose2d pose) {
+        updateSwerveModulePositions();
         odometer.resetPosition(getGyroscopeHeading(), positions, pose);
     }
 
@@ -159,8 +156,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return chassisSpeeds;
     }
 
+    public void updateSwerveModulePositions() {
+        positions[0] = frontLeftModule.getPosition();
+        positions[1] = frontRightModule.getPosition();
+        positions[2] = backLeftModule.getPosition();
+        positions[3] = backRightModule.getPosition();
+    }
+
     @Override
     public void periodic() {
+        updateSwerveModulePositions();
         odometer.update(getGyroscopeHeading(), positions);
     }
 }

@@ -93,7 +93,9 @@ public class SwerveModule {
     }
 
     public double getDrivePosition() {
-        return driveMotor.getSelectedSensorPosition();
+        return driveMotor.getSelectedSensorPosition() / 2048 *
+                DriveConstants.MK4_L2_REDUCTION *
+                DriveConstants.WHEEL_DIAMETER * Math.PI;
     }
 
     public double getSteerPosition() {
@@ -117,7 +119,7 @@ public class SwerveModule {
     }
 
     public void updateState() {
-        position.distanceMeters = absoluteEncoder.getAbsolutePosition();
+        position.distanceMeters = getDrivePosition();
         position.angle = new Rotation2d(getSteerPosition());
     }
 
@@ -140,9 +142,9 @@ public class SwerveModule {
             steeringPIDController.calculate(steerAngle, desiredState.angle.getRadians())
                 + steerFeedforward.calculate(steeringPIDController.getSetpoint().velocity);
 
-        driveMotor.setVoltage(desiredState.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND
-            * DriveConstants.MAX_VOLTAGE);
-        // driveMotor.setVoltage(driveOutput);
+//        driveMotor.setVoltage(desiredState.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND
+//            * DriveConstants.MAX_VOLTAGE);
+        driveMotor.setVoltage(driveOutput);
         // steerMotor.set(steeringPIDController.calculate(getSteerPosition(), desiredState.angle.getDegrees()));
         // steerMotor.set(steeringPIDController.calculate(getSteerPosition(), 45));
         steerMotor.setVoltage(steerOutput);
