@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveModule {
@@ -50,13 +51,6 @@ public class SwerveModule {
         boolean absoluteEncoderReversed,
         double absoluteEncoderOffsetDeg) {
 
-        absoluteEncoder = new CANCoder(absoluteEncoderID);
-        absoluteEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
-        absoluteEncoder.configMagnetOffset(absoluteEncoderOffsetDeg);
-        absoluteEncoder.configSensorDirection(absoluteEncoderReversed);
-        absoluteEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 20);
-        absoluteEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 250);
-
         driveMotor = new WPI_TalonFX(driveMotorID);
         steerMotor = new WPI_TalonFX(steerMotorID);
 
@@ -65,6 +59,13 @@ public class SwerveModule {
 
         driveMotor.setInverted(driveInverted);
         steerMotor.setInverted(true);
+
+        absoluteEncoder = new CANCoder(absoluteEncoderID);
+        absoluteEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
+        absoluteEncoder.configMagnetOffset(absoluteEncoderOffsetDeg);
+        absoluteEncoder.configSensorDirection(absoluteEncoderReversed);
+        absoluteEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 20);
+        absoluteEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 250);
 
         driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.1));
         driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 65, 0.1));
