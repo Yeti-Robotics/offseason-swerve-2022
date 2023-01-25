@@ -135,7 +135,7 @@ public final class Constants {
         public static final double DRIVE_MOTOR_KV = 2.178;
         public static final double DRIVE_MOTOR_KA = 0.406;
 
-        public static final double STEER_MOTOR_P = 6.; //0.08 //0.064
+        public static final double STEER_MOTOR_P = 12; //0.08 , 0.064, 12
         public static final double STEER_MOTOR_I = 0.0;
         public static final double STEER_MOTOR_D = 0.01;
         public static final double STEER_MOTOR_KS = 0.75;
@@ -168,9 +168,11 @@ public final class Constants {
          */
         public static final double MAX_ACCEL = DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.75;
 
-        public static final double X_CONTROLLER_P = 2.9;
-        public static final double Y_CONTROLLER_P = 2.9;
-        public static final double THETA_CONTROLLER_P = 3.0;
+        public static final double X_CONTROLLER_P = 2.1; //2.9, 2.15
+        public static final double Y_CONTROLLER_P = 2.1; //2.9, 2.15
+        public static final double X_CONTROLLER_D = 0;
+        public static final double Y_CONTROLLER_D = 0;
+        public static final double THETA_CONTROLLER_P = 3; //3
         public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = //
             new TrapezoidProfile.Constraints(
                 DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,

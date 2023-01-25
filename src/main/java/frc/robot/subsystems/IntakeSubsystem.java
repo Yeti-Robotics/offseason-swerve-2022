@@ -42,6 +42,10 @@ public class IntakeSubsystem extends SubsystemBase {
         intakePistons.set(Value.kForward);
     }
 
+    @Override
+    public void periodic() {
+    }
+
     public void extendIntake() {
         intakePistons.set(Value.kReverse);
     }

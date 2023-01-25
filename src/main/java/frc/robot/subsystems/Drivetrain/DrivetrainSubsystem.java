@@ -26,10 +26,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private final SwerveModulePosition[] positions = new SwerveModulePosition[4];
 
-    private final PIDController yController = new PIDController(AutoConstants.Y_CONTROLLER_P, 0.0, 0.0);
-    private final PIDController xController = new PIDController(AutoConstants.X_CONTROLLER_P, 0.0, 0.0);
-    private final ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.THETA_CONTROLLER_P,
-        0.0, 0.0, AutoConstants.THETA_CONTROLLER_CONTRAINTS);
+    private final PIDController yController = new PIDController(AutoConstants.Y_CONTROLLER_P, 0.0, AutoConstants.X_CONTROLLER_D);
+    private final PIDController xController = new PIDController(AutoConstants.X_CONTROLLER_P, 0.0, AutoConstants.Y_CONTROLLER_D);
+    private final PIDController thetaController = new PIDController(AutoConstants.THETA_CONTROLLER_P,
+        0.0, 0.0);
     private final SwerveDriveOdometry odometer;
     private boolean isSwerveLock;
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
@@ -112,7 +112,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return yController;
     }
 
-    public ProfiledPIDController getThetaController() {
+    public PIDController getThetaController() {
         return thetaController;
     }
 
