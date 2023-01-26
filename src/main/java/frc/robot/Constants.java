@@ -151,6 +151,8 @@ public final class Constants {
         public static final int ANGLE_PEAK_CURRENT_LIMIT = 40;
         public static final double ANGLE_PEAK_CURRENT_DURATION = 0.1;
 
+        public static final double PITCH_SET_POINT = 0; //not tested
+
         /**
          * The maximum voltage that will be delivered to the drive motors.
          * <p>

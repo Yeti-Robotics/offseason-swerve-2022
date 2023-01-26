@@ -3,6 +3,7 @@ package frc.robot.commands.drivetrain;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -25,9 +26,10 @@ public class AutoBalancing extends CommandBase {
 
     @Override
     public void execute() {
-        double translationValue = MathUtil.clamp(
+        double clampVal = MathUtil.clamp(
                 pidController.calculate(
-                        drivetrainSubsystem.getPitch().getDegrees(), 0.0), -0.1, -0.1);
+                        drivetrainSubsystem.getPitch().getDegrees(), Constants.DriveConstants.PITCH_SET_POINT), -0.1, -0.1);
+                         drivetrainSubsystem.drive(new ChassisSpeeds(clampVal, clampVal, 0));
     }
 
     @Override
