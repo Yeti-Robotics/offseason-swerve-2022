@@ -1,10 +1,15 @@
 package frc.robot.utils;
 
+import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -33,6 +38,7 @@ public class AutoPath {
         generateAutoPathCommand();
     }
 
+
     public AutoPath(DrivetrainSubsystem drivetrainSubsystem, String trajectoryFile, double maxVel, double maxAccel) {
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.maxVel = maxVel;
@@ -54,8 +60,25 @@ public class AutoPath {
             drivetrainSubsystem::setDesiredStates,
             true,
                 drivetrainSubsystem);
+
     }
 
+    public void pathToLocation(Translation2d desiredPosition, Rotation2d desiredHeading, Rotation2d desiredRotation) {
+        PathPlannerTrajectory pathPlannerTrajectory = PathPlanner.generatePath(
+                new PathConstraints(2, 1),
+                new PathPoint(new Translation2d(drivetrainSubsystem.getPose().getX(), drivetrainSubsystem.getPose().getY()), drivetrainSubsystem.getGyroscopeHeading()),
+                new PathPoint(desiredPosition, desiredHeading, desiredRotation) //
+                );
+
+
+    }
+
+    public void pathToLocation(double maxVel, double maxAccel, Translation2d desiredPosition, Rotation2d desiredHeading, Rotation2d desiredRotation){
+        PathPlannerTrajectory pathPlannerTrajectory = PathPlanner.generatePath(
+                new PathConstraints(maxVel, maxAccel),
+                new PathPoint(new Translation2d(drivetrainSubsystem.getPose().getX(), drivetrainSubsystem.getPose().getY()), drivetrainSubsystem.getGyroscopeHeading()),
+                new PathPoint(desiredPosition, desiredHeading, desiredRotation));
+    }
     /**
      * DO NOT use if it is a part of a command group
      * Use getAutoPath() instead
