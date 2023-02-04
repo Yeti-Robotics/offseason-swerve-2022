@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveModule {
@@ -20,42 +21,35 @@ public class SwerveModule {
 
     private final CANCoder absoluteEncoder;
     private final PIDController drivePIDController =
-        new PIDController(
-            DriveConstants.DRIVE_MOTOR_P,
-            DriveConstants.DRIVE_MOTOR_I,
-            DriveConstants.DRIVE_MOTOR_D
-        );
+            new PIDController(
+                    DriveConstants.DRIVE_MOTOR_P,
+                    DriveConstants.DRIVE_MOTOR_I,
+                    DriveConstants.DRIVE_MOTOR_D
+            );
     private final ProfiledPIDController steeringPIDController =
-        new ProfiledPIDController(
-            DriveConstants.STEER_MOTOR_P,
-            DriveConstants.STEER_MOTOR_I,
-            DriveConstants.STEER_MOTOR_D,
-            new TrapezoidProfile.Constraints(
-                3 * Math.PI,    //540,
-                6 * Math.PI) //1080)
-        );
+            new ProfiledPIDController(
+                    DriveConstants.STEER_MOTOR_P,
+                    DriveConstants.STEER_MOTOR_I,
+                    DriveConstants.STEER_MOTOR_D,
+                    new TrapezoidProfile.Constraints(
+                            3 * Math.PI,    //540,
+                            6 * Math.PI) //1080)
+            );
     private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(
-        DriveConstants.DRIVE_MOTOR_KS, DriveConstants.DRIVE_MOTOR_KV, DriveConstants.DRIVE_MOTOR_KA
+            DriveConstants.DRIVE_MOTOR_KS, DriveConstants.DRIVE_MOTOR_KV, DriveConstants.DRIVE_MOTOR_KA
     );
     private final SimpleMotorFeedforward steerFeedforward = new SimpleMotorFeedforward(
-        DriveConstants.STEER_MOTOR_KS, DriveConstants.STEER_MOTOR_KV, DriveConstants.STEER_MOTOR_KA
+            DriveConstants.STEER_MOTOR_KS, DriveConstants.STEER_MOTOR_KV, DriveConstants.STEER_MOTOR_KA
     );
     private final SwerveModulePosition position = new SwerveModulePosition();
 
     public SwerveModule(
-        int driveMotorID,
-        boolean driveInverted,
-        int steerMotorID,
-        int absoluteEncoderID,
-        boolean absoluteEncoderReversed,
-        double absoluteEncoderOffsetDeg) {
-
-        absoluteEncoder = new CANCoder(absoluteEncoderID);
-        absoluteEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
-        absoluteEncoder.configMagnetOffset(absoluteEncoderOffsetDeg);
-        absoluteEncoder.configSensorDirection(absoluteEncoderReversed);
-        absoluteEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 20);
-        absoluteEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 250);
+            int driveMotorID,
+            boolean driveInverted,
+            int steerMotorID,
+            int absoluteEncoderID,
+            boolean absoluteEncoderReversed,
+            double absoluteEncoderOffsetDeg) {
 
         driveMotor = new WPI_TalonFX(driveMotorID);
         steerMotor = new WPI_TalonFX(steerMotorID);
@@ -65,6 +59,13 @@ public class SwerveModule {
 
         driveMotor.setInverted(driveInverted);
         steerMotor.setInverted(true);
+
+        absoluteEncoder = new CANCoder(absoluteEncoderID);
+        absoluteEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
+        absoluteEncoder.configMagnetOffset(absoluteEncoderOffsetDeg);
+        absoluteEncoder.configSensorDirection(absoluteEncoderReversed);
+        absoluteEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 20);
+        absoluteEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 250);
 
         driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.1));
         driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 65, 0.1));
@@ -93,7 +94,9 @@ public class SwerveModule {
     }
 
     public double getDrivePosition() {
-        return driveMotor.getSelectedSensorPosition();
+        return driveMotor.getSelectedSensorPosition() / 2048 *
+                DriveConstants.MK4_L2_REDUCTION *
+                DriveConstants.WHEEL_DIAMETER * Math.PI;
     }
 
     public double getSteerPosition() {
@@ -103,8 +106,8 @@ public class SwerveModule {
 
     public double getDriveVelocity() {
         return driveMotor.getSelectedSensorVelocity() * 10 / 2048
-            * DriveConstants.MK4_L2_REDUCTION *
-            DriveConstants.WHEEL_DIAMETER * Math.PI;
+                * DriveConstants.MK4_L2_REDUCTION *
+                DriveConstants.WHEEL_DIAMETER * Math.PI;
     }
 
     public double getSteerVelocity() {
@@ -112,12 +115,12 @@ public class SwerveModule {
     }
 
     public SwerveModulePosition getPosition() {
-        // updateState();
+        updateState();
         return this.position;
     }
 
     public void updateState() {
-        position.distanceMeters = absoluteEncoder.getAbsolutePosition();
+        position.distanceMeters = getDrivePosition();
         position.angle = new Rotation2d(getSteerPosition());
     }
 
@@ -126,23 +129,23 @@ public class SwerveModule {
         double steerAngle = getSteerPosition();
 
         if (Math.abs(desiredState.speedMetersPerSecond) < 0.01
-            && Math.abs(desiredState.angle.getRadians() - steerAngle) < 0.05) {
+                && Math.abs(desiredState.angle.getRadians() - steerAngle) < 0.05) {
             stop();
             return;
         }
         desiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(steerAngle));
 
         final double driveOutput =
-            drivePIDController.calculate(driveVelocity, desiredState.speedMetersPerSecond)
-                + driveFeedforward.calculate(desiredState.speedMetersPerSecond);
+                drivePIDController.calculate(driveVelocity, desiredState.speedMetersPerSecond)
+                        + driveFeedforward.calculate(desiredState.speedMetersPerSecond);
 
         final double steerOutput =
-            steeringPIDController.calculate(steerAngle, desiredState.angle.getRadians())
-                + steerFeedforward.calculate(steeringPIDController.getSetpoint().velocity);
+                steeringPIDController.calculate(steerAngle, desiredState.angle.getRadians())
+                        + steerFeedforward.calculate(steeringPIDController.getSetpoint().velocity);
 
-        driveMotor.setVoltage(desiredState.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND
-            * DriveConstants.MAX_VOLTAGE);
-        // driveMotor.setVoltage(driveOutput);
+//        driveMotor.setVoltage(desiredState.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND
+//            * DriveConstants.MAX_VOLTAGE);
+        driveMotor.setVoltage(driveOutput);
         // steerMotor.set(steeringPIDController.calculate(getSteerPosition(), desiredState.angle.getDegrees()));
         // steerMotor.set(steeringPIDController.calculate(getSteerPosition(), 45));
         steerMotor.setVoltage(steerOutput);

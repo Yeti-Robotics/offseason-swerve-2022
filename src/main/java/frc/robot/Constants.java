@@ -38,6 +38,7 @@ public final class Constants {
 
     public static final class DriveConstants {
 
+        public static final int GYRO = 1;
         public static final double MK4_L2_REDUCTION = (14.0/50.0) *(27.0 / 17.0) * ( 15.0/45.0);
         public static final double WHEEL_DIAMETER = 0.10033;
 

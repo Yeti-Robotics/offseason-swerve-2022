@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -13,8 +15,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
 import frc.robot.subsystems.VisionSubsystem.VisionSubsystem;
 import frc.robot.utils.AutoBuilder;
+import frc.robot.utils.AutoPath;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -50,8 +55,6 @@ public class Robot extends TimedRobot {
         m_robotContainer = new RobotContainer();
         compressor = new Compressor(PneumaticsModuleType.REVPH);
         compressor.enableAnalog(110, 120);
-
-        CameraServer.startAutomaticCapture();
 
         autoChooser = new SendableChooser<>();
         autoChooser.setDefaultOption("ONE_BALL", AutoModes.ONE_BALL);
@@ -100,13 +103,13 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        AutoModes selectedAuto = autoChooser.getSelected();
-
-        if (previousSelectedAuto != selectedAuto) {
-            autoBuilder.setAutoMode(selectedAuto);
-            m_autonomousCommand = autoBuilder.build();
-            previousSelectedAuto = selectedAuto;
-        }
+//        AutoModes selectedAuto = autoChooser.getSelected();
+//
+//        if (previousSelectedAuto != selectedAuto) {
+//            autoBuilder.setAutoMode(selectedAuto);
+//            m_autonomousCommand = autoBuilder.build();
+//            previousSelectedAuto = selectedAuto;
+//        }
     }
 
     /**
@@ -134,6 +137,8 @@ public class Robot extends TimedRobot {
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
         // this line or comment it out.
+        m_robotContainer.drivetrainSubsystem.zeroGyroscope();
+
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
@@ -144,6 +149,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
+        System.out.println(m_robotContainer.drivetrainSubsystem.getPitch());
     }
 
     @Override

@@ -101,11 +101,11 @@ public class RobotContainer {
         setAxisWhileHeld(controller, Axis.kRightTrigger.value, new AllinCommand(intakeSubsystem, neckSubsystem));
         setButtonWhenPressed(controller, Button.kLeftBumper.value, new ToggleIntakeCommand(intakeSubsystem));
 
-        setButtonWhenPressed(controller, Button.kRightBumper.value, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LIMELIGHT, shooterSubsystem));
-        setButtonWhenPressed(controller, Button.kX.value, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LOWGOAL, shooterSubsystem));
+//        setButtonWhenPressed(controller, Button.kRightBumper.value, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LIMELIGHT, shooterSubsystem));
+//        setButtonWhenPressed(controller, Button.kX.value, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LOWGOAL, shooterSubsystem));
 
         setButtonWhenPressed(controller, Button.kA.value, new InstantCommand(FieldOrientedDrive::toggleTargetLock));
-        setButtonWhenPressed(controller, Button.kBack.value, new InstantCommand(moveAndShootController::toggleMoveAndShootController));
+//        setButtonWhenPressed(controller, Button.kBack.value, new InstantCommand(moveAndShootController::toggleMoveAndShootController));
 
         setButtonWhenPressed(controller, Button.kY.value, new AutoBalancing(drivetrainSubsystem));
 
@@ -113,7 +113,7 @@ public class RobotContainer {
             new Pose2d(FieldConstants.launchPadB, new Rotation2d(0.0))
         )));
 
-        setButtonWhenPressed(controller, Button.kB.value, new InstantCommand(drivetrainSubsystem::toggleSwerveLock));
+        setButtonWhenPressed(controller, Button.kLeftBumper.value, new InstantCommand(drivetrainSubsystem::toggleSwerveLock));
     }
 
     private double getLeftY() {

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
+import frc.robot.subsystems.Drivetrain.SwerveModule;
 
 import java.util.List;
 
@@ -18,6 +19,8 @@ public class AutoPath {
     private final DrivetrainSubsystem drivetrainSubsystem;
     private PathPlannerTrajectory trajectory;
     private PPSwerveControllerCommand swerveControllerCommand;
+
+
     private double startVel = 0.0;
     private double endVel = 0.0;
     private double maxVel = AutoConstants.MAX_VELOCITY;
@@ -76,6 +79,8 @@ public class AutoPath {
     public PathPlannerTrajectory getTrajectory() {
         return trajectory;
     }
+
+
 
     public double getPathDuration() {
         return trajectory.getTotalTimeSeconds();

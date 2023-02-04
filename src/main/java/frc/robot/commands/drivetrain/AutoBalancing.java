@@ -26,25 +26,28 @@ public class AutoBalancing extends CommandBase {
 
     @Override
     public void execute() {
-        double clampVal = MathUtil.clamp(
-                pidController.calculate(
-                        drivetrainSubsystem.getPitch().getDegrees(), Constants.DriveConstants.PITCH_SET_POINT), -0.1, -0.1);
-                         drivetrainSubsystem.drive(new ChassisSpeeds(clampVal, clampVal, 0));
+
+            double clampVal = MathUtil.clamp(
+                    pidController.calculate(
+                            drivetrainSubsystem.getPitch().getDegrees()  , Constants.DriveConstants.PITCH_SET_POINT), -0.5, 0.5);
+            drivetrainSubsystem.drive(new ChassisSpeeds(clampVal, clampVal, 0));
+
     }
 
     @Override
     public void end(boolean interrupted) {
         SwerveModule[] swerveModules = drivetrainSubsystem.getModules();
-        swerveModules[0].setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(45.0))));
-        swerveModules[1].setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(315.0))));
-        swerveModules[2].setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(315.0))));
-        swerveModules[3].setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(45.0))));
+        drivetrainSubsystem.toggleSwerveLock();
+//        swerveModules[0].setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(45.0))));
+//        swerveModules[1].setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(315.0))));
+//        swerveModules[2].setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(315.0))));
+//        swerveModules[3].setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(45.0))));
 
         }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return true;
     }
 }
 

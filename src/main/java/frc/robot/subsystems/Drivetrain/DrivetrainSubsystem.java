@@ -4,21 +4,21 @@
 
 package frc.robot.subsystems.Drivetrain;
 
-import com.kauailabs.navx.frc.AHRS;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
-import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 
 import static frc.robot.Constants.AutoConstants;
 import static frc.robot.Constants.DriveConstants;
 
 public class DrivetrainSubsystem extends SubsystemBase {
-    private final AHRS gyro = new AHRS(Port.kUSB); // NavX
-    private final Rotation2d flipGyro = new Rotation2d(Math.PI);
+    private final WPI_Pigeon2 gyro = new WPI_Pigeon2(DriveConstants.GYRO);
 
     // These are our modules. We initialize them in the constructor.
     private final SwerveModule frontLeftModule;
@@ -28,59 +28,57 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private final SwerveModule[] modules;
 
+
     private final SwerveModulePosition[] positions = new SwerveModulePosition[4];
 
-    private final PIDController yController = new PIDController(AutoConstants.Y_CONTROLLER_P, 0.0, 0.0);
-    private final PIDController xController = new PIDController(AutoConstants.X_CONTROLLER_P, 0.0, 0.0);
+    private final PIDController yController = new PIDController(AutoConstants.Y_CONTROLLER_P, 0.0, 0);
+    private final PIDController xController = new PIDController(AutoConstants.X_CONTROLLER_P, 0.0, 0);
     private final ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.THETA_CONTROLLER_P,
-        0.0, 0.0, AutoConstants.THETA_CONTROLLER_CONTRAINTS);
-    private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.DRIVE_KINEMATICS, new Rotation2d(0), positions);
+            0.0, 0.0, AutoConstants.THETA_CONTROLLER_CONTRAINTS);
+    private final SwerveDriveOdometry odometer;
     private boolean isSwerveLock;
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
     public DrivetrainSubsystem() {
         frontLeftModule = new SwerveModule(
-            DriveConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
-            true,
-            DriveConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
-            DriveConstants.FRONT_LEFT_MODULE_STEER_ENCODER,
-            false,
-            DriveConstants.FRONT_LEFT_MODULE_STEER_OFFSET);
+                DriveConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
+                true,
+                DriveConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
+                DriveConstants.FRONT_LEFT_MODULE_STEER_ENCODER,
+                false,
+                DriveConstants.FRONT_LEFT_MODULE_STEER_OFFSET);
 
         frontRightModule = new SwerveModule(
-            DriveConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-            false,
-            DriveConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
-            DriveConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,
-            false,
-            DriveConstants.FRONT_RIGHT_MODULE_STEER_OFFSET);
+                DriveConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
+                false,
+                DriveConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
+                DriveConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,
+                false,
+                DriveConstants.FRONT_RIGHT_MODULE_STEER_OFFSET);
 
         backLeftModule = new SwerveModule(
-            DriveConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
-            true,
-            DriveConstants.BACK_LEFT_MODULE_STEER_MOTOR,
-            DriveConstants.BACK_LEFT_MODULE_STEER_ENCODER,
-            false,
-            DriveConstants.BACK_LEFT_MODULE_STEER_OFFSET);
+                DriveConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
+                true,
+                DriveConstants.BACK_LEFT_MODULE_STEER_MOTOR,
+                DriveConstants.BACK_LEFT_MODULE_STEER_ENCODER,
+                false,
+                DriveConstants.BACK_LEFT_MODULE_STEER_OFFSET);
 
         backRightModule = new SwerveModule(
-            DriveConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
-            false,
-            DriveConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
-            DriveConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
-            false,
-            DriveConstants.BACK_RIGHT_MODULE_STEER_OFFSET);
+                DriveConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
+                false,
+                DriveConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
+                DriveConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
+                false,
+                DriveConstants.BACK_RIGHT_MODULE_STEER_OFFSET);
 
         modules = new SwerveModule[] {frontLeftModule, frontRightModule, backLeftModule, backRightModule};
 
-        positions[0] = frontLeftModule.getPosition();
-        positions[1] = frontRightModule.getPosition();
-        positions[2] = backLeftModule.getPosition();
-        positions[4] = backRightModule.getPosition();
+
+        updateSwerveModulePositions();
+        odometer = new SwerveDriveOdometry(DriveConstants.DRIVE_KINEMATICS, new Rotation2d(0), positions);
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-
 
         new Thread(() -> {
             try {
@@ -101,9 +99,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         gyro.reset();
     }
 
-    public Rotation2d getGyroscopeRotation() {
-        // return gyro.getRotation2d();
-        return Rotation2d.fromDegrees(-gyro.getYaw());
+    public Rotation2d getGyroscopeHeading() {
+        return Rotation2d.fromDegrees(gyro.getYaw());
     }
 
     public Pose2d getPose() {
@@ -113,17 +110,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public Rotation2d getPitch() {
         return Rotation2d.fromDegrees(gyro.getPitch());
     }
-
-    public Rotation2d getYaw() {
-        return Rotation2d.fromDegrees(gyro.getYaw());
-    }
-
-    public Rotation2d getRoll(){
-        return Rotation2d.fromDegrees(gyro.getRoll());
-    }
-
     public void resetOdometer(Pose2d pose) {
-        odometer.resetPosition(getGyroscopeRotation(), positions, pose);
+        updateSwerveModulePositions();
+        odometer.resetPosition(getGyroscopeHeading(), positions, pose);
     }
 
     public PIDController getxController() {
@@ -152,12 +141,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
             return;
         }
         this.chassisSpeeds = chassisSpeeds;
+
         setDesiredStates(DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds));
     }
 
-    public SwerveModule[] getModules(){
-        return modules;
-    }
     private void swerveLock() {
         if (chassisSpeeds.vxMetersPerSecond > 0.5 && chassisSpeeds.vyMetersPerSecond > 0.5) {
             isSwerveLock = false;
@@ -180,8 +167,21 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return chassisSpeeds;
     }
 
+    public void updateSwerveModulePositions() {
+        positions[0] = frontLeftModule.getPosition();
+        positions[1] = frontRightModule.getPosition();
+        positions[2] = backLeftModule.getPosition();
+        positions[3] = backRightModule.getPosition();
+    }
+
+    public SwerveModule[] getModules(){
+        return modules;
+    }
+
+
     @Override
     public void periodic() {
-        odometer.update(getGyroscopeRotation(), positions);
+        updateSwerveModulePositions();
+        odometer.update(getGyroscopeHeading(), positions);
     }
 }
