@@ -18,6 +18,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AllOutCommand;
 import frc.robot.commands.AllinCommand;
+import frc.robot.commands.drivetrain.AutoBalancing;
 import frc.robot.commands.drivetrain.FieldOrientedDrive;
 import frc.robot.commands.intake.ToggleIntakeCommand;
 import frc.robot.commands.shooter.ToggleShooterCommand;
@@ -105,6 +106,8 @@ public class RobotContainer {
 
         setButtonWhenPressed(controller, Button.kA.value, new InstantCommand(FieldOrientedDrive::toggleTargetLock));
         setButtonWhenPressed(controller, Button.kBack.value, new InstantCommand(moveAndShootController::toggleMoveAndShootController));
+
+        setButtonWhenPressed(controller, Button.kY.value, new AutoBalancing(drivetrainSubsystem));
 
         setButtonWhenPressed(controller, Button.kStart.value, new InstantCommand(() -> drivetrainSubsystem.resetOdometer(
             new Pose2d(FieldConstants.launchPadB, new Rotation2d(0.0))
