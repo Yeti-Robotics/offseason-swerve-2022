@@ -57,10 +57,10 @@ public class AutoBuilder {
 
         autoCommand.addCommands(
             new SequentialCommandGroup(
-                new ToggleShooterCommand(ShooterMode.LIMELIGHT, robotContainer.shooterSubsystem),
+//                new ToggleShooterCommand(ShooterMode.LIMELIGHT, robotContainer.shooterSubsystem),
                 new WaitCommand(1.0),
-                new AllinCommand(robotContainer.intakeSubsystem, robotContainer.neckSubsystem).withTimeout(1.5),
-                new ToggleShooterCommand(ShooterMode.OFF, robotContainer.shooterSubsystem)
+                new AllinCommand(robotContainer.intakeSubsystem, robotContainer.neckSubsystem).withTimeout(1.5)
+//                new ToggleShooterCommand(ShooterMode.OFF, robotContainer.shooterSubsystem)
             ),
             startPath.getAutoPath()
         );
@@ -80,14 +80,14 @@ public class AutoBuilder {
                     new AllinCommand(robotContainer.intakeSubsystem, robotContainer.neckSubsystem).withTimeout(0.7),
                     new ToggleIntakeCommand(robotContainer.intakeSubsystem),
                     new WaitCommand(0.2),
-                    new ToggleShooterCommand(17, robotContainer.shooterSubsystem),
+//                    new ToggleShooterCommand(17, robotContainer.shooterSubsystem),
                     new WaitCommand(0.4),
-                    new ToggleShooterCommand(ShooterMode.LIMELIGHT, robotContainer.shooterSubsystem),
+//                    new ToggleShooterCommand(ShooterMode.LIMELIGHT, robotContainer.shooterSubsystem),
                     new WaitCommand(0.2),
                     new AllinCommand(robotContainer.intakeSubsystem, robotContainer.neckSubsystem).withTimeout(1.0)
                 )
-            ),
-            new ToggleShooterCommand(ShooterMode.OFF, robotContainer.shooterSubsystem)
+            )
+//            new ToggleShooterCommand(ShooterMode.OFF, robotContainer.shooterSubsystem)
         );
     }
 
@@ -103,14 +103,14 @@ public class AutoBuilder {
                     new ToggleIntakeCommand(robotContainer.intakeSubsystem),
                     new WaitCommand(0.5),
                     new AllinCommand(robotContainer.intakeSubsystem, robotContainer.neckSubsystem).withTimeout(1.0),
-                    new ToggleShooterCommand(17, robotContainer.shooterSubsystem),
+//                    new ToggleShooterCommand(17, robotContainer.shooterSubsystem),
                     new WaitCommand(0.3),
-                    new ToggleShooterCommand(ShooterMode.LIMELIGHT, robotContainer.shooterSubsystem),
+//                    new ToggleShooterCommand(ShooterMode.LIMELIGHT, robotContainer.shooterSubsystem),
                     new WaitCommand(0.3),
                     new AllinCommand(robotContainer.intakeSubsystem, robotContainer.neckSubsystem).withTimeout(1.0)
                 )
-            ),
-            new ToggleShooterCommand(ShooterMode.OFF, robotContainer.shooterSubsystem)
+            )
+//            new ToggleShooterCommand(ShooterMode.OFF, robotContainer.shooterSubsystem)
         );
     }
 
@@ -138,11 +138,11 @@ public class AutoBuilder {
             ballFourToEnd.getAutoPath().alongWith(
                 new SequentialCommandGroup(
                     new WaitCommand(ballFourToEnd.getPathDuration() - 0.5),
-                    new ToggleShooterCommand(17, robotContainer.shooterSubsystem),
+//                    new ToggleShooterCommand(17, robotContainer.shooterSubsystem),
                     new WaitCommand(0.25),
-                    new ToggleShooterCommand(ShooterMode.LIMELIGHT, robotContainer.shooterSubsystem),
-                    new AllinCommand(robotContainer.intakeSubsystem, robotContainer.neckSubsystem).withTimeout(1.0),
-                    new ToggleShooterCommand(ShooterMode.OFF, robotContainer.shooterSubsystem)
+//                    new ToggleShooterCommand(ShooterMode.LIMELIGHT, robotContainer.shooterSubsystem),
+                    new AllinCommand(robotContainer.intakeSubsystem, robotContainer.neckSubsystem).withTimeout(1.0)
+//                    new ToggleShooterCommand(ShooterMode.OFF, robotContainer.shooterSubsystem)
                 )
             )
         );

@@ -96,7 +96,7 @@ public class FieldOrientedDrive extends CommandBase {
             return 0.0;
         }
 
-        return Math.copySign(value * value * value, value);
+        return Math.copySign(value * value, value);
     }
 
     @Override

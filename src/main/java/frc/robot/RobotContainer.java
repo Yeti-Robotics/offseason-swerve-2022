@@ -16,16 +16,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.AllOutCommand;
-import frc.robot.commands.AllinCommand;
-import frc.robot.commands.drivetrain.AutoBalancing;
 import frc.robot.commands.drivetrain.FieldOrientedDrive;
-import frc.robot.commands.intake.ToggleIntakeCommand;
-import frc.robot.commands.shooter.ToggleShooterCommand;
 import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NeckSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utils.AxisToButton;
 import frc.robot.utils.MoveAndShootController;
 
@@ -41,9 +35,8 @@ import frc.robot.utils.MoveAndShootController;
 public class RobotContainer {
     public final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
     public final GenericHID controller;
-    public final OIConstants.CONTROLLER controllerType = OIConstants.CONTROLLER.XBOX;
+    public final OIConstants.CONTROLLER controllerType = OIConstants.CONTROLLER.CUSTOM;
     public final MoveAndShootController moveAndShootController = new MoveAndShootController(drivetrainSubsystem);
-    public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(moveAndShootController);
     public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     public final NeckSubsystem neckSubsystem = new NeckSubsystem();
 
@@ -79,35 +72,35 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        setButtonWhenPressed(controller, 1, new AllinCommand(intakeSubsystem, neckSubsystem));
-        setButtonWhenPressed(controller, 6, new AllOutCommand(intakeSubsystem, neckSubsystem));
-        setButtonWhenPressed(controller, 12, new ToggleIntakeCommand(intakeSubsystem));
+//        setButtonWhenPressed(controller, 1, new AllinCommand(intakeSubsystem, neckSubsystem));
+//        setButtonWhenPressed(controller, 6, new AllOutCommand(intakeSubsystem, neckSubsystem));
+//        setButtonWhenPressed(controller, 12, new ToggleIntakeCommand(intakeSubsystem));
+//
+//        setButtonWhenPressed(controller, 2, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LIMELIGHT, shooterSubsystem));
+//        setButtonWhenPressed(controller, 3, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LOWGOAL, shooterSubsystem));
+//
+//        setButtonWhenPressed(controller, 11, new InstantCommand(FieldOrientedDrive::toggleTargetLock));
+//        setButtonWhenPressed(controller, 10, new InstantCommand(moveAndShootController::toggleMoveAndShootController));
 
-        setButtonWhenPressed(controller, 2, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LIMELIGHT, shooterSubsystem));
-        setButtonWhenPressed(controller, 3, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LOWGOAL, shooterSubsystem));
-
-        setButtonWhenPressed(controller, 11, new InstantCommand(FieldOrientedDrive::toggleTargetLock));
-        setButtonWhenPressed(controller, 10, new InstantCommand(moveAndShootController::toggleMoveAndShootController));
-
-        setButtonWhenPressed(controller, 5, new InstantCommand(() -> drivetrainSubsystem.resetOdometer(
+        setButtonWhenPressed(controller, 12, new InstantCommand(() -> drivetrainSubsystem.resetOdometer(
             new Pose2d(FieldConstants.launchPadB, new Rotation2d(0.0)).transformBy(DriveConstants.ROBOT_CENTER)
         )));
 
-        setButtonWhenPressed(controller, 9, new InstantCommand(drivetrainSubsystem::toggleSwerveLock));
+        setButtonWhenPressed(controller, 11, new InstantCommand(drivetrainSubsystem::toggleSwerveLock));
     }
 
     private void configureButtonXboxBindings() {
-        setAxisWhileHeld(controller, Axis.kLeftTrigger.value, new AllOutCommand(intakeSubsystem, neckSubsystem));
-        setAxisWhileHeld(controller, Axis.kRightTrigger.value, new AllinCommand(intakeSubsystem, neckSubsystem));
-        setButtonWhenPressed(controller, Button.kLeftBumper.value, new ToggleIntakeCommand(intakeSubsystem));
-
-//        setButtonWhenPressed(controller, Button.kRightBumper.value, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LIMELIGHT, shooterSubsystem));
-//        setButtonWhenPressed(controller, Button.kX.value, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LOWGOAL, shooterSubsystem));
-
-        setButtonWhenPressed(controller, Button.kA.value, new InstantCommand(FieldOrientedDrive::toggleTargetLock));
+//        setAxisWhileHeld(controller, Axis.kLeftTrigger.value, new AllOutCommand(intakeSubsystem, neckSubsystem));
+//        setAxisWhileHeld(controller, Axis.kRightTrigger.value, new AllinCommand(intakeSubsystem, neckSubsystem));
+//        setButtonWhenPressed(controller, Button.kLeftBumper.value, new ToggleIntakeCommand(intakeSubsystem));
+//
+////        setButtonWhenPressed(controller, Button.kRightBumper.value, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LIMELIGHT, shooterSubsystem));
+////        setButtonWhenPressed(controller, Button.kX.value, new ToggleShooterCommand(ShooterSubsystem.ShooterMode.LOWGOAL, shooterSubsystem));
+//
+//        setButtonWhenPressed(controller, Button.kA.value, new InstantCommand(FieldOrientedDrive::toggleTargetLock));
 //        setButtonWhenPressed(controller, Button.kBack.value, new InstantCommand(moveAndShootController::toggleMoveAndShootController));
 
-        setButtonWhenPressed(controller, Button.kY.value, new AutoBalancing(drivetrainSubsystem));
+//        setButtonWhenPressed(controller, Button.kY.value, new AutoBalancing(drivetrainSubsystem));
 
         setButtonWhenPressed(controller, Button.kStart.value, new InstantCommand(() -> drivetrainSubsystem.resetOdometer(
             new Pose2d(FieldConstants.launchPadB, new Rotation2d(0.0))
