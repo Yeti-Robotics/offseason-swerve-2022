@@ -40,7 +40,8 @@ public class Robot extends TimedRobot {
         TWO_BALL,
         THREE_BALL,
         FOUR_BALL,
-        TUNNING
+        TUNNING,
+        HIMALAYA_TEST
     }
     private AutoModes previousSelectedAuto;
     private AutoBuilder autoBuilder;
@@ -58,6 +59,7 @@ public class Robot extends TimedRobot {
 
         autoChooser = new SendableChooser<>();
         autoChooser.setDefaultOption("ONE_BALL", AutoModes.ONE_BALL);
+        autoChooser.addOption("HIMALAYA_TEST", AutoModes.HIMALAYA_TEST);
         autoChooser.addOption("ONE_BALL", AutoModes.ONE_BALL);
         autoChooser.addOption("TWO_BALL", AutoModes.TWO_BALL);
         autoChooser.addOption("THREE_BALL", AutoModes.THREE_BALL);

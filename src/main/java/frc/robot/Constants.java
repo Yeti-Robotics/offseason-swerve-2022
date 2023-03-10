@@ -192,6 +192,7 @@ public final class Constants {
         public static final String fiveBallPathTwo = "fiveBallPathTwo";
 
         public static final String tuningAutoPath = "tuningAutoPath";
+        public static final String himalayaPath = "himalayaPath";
     }
 
     public static final class ShooterConstants {

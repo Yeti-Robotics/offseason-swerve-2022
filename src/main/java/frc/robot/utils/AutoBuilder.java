@@ -16,27 +16,30 @@ public class AutoBuilder {
     private AutoPath startPath;
 
     public Command build() {
-        autoCommand = new SequentialCommandGroup();
+        autoCommand = new SequentialCommandGroup();//.beforeStarting(() -> robotContainer.drivetrainSubsystem.resetOdometer(startPath.getInitPose()));
 
-//        switch (autoMode) {
-////            case ONE_BALL:
-////                oneBallAuto();
-////                break;
-////            case TWO_BALL:
-////                twoBallAuto();
-////                break;
-////            case THREE_BALL:
-////                threeBallAuto();
-////                break;
-////            case FOUR_BALL:
-////                fourBallAuto();
-////                break;
-//            case TUNNING:
-//                tuningAuto();
-//                break;
-//        }
+        /*switch (autoMode) {
+            case ONE_BALL:
+                oneBallAuto();
+                break;
+            case TWO_BALL:
+                twoBallAuto();
+                break;
+            case THREE_BALL:
+                threeBallAuto();
+                break;
+            case FOUR_BALL:
+                fourBallAuto();
+                break;
+            case TUNNING:
+                tuningAuto();
+                break;
+            case HIMALAYA_TEST:
+                himalayaPath();
+                break;
+        }*/
 
-        return tuningAuto().beforeStarting(() -> robotContainer.drivetrainSubsystem.resetOdometer(startPath.getInitPose()));
+        return himalayaPath().beforeStarting(() -> robotContainer.drivetrainSubsystem.resetOdometer(startPath.getInitPose()));
     }
 
     public void setRobotContainer(RobotContainer robotContainer) {
@@ -154,6 +157,20 @@ public class AutoBuilder {
 
         AutoPath ballFiveToEnd = new AutoPath(robotContainer.drivetrainSubsystem,
                 AutoConstants.fiveBallPathTwo);
+    }
+
+    private CommandBase himalayaPath() {
+        startPath = new AutoPath(robotContainer.drivetrainSubsystem, AutoConstants.himalayaPath);
+
+//        return autoCommand.andThen(
+//                new SequentialCommandGroup(
+//                        new WaitCommand(1.0)
+//                ),
+//                himalayaPath.getAutoPath()
+//        );
+        return Commands.sequence(
+                startPath.getAutoPath()
+        );
     }
 
     private CommandBase tuningAuto() {
