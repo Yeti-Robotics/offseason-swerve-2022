@@ -5,6 +5,7 @@
 package frc.robot.subsystems.Drivetrain;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,7 +17,7 @@ import static frc.robot.Constants.AutoConstants;
 import static frc.robot.Constants.DriveConstants;
 
 public class DrivetrainSubsystem extends SubsystemBase {
-    private final WPI_Pigeon2 gyro = new WPI_Pigeon2(DriveConstants.GYRO);
+    private final WPI_PigeonIMU gyro = new WPI_PigeonIMU(DriveConstants.GYRO);
 
     // These are our modules. We initialize them in the constructor.
     private final SwerveModule frontLeftModule;
